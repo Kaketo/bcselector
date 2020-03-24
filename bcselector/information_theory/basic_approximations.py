@@ -2,15 +2,55 @@ import numpy as np
 
 def entropy(vector, base=None):
     """
-    Function calculates entropy of a vactor with base. 
-    If base is not provided np.e is selected.
+    This estimator computes the entropy of the empirical probability distribution.
+    ----------
+    vector : list or np.array
+        Vector of which entropy is calculated. 
+    base : int or float
+        Base of the logarithm in entropy approximation
+            - if None, np.e is selected and entropy is returned in nats.
+    Returns
+    -------
+    vector_entropy : float
+        Approximated entropy
     """
+    assert isinstance(vector, (list)), "Argument 'vector' not in the right format"
+    assert (isinstance(vector, np.ndarray) and len(vector.shape) == 1), "Argument 'vector' not in the right shape. Use numpy (n,) shape instead"
+
+    if len(vector) == 0:
+        "Entropy for one number is zero"
+        return 0
+
     _,counts = np.unique(vector, return_counts=True)
     norm_counts = counts / counts.sum()
     base = np.e if base is None else base
     return -(norm_counts * np.log(norm_counts)/np.log(base)).sum()
 
 def conditional_entropy(vector,condition, base=None):
+    """
+    This estimator computes the conditional entropy of the empirical probability distribution.
+    ----------
+    vector : list or np.array
+        Vector of which entropy is calculated. 
+    condition: list or np.array
+        Vector of condition for entropy.
+    base : int or float
+        Base of the logarithm in entropy approximation
+            - if None, np.e is selected and entropy is returned in nats.
+    Returns
+    -------
+    vector_entropy : float
+        Approximated entropy.
+    """
+    assert isinstance(vector, (list)), "Argument 'vector' not in the right format."
+    assert (isinstance(vector, np.ndarray) and len(vector.shape) == 1), "Argument 'vector' not in the right shape. Use numpy (n,) shape instead."
+    assert isinstance(condition, (list)), "Argument 'condition' not in the right format."
+    assert (isinstance(condition, np.ndarray) and len(vector.shape) == 1), "Argument 'condition' not in the right shape. Use numpy (n,) shape instead."
+
+    if len(vector) == 0:
+        "Entropy for one number is zero"
+        return 0
+
     unique_condition_values = np.unique(condition)
     cond_entropy = 0
     for i in unique_condition_values:
