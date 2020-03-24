@@ -1,7 +1,6 @@
 import numpy as np
 import warnings
-from basic_approximations import entropy, conditional_entropy, mutual_information, conditional_mutual_information
-
+from bcselector.information_theory.basic_approximations import entropy, conditional_entropy, mutual_information, conditional_mutual_information
 
 def mim(data, target_variable, candidate_variable_index):
     """
@@ -9,6 +8,28 @@ def mim(data, target_variable, candidate_variable_index):
     target_variable (Y) - numpy array with target variable
     candidate_variable_index (X_i) - index of candidate variable X_i in data matrix
     """
+    """
+    This estimator computes the Mutual Information Maximisation criterion.
+    ----------
+    data : np.array matrix
+        Matrix of data set. Columns are variables, rows are observations.
+    target_variable : int or float
+        Target variable. Can not be in data!
+    candidate_variable_index : int
+        Index of candidate variable in data matrix.
+    Returns
+    -------
+    j_criterion_value : float
+        J_criterion approximated by the Mutual Information Maximisation.
+    """
+
+    assert isinstance(data, np.ndarray), "Argument 'data' must be a numpy matrix"
+    assert isinstance(target_variable, np.ndarray), "Argument 'target_variable' must be a numpy matrix"
+    assert isinstance(candidate_variable_index, int), "Argument 'candidate_variable_index' must be an integer"
+
+    assert len(data.shape) == 2, "For 'data' argument use numpy array of shape (n,p)" 
+    assert data.shape[0] == len(target_variable), "Number of rows in 'data' must equal target_variable length"
+    assert candidate_variable_index < data.shape[1] - 1, "Index 'candidate_variable_index' out of range in 'data'"
 
     candidate_variable = data[:,candidate_variable_index]
     return mutual_information(candidate_variable, target_variable)

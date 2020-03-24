@@ -14,12 +14,14 @@ def entropy(vector, base=None):
     vector_entropy : float
         Approximated entropy
     """
-    assert isinstance(vector, (list)), "Argument 'vector' not in the right format"
-    assert (isinstance(vector, np.ndarray) and len(vector.shape) == 1), "Argument 'vector' not in the right shape. Use numpy (n,) shape instead"
+    assert isinstance(vector, (list)) or (isinstance(vector, np.ndarray) and len(vector.shape) == 1), "Argument 'vector' not in the right shape. Use list or numpy (n,) shape instead"
+    assert len(vector) > 0, "Argument 'vector' can't be empty"
 
-    if len(vector) == 0:
+    vector = np.array(vector)
+
+    if len(vector) == 1:
         "Entropy for one number is zero"
-        return 0
+        return 0.0
 
     _,counts = np.unique(vector, return_counts=True)
     norm_counts = counts / counts.sum()
@@ -42,14 +44,19 @@ def conditional_entropy(vector,condition, base=None):
     vector_entropy : float
         Approximated entropy.
     """
-    assert isinstance(vector, (list)), "Argument 'vector' not in the right format."
-    assert (isinstance(vector, np.ndarray) and len(vector.shape) == 1), "Argument 'vector' not in the right shape. Use numpy (n,) shape instead."
-    assert isinstance(condition, (list)), "Argument 'condition' not in the right format."
-    assert (isinstance(condition, np.ndarray) and len(vector.shape) == 1), "Argument 'condition' not in the right shape. Use numpy (n,) shape instead."
+    assert isinstance(vector, (list)) or (isinstance(vector, np.ndarray) and len(vector.shape) == 1), "Argument 'vector' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(condition, (list)) or (isinstance(condition, np.ndarray) and len(condition.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
+    assert len(vector) > 0, "Argument 'vector' can't be empty"
+    assert len(condition) > 0, "Argument 'condition' can't be empty"
 
-    if len(vector) == 0:
+    vector = np.array(vector)
+    condition = np.array(condition)
+
+    assert vector.shape == condition.shape, "Argument 'vector' must be the same lenght as 'condition'"
+
+    if len(vector) == 1:
         "Entropy for one number is zero"
-        return 0
+        return 0.0
 
     unique_condition_values = np.unique(condition)
     cond_entropy = 0
@@ -59,11 +66,60 @@ def conditional_entropy(vector,condition, base=None):
     return np.sum(cond_entropy)
 
 def mutual_information(vector_1, vector_2, base=None):
+    """
+    This estimator computes the mutual information of two vectors with method of the empirical probability distribution.
+    ----------
+    vector_1 : list or np.array
+        Vector of one variable. 
+    vector_2: list or np.array
+        Vector of one variable. 
+    base : int or float
+        Base of the logarithm in entropy approximation
+            - if None, np.e is selected and entropy is returned in nats.
+    Returns
+    -------
+    variables_mutual_information : float
+        Approximated mutual information between variables.
+    """
     vector_1_entropy = entropy(vector=vector_1, base=base)
     cond_entropy = conditional_entropy(vector=vector_1, condition=vector_2, base=base)
     return vector_1_entropy - cond_entropy
 
 def conditional_mutual_information(vector_1, vector_2, condition, base = None):
+    """
+    This estimator computes the conditional mutual information of two vectors and condition vector with method of the empirical probability distribution.
+    ----------
+    vector_1 : list or np.array
+        Vector of one variable. 
+    vector_2: list or np.array
+        Vector of one variable. 
+    condition: list or np.array
+        Vector of condition for mutual information.
+    base : int or float
+        Base of the logarithm in entropy approximation
+            - if None, np.e is selected and entropy is returned in nats.
+    Returns
+    -------
+    variables_conditional_mutual_information : float
+        Approximated conditional mutual information between variables.
+    """
+    assert isinstance(vector_1, (list)) or (isinstance(vector_1, np.ndarray) and len(vector_1.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(vector_2, (list)) or (isinstance(vector_2, np.ndarray) and len(vector_2.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(condition, (list)) or (isinstance(condition, np.ndarray) and len(condition.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
+    assert len(vector_1) > 0, "Argument 'vector_1' can't be empty"
+    assert len(vector_2) > 0, "Argument 'vector_2' can't be empty"
+    assert len(condition) > 0, "Argument 'condition' can't be empty"
+
+    vector_1 = np.array(vector_1)
+    vector_2 = np.array(vector_2)
+    condition = np.array(condition)
+
+    assert vector_1.shape == vector_2.shape == condition.shape, "Argument 'vector_1' and 'vector_2' must be the same lenght as 'condition'"
+
+    if len(condition) == 1:
+        "Entropy for one number is zero"
+        return 0.0
+
     unique_condition_values = np.unique(condition)
     cond_mutual_info = 0
     for i in unique_condition_values:
