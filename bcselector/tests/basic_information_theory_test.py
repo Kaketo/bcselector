@@ -120,6 +120,12 @@ class TestMutualInformation(unittest.TestCase):
 
         self.assertEqual(mutual_information(input_1,input_2), entropy(input_1))
 
+    def test_commutative_property(self):
+        input_1 = [9,8,7,6,5,4,3,2,9]
+        input_2 = [1,1,1,1,0,0,0,0,0]
+        
+        self.assertEqual(mutual_information(input_1, input_2), mutual_information(input_2, input_1))
+
 class TestConditionalMutualInformation(unittest.TestCase):
     def test_empty_input(self):
         vector_1 = []
@@ -148,5 +154,12 @@ class TestConditionalMutualInformation(unittest.TestCase):
         vector_2 = np.array([1,1,1,1,0,0,0,0,0])
         condition = np.array([0,0,0,0,1,0,0,0,0])
         self.assertIsInstance(conditional_mutual_information(vector_1, vector_2,condition),float)
+
+    def test_commutative_property(self):
+        input_1 = [9,8,7,6,5,4,3,2,9]
+        input_2 = [1,1,1,1,0,0,0,0,0]
+        condition = np.array([0,0,0,0,1,0,0,0,0])
+        
+        self.assertAlmostEqual(conditional_mutual_information(input_1, input_2, condition), conditional_mutual_information(input_2, input_1, condition), places=5)
 
     
