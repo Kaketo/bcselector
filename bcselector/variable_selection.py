@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import cross_val_score
+import matplotlib.pyplot as plt
 
 from bcselector.filter_methods.cost_based_filter_methods import difference_find_best_feature, fraction_find_best_feature
 from bcselector.filter_methods.no_cost_based_filter_methods import no_cost_find_best_feature
@@ -24,6 +25,11 @@ class _MockVariableSelector():
 
         self.total_scores = None
         self.total_costs = None
+
+        self.scoring = None
+
+        self.fig = None
+        self.ax = None
 
     def fit(self, data, target_variable, costs, j_criterion_func = 'cife', **kwargs):
         self.variables_selected_order = []
@@ -73,8 +79,9 @@ class _MockVariableSelector():
     def scoreCV(self, model, scoring = 'roc_auc', cv = 4, **kwargs):
         self.total_scores = []
         self.total_costs = []
+        self.scoring = scoring
 
-        assert self.variables_selected_order is not None, "Run fit method first."
+        assert len(self.variables_selected_order) > 0, "Run fit method first."
         current_cost = 0
 
         for i in range(1,len(self.variables_selected_order) + 1):
@@ -84,6 +91,19 @@ class _MockVariableSelector():
             self.total_scores.append(score)
             self.total_costs.append(current_cost)
 
+    def plot_scores(self, budget = None):
+        assert len(self.total_scores) > 0, "Run scoreCV method first."
+        
+        self.fig, self.ax = plt.subplots(figsize=(10, 5))
+        if budget is not None:
+            assert isinstance(budget,(int,float)), "Argument `budget` must be float or int."
+            self.ax.axvline(x=budget)
+        self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
+    
+        self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 14)
+        self.ax.tick_params(size=14)
+        self.ax.set_xlabel('Cost')
+        self.ax.set_ylabel(self.scoring)
 
 class DiffVariableSelector(_MockVariableSelector):
     """Ranks all features in dataset with difference cost filter method.
@@ -123,6 +143,47 @@ class DiffVariableSelector(_MockVariableSelector):
             self.cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
 
+    def plot_scores(self, budget = None, compare_no_cost_method = False, **kwargs):
+        super().plot_scores(budget=budget)
+        if compare_no_cost_method is True:
+            assert 'model' in kwargs.keys(), "When comparing with no-cost method must select model for scoring."
+            model = kwargs.pop('model')
+
+            # Rank variables with NoCostVariableSelector
+            S = set()
+            U = set([i for i in range(self.data.shape[1])])
+
+            variables_selected_order = []
+            cost_variables_selected_order = []
+
+            while len(U) > 0:
+                k, _, cost = no_cost_find_best_feature(j_criterion_func = self.j_criterion_func, 
+                                    data = self.data, 
+                                    target_variable = self.target_variable, 
+                                    prev_variables_index = list(S),
+                                    possible_variables_index = list(U),
+                                    costs = self.costs)
+                S.add(k)
+                variables_selected_order.append(k)
+                cost_variables_selected_order.append(cost)
+                U = U.difference(set([k]))
+
+            current_cost = 0
+            total_scores = []
+            total_costs = []
+            
+            for i in range(1,len(variables_selected_order) + 1):
+                cur_vars = variables_selected_order[0:i]
+                score = cross_val_score(estimator = model, X = self.data[:,cur_vars], y = self.target_variable,**kwargs).mean()
+                current_cost += self.costs[i-1]
+                total_scores.append(score)
+                total_costs.append(current_cost)
+
+            self.ax.plot(total_costs, total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
+            self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')
+            self.ax.legend()
+        plt.show()
+
 class FractionVariableSelector(_MockVariableSelector):
     """Ranks all features in dataset with difference cost filter method.
 
@@ -137,8 +198,8 @@ class FractionVariableSelector(_MockVariableSelector):
 
     """
     def fit(self, data, target_variable, costs, r, j_criterion_func = 'cife', **kwargs):
-        # lamb
-        assert isinstance(r, int) or isinstance(r, float), "Argument `lamb` must be integer or float"
+        # r
+        assert isinstance(r, int) or isinstance(r, float), "Argument `r` must be integer or float"
         self.r = r
 
         super().fit(data, target_variable, costs, j_criterion_func, **kwargs)
@@ -161,6 +222,48 @@ class FractionVariableSelector(_MockVariableSelector):
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
+    
+    def plot_scores(self, budget = None, compare_no_cost_method = False, **kwargs):
+        super().plot_scores(budget=budget)
+        if compare_no_cost_method is True:
+            assert 'model' in kwargs.keys(), "When comparing with no-cost method must select model for scoring."
+            model = kwargs.pop('model')
+
+            # Rank variables with NoCostVariableSelector
+            S = set()
+            U = set([i for i in range(self.data.shape[1])])
+
+            variables_selected_order = []
+            cost_variables_selected_order = []
+
+            while len(U) > 0:
+                k, _, cost = no_cost_find_best_feature(j_criterion_func = self.j_criterion_func, 
+                                    data = self.data, 
+                                    target_variable = self.target_variable, 
+                                    prev_variables_index = list(S),
+                                    possible_variables_index = list(U),
+                                    costs = self.costs)
+                S.add(k)
+                variables_selected_order.append(k)
+                cost_variables_selected_order.append(cost)
+                U = U.difference(set([k]))
+
+            current_cost = 0
+            total_scores = []
+            total_costs = []
+            
+            for i in range(1,len(variables_selected_order) + 1):
+                cur_vars = variables_selected_order[0:i]
+                score = cross_val_score(estimator = model, X = self.data[:,cur_vars], y = self.target_variable,**kwargs).mean()
+                current_cost += self.costs[i-1]
+                total_scores.append(score)
+                total_costs.append(current_cost)
+
+            self.ax.plot(total_costs, total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
+            self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')
+            self.ax.legend()
+        plt.show()
+
 
 
 class NoCostVariableSelector(_MockVariableSelector):
@@ -176,10 +279,7 @@ class NoCostVariableSelector(_MockVariableSelector):
     --------
 
     """
-    def fit(self, data, target_variable, costs, r, j_criterion_func = 'cife', **kwargs):
-        # lamb
-        assert isinstance(r, int) or isinstance(r, float), "Argument `lamb` must be integer or float"
-        self.r = r
+    def fit(self, data, target_variable, costs, j_criterion_func = 'cife', **kwargs):
 
         super().fit(data, target_variable, costs, j_criterion_func, **kwargs)
         
@@ -195,11 +295,14 @@ class NoCostVariableSelector(_MockVariableSelector):
                                 target_variable = self.target_variable, 
                                 prev_variables_index = list(S),
                                 possible_variables_index = list(U),
-                                costs = self.costs,
-                                r = self.r)
+                                costs = self.costs)
             S.add(k)
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
+
+    def plot_scores(self, model):
+        super().plot_scores(model)
+        plt.show()
 
         
