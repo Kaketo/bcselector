@@ -1,5 +1,5 @@
 ===========
-bc-selector
+bcselector
 ===========
 
 
