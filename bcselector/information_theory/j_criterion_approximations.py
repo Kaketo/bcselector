@@ -2,7 +2,7 @@ import numpy as np
 import warnings
 from bcselector.information_theory.basic_approximations import entropy, conditional_entropy, mutual_information, conditional_mutual_information
 
-def mim(data, target_variable, candidate_variable_index):
+def mim(data, target_variable, candidate_variable_index, **kwargs):
     """
     This estimator computes the Mutual Information Maximisation criterion.
     ----------
@@ -37,7 +37,7 @@ def mifs(data, target_variable, prev_variables_index, candidate_variable_index, 
         Matrix of data set. Columns are variables, rows are observations.
     target_variable : int or float
         Target variable. Can not be in data!
-    prev_variables_index: list of ints
+    prev_variables_index: list of ints, set of ints
         Indexes of previously selected variables.
     candidate_variable_index : int
         Index of candidate variable in data matrix.

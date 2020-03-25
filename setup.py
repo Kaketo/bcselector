@@ -22,13 +22,13 @@ DESCRIPTION = 'Python package to help you in variable selection.'
 LONG_DESCRIPTION = read('README.rst')
 
 setup(
-    name='bc-selector',
+    name='bcselector',
     version=version,
     author='Tomasz Klonecki',
     author_email="tomasz.klonecki@gmail.com",
     description=DESCRIPTION,
     long_description=LONG_DESCRIPTION,
-    url='https://github.com/Kaketo/bc-selector',
+    url='https://github.com/Kaketo/bcselector',
     install_requires=REQUIREMENTS,
     license='MIT',
     packages=find_packages('.'),
