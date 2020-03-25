@@ -4,11 +4,6 @@ from bcselector.information_theory.basic_approximations import entropy, conditio
 
 def mim(data, target_variable, candidate_variable_index):
     """
-    data - numpy matrix
-    target_variable (Y) - numpy array with target variable
-    candidate_variable_index (X_i) - index of candidate variable X_i in data matrix
-    """
-    """
     This estimator computes the Mutual Information Maximisation criterion.
     ----------
     data : np.array matrix
@@ -29,7 +24,7 @@ def mim(data, target_variable, candidate_variable_index):
 
     assert len(data.shape) == 2, "For 'data' argument use numpy array of shape (n,p)" 
     assert data.shape[0] == len(target_variable), "Number of rows in 'data' must equal target_variable length"
-    assert candidate_variable_index < data.shape[1] - 1, "Index 'candidate_variable_index' out of range in 'data'"
+    assert candidate_variable_index < data.shape[1], "Index 'candidate_variable_index' out of range in 'data'"
 
     candidate_variable = data[:,candidate_variable_index]
     return mutual_information(candidate_variable, target_variable)
@@ -59,7 +54,7 @@ def mifs(data, target_variable, prev_variables_index, candidate_variable_index, 
 
     assert len(data.shape) == 2, "For 'data' argument use numpy array of shape (n,p)" 
     assert data.shape[0] == len(target_variable), "Number of rows in 'data' must equal target_variable length"
-    assert candidate_variable_index < data.shape[1] - 1, "Index 'candidate_variable_index' out of range in 'data'"
+    assert candidate_variable_index < data.shape[1], "Index 'candidate_variable_index' out of range in 'data'"
 
     for i in prev_variables_index:
         assert isinstance(i, int), "All previous variable indexes must be int."
@@ -104,7 +99,7 @@ def mrmr(data, target_variable, prev_variables_index, candidate_variable_index):
 
     assert len(data.shape) == 2, "For 'data' argument use numpy array of shape (n,p)" 
     assert data.shape[0] == len(target_variable), "Number of rows in 'data' must equal target_variable length"
-    assert candidate_variable_index < data.shape[1] - 1, "Index 'candidate_variable_index' out of range in 'data'"
+    assert candidate_variable_index < data.shape[1], "Index 'candidate_variable_index' out of range in 'data'"
 
     for i in prev_variables_index:
         assert isinstance(i, int), "All previous variable indexes must be int."
@@ -136,14 +131,14 @@ def jmi(data, target_variable, prev_variables_index, candidate_variable_index):
     j_criterion_value : float
         J_criterion approximated by the Joint Mutual Information.
     """
-    
+
     assert isinstance(data, np.ndarray), "Argument 'data' must be a numpy matrix"
     assert isinstance(target_variable, np.ndarray), "Argument 'target_variable' must be a numpy matrix"
     assert isinstance(candidate_variable_index, int), "Argument 'candidate_variable_index' must be an integer"
 
     assert len(data.shape) == 2, "For 'data' argument use numpy array of shape (n,p)" 
     assert data.shape[0] == len(target_variable), "Number of rows in 'data' must equal target_variable length"
-    assert candidate_variable_index < data.shape[1] - 1, "Index 'candidate_variable_index' out of range in 'data'"
+    assert candidate_variable_index < data.shape[1], "Index 'candidate_variable_index' out of range in 'data'"
 
     for i in prev_variables_index:
         assert isinstance(i, int), "All previous variable indexes must be int."
@@ -184,7 +179,7 @@ def cife(data, target_variable, prev_variables_index, candidate_variable_index, 
 
     assert len(data.shape) == 2, "For 'data' argument use numpy array of shape (n,p)" 
     assert data.shape[0] == len(target_variable), "Number of rows in 'data' must equal target_variable length"
-    assert candidate_variable_index < data.shape[1] - 1, "Index 'candidate_variable_index' out of range in 'data'"
+    assert candidate_variable_index < data.shape[1], "Index 'candidate_variable_index' out of range in 'data'"
 
     for i in prev_variables_index:
         assert isinstance(i, int), "All previous variable indexes must be int."
