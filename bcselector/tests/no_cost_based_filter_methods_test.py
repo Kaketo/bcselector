@@ -12,10 +12,9 @@ class TestNoCostMethod(unittest.TestCase):
         diverse_target = np.random.randint(0,10,(100))
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
-        r = 1
+
         selected_feature, criterion_value, cost = no_cost_find_best_feature(
             j_criterion_func=mim, 
-            r=r,
             data=integer_matrix, 
             target_variable=diverse_target,
             possible_variables_index=candidates_index,
@@ -30,17 +29,14 @@ class TestNoCostMethod(unittest.TestCase):
         prev_variables_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
-        r = 1
-        beta = 1
+
         selected_feature, criterion_value, cost = no_cost_find_best_feature(
                                     j_criterion_func=mifs, 
-                                    r=r,
                                     data=integer_matrix, 
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
-                                    prev_variables_index=prev_variables_index,
-                                    beta=beta)
+                                    prev_variables_index=prev_variables_index)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(criterion_value, float)
         self.assertIsInstance(cost, float)                                    
@@ -51,10 +47,8 @@ class TestNoCostMethod(unittest.TestCase):
         prev_variable_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
-        r = 1
         selected_feature, criterion_value, cost = no_cost_find_best_feature(
                                     j_criterion_func=mrmr, 
-                                    r=r,
                                     data=integer_matrix, 
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
@@ -70,10 +64,9 @@ class TestNoCostMethod(unittest.TestCase):
         prev_variable_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
-        r = 1
+
         selected_feature, criterion_value, cost = no_cost_find_best_feature(
                                     j_criterion_func=jmi, 
-                                    r=r,
                                     data=integer_matrix, 
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
@@ -89,75 +82,14 @@ class TestNoCostMethod(unittest.TestCase):
         prev_variable_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
-        r = 1
-        beta=1
+
         selected_feature, criterion_value, cost = no_cost_find_best_feature(
                                     j_criterion_func=cife, 
-                                    r=r,
                                     data=integer_matrix, 
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs, 
-                                    prev_variables_index=prev_variable_index,
-                                    beta=beta)
+                                    prev_variables_index=prev_variable_index)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(criterion_value, float)
         self.assertIsInstance(cost, float) 
-
-    def test_different_beta_parameter_mifs(self):
-        integer_matrix = np.random.randint(0,10,(10,10))
-        diverse_target = np.random.randint(0,10,(10))
-        prev_variables_index = [3,4,5]
-        candidates_index = [0,1,2,6,7,8,9]
-        costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
-        r = 1
-        beta_1 = 1
-        beta_2 = 10000
-        _, criterion_value_1, _ = no_cost_find_best_feature(
-                                    j_criterion_func=mifs, 
-                                    r=r,
-                                    data=integer_matrix, 
-                                    target_variable=diverse_target,
-                                    possible_variables_index=candidates_index,
-                                    costs=costs,
-                                    prev_variables_index=prev_variables_index,
-                                    beta=beta_1)
-        _, criterion_value_2, _ = no_cost_find_best_feature(
-                                    j_criterion_func=mifs, 
-                                    r=r,
-                                    data=integer_matrix, 
-                                    target_variable=diverse_target,
-                                    possible_variables_index=candidates_index,
-                                    costs=costs,
-                                    prev_variables_index=prev_variables_index,
-                                    beta=beta_2)
-        self.assertNotEqual(criterion_value_1,criterion_value_2)
-                 
-    def test_different_beta_parameter_cife(self):
-        integer_matrix = np.random.randint(0,10,(10,10))
-        diverse_target = np.random.randint(0,10,(10))
-        prev_variables_index = [3,4,5]
-        candidates_index = [0,1,2,6,7,8,9]
-        costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
-        r = 1
-        beta_1 = 1
-        beta_2 = 10000
-        _, criterion_value_1, _ = no_cost_find_best_feature(
-                                    j_criterion_func=cife, 
-                                    r=r,
-                                    data=integer_matrix, 
-                                    target_variable=diverse_target,
-                                    possible_variables_index=candidates_index,
-                                    costs=costs,
-                                    prev_variables_index=prev_variables_index,
-                                    beta=beta_1)
-        _, criterion_value_2, _ = no_cost_find_best_feature(
-                                    j_criterion_func=cife, 
-                                    r=r,
-                                    data=integer_matrix, 
-                                    target_variable=diverse_target,
-                                    possible_variables_index=candidates_index,
-                                    costs=costs,
-                                    prev_variables_index=prev_variables_index,
-                                    beta=beta_2)
-        self.assertNotEqual(criterion_value_1,criterion_value_2)
