@@ -7,7 +7,9 @@ from bcselector.filter_methods.no_cost_based_filter_methods import no_cost_find_
 from bcselector.information_theory.j_criterion_approximations import mim, mifs, mrmr, jmi, cife
 
 __all__ = [
-    'DiffVariableSelector'
+    '_MockVariableSelector',
+    'DiffVariableSelector',
+    'FractionVariableSelector'
 ]
 
 class _MockVariableSelector():
@@ -16,11 +18,17 @@ class _MockVariableSelector():
         self.target_variable = None
         self.costs = None
 
-        self.variables_selected_order = None
-        self.cost_variables_selected_order = None
+        self.variables_selected_order = []
+        self.cost_variables_selected_order = []
         self.j_criterion_func = None
 
+        self.total_scores = None
+        self.total_costs = None
+
     def fit(self, data, target_variable, costs, j_criterion_func = 'cife', **kwargs):
+        self.variables_selected_order = []
+        self.cost_variables_selected_order = []
+
         # data & costs
         assert isinstance(data, np.ndarray) or isinstance(data, pd.DataFrame), "Argument `data` must be numpy.ndarray or pandas.DataFrame"
         if isinstance(data,np.ndarray):
@@ -62,14 +70,19 @@ class _MockVariableSelector():
     def get_ranked_costs(self):
         return self.cost_variables_selected_order
 
-    def scoreCV(self, scoring = 'roc_auc', folds = 4, **kwargs):
+    def scoreCV(self, model, scoring = 'roc_auc', cv = 4, **kwargs):
+        self.total_scores = []
+        self.total_costs = []
+
+        assert self.variables_selected_order is not None, "Run fit method first."
         current_cost = 0
-        total_costs = []
-        total_scores = []
 
         for i in range(1,len(self.variables_selected_order) + 1):
             cur_vars = self.variables_selected_order[0:i]
-            score = 
+            score = cross_val_score(model, self.data[:,cur_vars], self.target_variable, scoring=scoring, cv=cv, **kwargs).mean()
+            current_cost += self.costs[i-1]
+            self.total_scores.append(score)
+            self.total_costs.append(current_cost)
 
 
 class DiffVariableSelector(_MockVariableSelector):
@@ -138,6 +151,46 @@ class FractionVariableSelector(_MockVariableSelector):
 
         while len(U) > 0:
             k, _, cost = fraction_find_best_feature(j_criterion_func = self.j_criterion_func, 
+                                data = self.data, 
+                                target_variable = self.target_variable, 
+                                prev_variables_index = list(S),
+                                possible_variables_index = list(U),
+                                costs = self.costs,
+                                r = self.r)
+            S.add(k)
+            self.variables_selected_order.append(k)
+            self.cost_variables_selected_order.append(cost)
+            U = U.difference(set([k]))
+
+
+class NoCostVariableSelector(_MockVariableSelector):
+    """Ranks all features in dataset with difference cost filter method.
+
+    Parameters
+    ----------
+
+    Attributes
+    ----------
+
+    Examples
+    --------
+
+    """
+    def fit(self, data, target_variable, costs, r, j_criterion_func = 'cife', **kwargs):
+        # lamb
+        assert isinstance(r, int) or isinstance(r, float), "Argument `lamb` must be integer or float"
+        self.r = r
+
+        super().fit(data, target_variable, costs, j_criterion_func, **kwargs)
+        
+        S = set()
+        U = set([i for i in range(self.data.shape[1])])
+
+        self.variables_selected_order = []
+        self.cost_variables_selected_order = []
+
+        while len(U) > 0:
+            k, _, cost = no_cost_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
                                 target_variable = self.target_variable, 
                                 prev_variables_index = list(S),
