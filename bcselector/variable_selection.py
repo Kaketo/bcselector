@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from sklearn.model_selection import cross_val_score
 
 from bcselector.filter_methods.cost_based_filter_methods import difference_find_best_feature, fraction_find_best_feature
 from bcselector.filter_methods.no_cost_based_filter_methods import no_cost_find_best_feature
@@ -54,6 +55,22 @@ class _MockVariableSelector():
         j_criterion_dict = {'mim':mim,'mifs':mifs,'mrmr':mrmr,'jmi':jmi,'cife':cife}
         assert j_criterion_func in ['mim','mifs','mrmr','jmi','cife'], "Argument `j_criterion_func` must be one of ['mim','mifs','mrmr','jmi','cife']"
         self.j_criterion_func = j_criterion_dict[j_criterion_func]
+
+    def get_ranked_variables(self):
+        return self.variables_selected_order
+    
+    def get_ranked_costs(self):
+        return self.cost_variables_selected_order
+
+    def scoreCV(self, scoring = 'roc_auc', folds = 4, **kwargs):
+        current_cost = 0
+        total_costs = []
+        total_scores = []
+
+        for i in range(1,len(self.variables_selected_order) + 1):
+            cur_vars = self.variables_selected_order[0:i]
+            score = 
+
 
 class DiffVariableSelector(_MockVariableSelector):
     """Ranks all features in dataset with difference cost filter method.
