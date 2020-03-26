@@ -171,7 +171,8 @@ class DiffVariableSelector(_MockVariableSelector):
                                 prev_variables_index = list(S),
                                 possible_variables_index = list(U),
                                 costs = self.costs,
-                                lamb = self.lamb)
+                                lamb = self.lamb,
+                                **kwargs)
             S.add(k)
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
@@ -222,7 +223,8 @@ class FractionVariableSelector(_MockVariableSelector):
                                 prev_variables_index = list(S),
                                 possible_variables_index = list(U),
                                 costs = self.costs,
-                                r = self.r)
+                                r = self.r,
+                                **kwargs)
             S.add(k)
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
