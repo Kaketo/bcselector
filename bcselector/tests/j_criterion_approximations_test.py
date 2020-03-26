@@ -1,6 +1,5 @@
 import unittest
 import numpy as np
-np.random.seed = 42
 
 from bcselector.information_theory.j_criterion_approximations import mim, mifs, mrmr, jmi, cife
 from bcselector.information_theory.basic_approximations import mutual_information, conditional_mutual_information

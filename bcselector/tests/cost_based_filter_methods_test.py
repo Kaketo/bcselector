@@ -1,6 +1,5 @@
 import unittest
 import numpy as np
-np.random.seed = 42
 
 from bcselector.filter_methods.cost_based_filter_methods import fraction_find_best_feature, difference_find_best_feature
 from bcselector.information_theory.j_criterion_approximations import mim, mifs, mrmr, jmi, cife

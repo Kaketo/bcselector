@@ -12,10 +12,10 @@ class _BasicDataGenerator():
         self.n_rows = n_rows
         self.n_cols = n_cols
         if seed is None:
-            self.seed = np.random.randint(0, sys.maxsize)
+            self.seed = np.random.randint(0, 420000)
         else:
             self.seed = seed
-        np.random.seed(self.seed)
+        np.random.seed(seed = self.seed)
 
 class MatrixGenerator(_BasicDataGenerator):
     def __init__(self):
