@@ -33,10 +33,10 @@ class _MockVariableSelector():
         self.fig = None
         self.ax = None
 
-    def fit(self, data, target_variable, costs, j_criterion_func = 'cife', **kwargs):
+    def fit(self, data, target_variable, costs, j_criterion_func = 'cife', seed = 42, **kwargs):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
-
+        np.random.seed(seed)
         # data & costs
         assert isinstance(data, np.ndarray) or isinstance(data, pd.DataFrame), "Argument `data` must be numpy.ndarray or pandas.DataFrame"
         if isinstance(data,np.ndarray):
@@ -78,11 +78,12 @@ class _MockVariableSelector():
     def get_ranked_costs(self):
         return self.cost_variables_selected_order
 
-    def scoreCV(self, model, scoring = 'roc_auc', cv = 4, **kwargs):
+    def scoreCV(self, model, scoring = 'roc_auc', cv = 4, seed=42, **kwargs):
         self.total_scores = []
         self.total_costs = []
         self.scoring = scoring
-
+        np.random.seed(seed)
+        
         assert len(self.variables_selected_order) > 0, "Run fit method first."
         current_cost = 0
 

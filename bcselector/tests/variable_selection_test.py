@@ -66,9 +66,9 @@ class TestDiffVariableSelector(unittest.TestCase):
         self.assertListEqual(mim_order, dvs.variables_selected_order)
 
         # MIFS
-        lamb = 0.1
+        lamb = 1
         beta = 10
-        mifs_order = [0, 3, 1, 6, 2, 18, 7, 4, 9, 12, 5, 8, 11, 10, 16, 13, 17, 14, 15]
+        mifs_order = [0, 4, 3, 1, 18, 2, 7, 6, 12, 9, 11, 5, 8, 10, 16, 13, 17, 14, 15]
         mifs_costs = [1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,1.,7.27,7.27,8.3,7.27,7.27]
         dvs = DiffVariableSelector()
         dvs.fit(data=hepatitis,
@@ -78,7 +78,7 @@ class TestDiffVariableSelector(unittest.TestCase):
                 j_criterion_func='mifs',
                 beta=beta)
         model = LinearRegression()
-        dvs.scoreCV(model)
+        dvs.scoreCV(model,seed=42)
 
         self.assertListEqual(mifs_costs, dvs.cost_variables_selected_order)
         self.assertListEqual(mifs_order, dvs.variables_selected_order)
@@ -130,9 +130,6 @@ class TestDiffVariableSelector(unittest.TestCase):
         self.assertListEqual(cife_costs, dvs.cost_variables_selected_order)
         self.assertListEqual(cife_order, dvs.variables_selected_order)
         
-
-
-
     def test_theoretical_output(self):
         integer_matrix = np.array([[0,1,0],[0,1,0],[0,1,2],[0,1,3],[1,1,5]])
         diverse_target = np.array([0,0,0,0,1])
