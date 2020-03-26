@@ -89,7 +89,7 @@ class _MockVariableSelector():
 
         for i in range(1,len(self.variables_selected_order) + 1):
             cur_vars = self.variables_selected_order[0:i]
-            score = cross_val_score(self.model, self.data[:,cur_vars], self.target_variable, scoring=scoring, cv=cv, **kwargs).mean()
+            score = cross_val_score(estimator=self.model, X=self.data[:,cur_vars], y=self.target_variable, scoring=scoring, cv=cv, **kwargs).mean()
             current_cost += self.costs[i-1]
             self.total_scores.append(score)
             self.total_costs.append(current_cost)
@@ -134,7 +134,7 @@ class _MockVariableSelector():
         
         for i in range(1,len(variables_selected_order) + 1):
             cur_vars = variables_selected_order[0:i]
-            score = cross_val_score(estimator = self.model, X = self.data[:,cur_vars], y = self.target_variable, **kwargs).mean()
+            score = cross_val_score(estimator=self.model, X = self.data[:,cur_vars], y = self.target_variable, **kwargs).mean()
             current_cost += self.costs[i-1]
             self.no_cost_total_scores.append(score)
             self.no_cost_total_costs.append(current_cost)
@@ -181,7 +181,7 @@ class DiffVariableSelector(_MockVariableSelector):
     def plot_scores(self, budget = None, compare_no_cost_method = False, **kwargs):
         super().plot_scores(budget=budget)
         if compare_no_cost_method is True:
-            super()._no_cost_scoreCV(model = self.model, **kwargs)
+            super()._no_cost_scoreCV()
 
             self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')
@@ -231,7 +231,7 @@ class FractionVariableSelector(_MockVariableSelector):
     def plot_scores(self, budget = None, compare_no_cost_method = False, **kwargs):
         super().plot_scores(budget=budget)
         if compare_no_cost_method is True:
-            super()._no_cost_scoreCV(model = self.model, **kwargs)
+            super()._no_cost_scoreCV()
 
             self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')

@@ -4,6 +4,7 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 
 from bcselector.variable_selection import DiffVariableSelector, FractionVariableSelector, NoCostVariableSelector
+from bcselector.data_generation import MatrixGenerator
 
 class TestDiffVariableSelector(unittest.TestCase):
     def test_numpy_input(self):
@@ -187,21 +188,20 @@ class TestDiffVariableSelector(unittest.TestCase):
         dvs.plot_scores(budget=1)
 
     def test_plot_comparision(self):
-        integer_matrix = np.random.randint(0,10,(100,10))
-        diverse_target = np.random.randint(0,2,(100))
-        costs = [1.76,  0.19, 0.36,  0.96,  0.41,  0.17, 0.36,  0.75,  0.79, 1.38]
+        mg = MatrixGenerator()
+        X,y,costs = mg.generate(n_cols=10, noise_sigma_man_std=(0,0.1))
         lamb = 1
 
         dvs = DiffVariableSelector()
-        dvs.fit(data=integer_matrix,
-                target_variable=diverse_target,
+        dvs.fit(data=X,
+                target_variable=y,
                 costs=costs,
                 lamb=lamb,
                 j_criterion_func='mim')
 
         model = LinearRegression()
         dvs.scoreCV(model)
-        dvs.plot_scores(compare_no_cost_method=True, budget=1, cv = 2, model = model)
+        dvs.plot_scores(compare_no_cost_method=True, budget=1, cv = 5, model = model)
 
 class TestFractionVariableSelector(unittest.TestCase):
     def test_numpy_input(self):

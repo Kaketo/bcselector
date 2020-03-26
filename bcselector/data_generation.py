@@ -21,13 +21,12 @@ class MatrixGenerator(_BasicDataGenerator):
     def __init__(self):
         super().__init__()
 
-    def generate(self,n_rows = 100, n_cols = 10, seed = None, noise_sigma_man_std = (0,1)):
+    def generate(self,n_rows = 100, n_cols = 10, noise_sigma_man_std = (0,1)):
         assert isinstance(n_rows, int), "Argument `n_rows` must be int."
         assert isinstance(n_cols, int), "Argument `n_cols` must be int."
-        assert isinstance(seed, int), "Argument `seed` must be int."
         assert isinstance(noise_sigma_man_std, tuple) and len(noise_sigma_man_std) == 2, "Argument `noise_sigma_man_std` must be tuple of length 2."
 
-        super().generate(n_rows, n_cols, seed)
+        super().generate(n_rows, n_cols, self.seed)
         
         self.noise_sigma_mean = noise_sigma_man_std[0]
         self.noise_sigma_std = noise_sigma_man_std[1]
@@ -54,16 +53,16 @@ class DataFrameGenerator(_BasicDataGenerator):
         new_cols = ['var_' + str(i) for i in np.arange(1,n+1)]
         return new_cols
 
-    def generate(self,n_rows = 100, n_cols = 10, seed = None, noise_sigma_man_std = (0,1)):
+    def generate(self,n_rows = 100, n_cols = 10, noise_sigma_man_std = (0,1)):
         assert isinstance(n_rows, int), "Argument `n_rows` must be int."
         assert isinstance(n_cols, int), "Argument `n_cols` must be int."
-        assert isinstance(seed, int), "Argument `seed` must be int."
+        assert isinstance(self.seed, int), "Argument `seed` must be int."
         assert isinstance(noise_sigma_man_std, tuple) and len(noise_sigma_man_std) == 2, "Argument `noise_sigma_man_std` must be tuple of length 2."
 
         self.noise_sigma_mean = noise_sigma_man_std[0]
         self.noise_sigma_std = noise_sigma_man_std[1]
 
-        super().generate(n_rows, n_cols, seed)
+        super().generate(n_rows, n_cols, self.seed)
         # Generate basic dataset
         X = np.random.normal(loc = 0, scale = 1, size = (self.n_rows,self.n_cols))
         y = 1 - np.random.binomial(1, np.exp(X.sum(axis=1))/(1+np.exp(X.sum(axis=1))))
