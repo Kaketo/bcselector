@@ -28,6 +28,7 @@ class _MockVariableSelector():
         self.no_cost_total_scores = None
         self.no_cost_total_costs = None
 
+        self.model = None
         self.scoring = None
 
         self.fig = None
@@ -82,19 +83,19 @@ class _MockVariableSelector():
         self.total_scores = []
         self.total_costs = []
         self.scoring = scoring
-        
+        self.model = model
         assert len(self.variables_selected_order) > 0, "Run fit method first."
         current_cost = 0
 
         for i in range(1,len(self.variables_selected_order) + 1):
             cur_vars = self.variables_selected_order[0:i]
-            score = cross_val_score(model, self.data[:,cur_vars], self.target_variable, scoring=scoring, cv=cv, **kwargs).mean()
+            score = cross_val_score(self.model, self.data[:,cur_vars], self.target_variable, scoring=scoring, cv=cv, **kwargs).mean()
             current_cost += self.costs[i-1]
             self.total_scores.append(score)
             self.total_costs.append(current_cost)
 
     def plot_scores(self, budget = None):
-        assert len(self.total_scores) > 0, "Run scoreCV method first."
+        assert self.total_scores, "Run scoreCV method first."
         
         self.fig, self.ax = plt.subplots(figsize=(10, 5))
         if budget is not None:
@@ -107,7 +108,7 @@ class _MockVariableSelector():
         self.ax.set_xlabel('Cost')
         self.ax.set_ylabel(self.scoring)
 
-    def _no_cost_scoreCV(self, model, scoring = 'roc_auc', cv = 4, **kwargs):
+    def _no_cost_scoreCV(self, scoring = 'roc_auc', cv = 4, **kwargs):
         # Rank variables with NoCostVariableSelector
         S = set()
         U = set([i for i in range(self.data.shape[1])])
@@ -133,7 +134,7 @@ class _MockVariableSelector():
         
         for i in range(1,len(variables_selected_order) + 1):
             cur_vars = variables_selected_order[0:i]
-            score = cross_val_score(estimator = model, X = self.data[:,cur_vars], y = self.target_variable,**kwargs).mean()
+            score = cross_val_score(estimator = self.model, X = self.data[:,cur_vars], y = self.target_variable, **kwargs).mean()
             current_cost += self.costs[i-1]
             self.no_cost_total_scores.append(score)
             self.no_cost_total_costs.append(current_cost)
@@ -180,9 +181,7 @@ class DiffVariableSelector(_MockVariableSelector):
     def plot_scores(self, budget = None, compare_no_cost_method = False, **kwargs):
         super().plot_scores(budget=budget)
         if compare_no_cost_method is True:
-            assert 'model' in kwargs.keys(), "When comparing with no-cost method must select model for scoring."
-            model = kwargs.pop('model')
-            super()._no_cost_scoreCV(model = model, **kwargs)
+            super()._no_cost_scoreCV(model = self.model, **kwargs)
 
             self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')
@@ -232,9 +231,7 @@ class FractionVariableSelector(_MockVariableSelector):
     def plot_scores(self, budget = None, compare_no_cost_method = False, **kwargs):
         super().plot_scores(budget=budget)
         if compare_no_cost_method is True:
-            assert 'model' in kwargs.keys(), "When comparing with no-cost method must select model for scoring."
-            model = kwargs.pop('model')
-            super()._no_cost_scoreCV(model = model, **kwargs)
+            super()._no_cost_scoreCV(model = self.model, **kwargs)
 
             self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')

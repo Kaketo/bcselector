@@ -21,7 +21,7 @@ class MatrixGenerator(_BasicDataGenerator):
     def __init__(self):
         super().__init__()
 
-    def generate(self,n_rows = 100, n_cols = 10, seed = None, noise_sigma_man_std = (0,10)):
+    def generate(self,n_rows = 100, n_cols = 10, seed = None, noise_sigma_man_std = (0,1)):
         assert isinstance(n_rows, int), "Argument `n_rows` must be int."
         assert isinstance(n_cols, int), "Argument `n_cols` must be int."
         assert isinstance(seed, int), "Argument `seed` must be int."
@@ -34,7 +34,7 @@ class MatrixGenerator(_BasicDataGenerator):
 
         # Generate basic dataset
         X = np.random.normal(loc = 0, scale = 1, size = (self.n_rows,self.n_cols))
-        y = np.random.binomial(1, np.exp(X).sum(axis=1)/(1+np.exp(X).sum(axis=1)))
+        y = 1 - np.random.binomial(1, np.exp(X.sum(axis=1))/(1+np.exp(X.sum(axis=1))))
     
         # Generate noise
         noise_sigmas = abs(np.random.normal(loc=self.noise_sigma_mean, scale=self.noise_sigma_std, size = X.shape[1]))
@@ -54,7 +54,7 @@ class DataFrameGenerator(_BasicDataGenerator):
         new_cols = ['var_' + str(i) for i in np.arange(1,n+1)]
         return new_cols
 
-    def generate(self,n_rows = 100, n_cols = 10, seed = None, noise_sigma_man_std = (0,10)):
+    def generate(self,n_rows = 100, n_cols = 10, seed = None, noise_sigma_man_std = (0,1)):
         assert isinstance(n_rows, int), "Argument `n_rows` must be int."
         assert isinstance(n_cols, int), "Argument `n_cols` must be int."
         assert isinstance(seed, int), "Argument `seed` must be int."
@@ -66,7 +66,7 @@ class DataFrameGenerator(_BasicDataGenerator):
         super().generate(n_rows, n_cols, seed)
         # Generate basic dataset
         X = np.random.normal(loc = 0, scale = 1, size = (self.n_rows,self.n_cols))
-        y = np.random.binomial(1, np.exp(X).sum(axis=1)/(1+np.exp(X).sum(axis=1)))
+        y = 1 - np.random.binomial(1, np.exp(X.sum(axis=1))/(1+np.exp(X.sum(axis=1))))
         
         # Generate noise
         noise_sigmas = abs(np.random.normal(loc=self.noise_sigma_mean, scale=self.noise_sigma_std, size = X.shape[1]))
