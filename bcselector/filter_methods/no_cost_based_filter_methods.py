@@ -9,4 +9,4 @@ def no_cost_find_best_feature(j_criterion_func, data, target_variable, possible_
                                                 candidate_variable_index=i,
                                                 **kwargs))
     k = np.argmax(variables_result)
-    return possible_variables_index[k], variables_result[k], costs[k]
+    return possible_variables_index[k], variables_result[k], costs[possible_variables_index[k]]

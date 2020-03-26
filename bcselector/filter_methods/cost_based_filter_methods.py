@@ -38,7 +38,7 @@ def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possi
                                     **kwargs)
         variables_result.append(j_criterion_value / cost**r)
     k = np.argmax(variables_result)
-    return possible_variables_index[k], variables_result[k], costs[k]
+    return possible_variables_index[k], variables_result[k], costs[possible_variables_index[k]]
 
 def difference_find_best_feature(j_criterion_func, lamb, data, target_variable, possible_variables_index, costs, **kwargs):
     """
@@ -77,6 +77,6 @@ def difference_find_best_feature(j_criterion_func, lamb, data, target_variable, 
                                     **kwargs)
         variables_result.append(j_criterion_value - lamb*costs[i])
     k = np.argmax(variables_result)
-    return possible_variables_index[k], variables_result[k], costs[k]
+    return possible_variables_index[k], variables_result[k], costs[possible_variables_index[k]]
 
 
