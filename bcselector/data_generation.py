@@ -20,32 +20,45 @@ class _BasicDataGenerator():
 class MatrixGenerator(_BasicDataGenerator):
     def __init__(self):
         super().__init__()
+    
+    def _generate_basic_dataset(self, loc = 0, scale = 1):
+        X = np.random.normal(loc = loc, scale = scale, size = (self.n_rows,self.n_cols))
+        y = np.random.binomial(1, np.exp(X.sum(axis=1))/(1+np.exp(X.sum(axis=1))))
+        return X,y
 
-    def generate(self,n_rows = 100, n_cols = 10, noise_sigma_man_std = (0,1), seed = None):
+    def _generate_noise(self, sigma_min, sigma_max, loc = 0):
+        noise_sigmas = np.random.uniform(sigma_min, sigma_max, size = self.n_cols)
+        noise = np.random.normal(loc = loc, scale = noise_sigmas, size = (self.n_rows,self.n_cols))
+        return noise, noise_sigmas
+
+    def generate(self,n_rows = 100, n_cols = 10, loc = 0,  noise_sigma_range = (0,1), seed = None, round_level = None):
         assert isinstance(n_rows, int), "Argument `n_rows` must be int."
         assert isinstance(n_cols, int), "Argument `n_cols` must be int."
-        assert isinstance(noise_sigma_man_std, tuple) and len(noise_sigma_man_std) == 2, "Argument `noise_sigma_man_std` must be tuple of length 2."
+        assert isinstance(loc, int), "Argument `loc` must be int or float."
+        assert isinstance(noise_sigma_range, tuple) and len(noise_sigma_range) == 2, "Argument `noise_sigma_man_std` must be tuple of length 2."
 
         super().generate(n_rows, n_cols, seed)
         
-        self.noise_sigma_mean = noise_sigma_man_std[0]
-        self.noise_sigma_std = noise_sigma_man_std[1]
+        self.loc = 0
+        self.noise_sigma_min = noise_sigma_range[0]
+        self.noise_sigma_max = noise_sigma_range[1]
 
         # Generate basic dataset
-        X = np.random.normal(loc = 0, scale = 1, size = (self.n_rows,self.n_cols))
-        y = 1 - np.random.binomial(1, np.exp(X.sum(axis=1))/(1+np.exp(X.sum(axis=1))))
-    
+        X,y = self._generate_basic_dataset(loc=0, scale=1)
         # Generate noise
-        noise_sigmas = abs(np.random.normal(loc=self.noise_sigma_mean, scale=self.noise_sigma_std, size = X.shape[1]))
-        noise = np.random.normal(loc = 0, scale = noise_sigmas, size = (n_rows,n_cols))
+        noise, noise_sigmas = self._generate_noise(sigma_min=0.1, sigma_max=1)
         X_transformed = X + noise
 
         # Calculate costs
-        costs = 1/noise_sigmas*self.noise_sigma_std
+        costs = 1/noise_sigmas
+
+        # Round output if selected
+        if round_level:
+            X_transformed = X_transformed.round(round_level)
         
         return X_transformed, y, list(costs)
 
-class DataFrameGenerator(_BasicDataGenerator):
+class DataFrameGenerator(MatrixGenerator):
     def __init__(self):
         super().__init__()
 
@@ -53,33 +66,16 @@ class DataFrameGenerator(_BasicDataGenerator):
         new_cols = ['var_' + str(i) for i in np.arange(1,n+1)]
         return new_cols
 
-    def generate(self,n_rows = 100, n_cols = 10, noise_sigma_man_std = (0,1), seed = None):
-        assert isinstance(n_rows, int), "Argument `n_rows` must be int."
-        assert isinstance(n_cols, int), "Argument `n_cols` must be int."
-        assert isinstance(noise_sigma_man_std, tuple) and len(noise_sigma_man_std) == 2, "Argument `noise_sigma_man_std` must be tuple of length 2."
-
-        self.noise_sigma_mean = noise_sigma_man_std[0]
-        self.noise_sigma_std = noise_sigma_man_std[1]
-
-        super().generate(n_rows, n_cols, seed)
-        # Generate basic dataset
-        X = np.random.normal(loc = 0, scale = 1, size = (self.n_rows,self.n_cols))
-        y = 1 - np.random.binomial(1, np.exp(X.sum(axis=1))/(1+np.exp(X.sum(axis=1))))
-        
-        # Generate noise
-        noise_sigmas = abs(np.random.normal(loc=self.noise_sigma_mean, scale=self.noise_sigma_std, size = X.shape[1]))
-        noise = np.random.normal(loc = 0, scale = noise_sigmas, size = (n_rows,n_cols))
-        X_transformed = X + noise
-
+    def generate(self,n_rows = 100, n_cols = 10, loc = 0,  noise_sigma_range = (0,1), seed = None, round_level = None):
+        X,y,costs = super().generate(n_rows = n_rows, n_cols = n_cols, loc = loc,  noise_sigma_range = noise_sigma_range, seed = seed, round_level = round_level)
         # Generate colnames
         cols = self._generate_colnames(self.n_cols)
 
-        # Calculate costs
-        costs = 1/noise_sigmas*self.noise_sigma_std
-        costs_dict = dict(zip(cols,costs))   
-        
-        # Create DF
-        X_df = pd.DataFrame(X_transformed, columns=cols)
+        # Zip costs
+        costs_dict = dict(zip(cols,costs))
+
+        # Create final data frame
+        X_df = pd.DataFrame(X, columns = cols)
         y_series = pd.Series(y)
 
         return X_df, y_series, costs_dict
