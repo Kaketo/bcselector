@@ -162,4 +162,5 @@ class TestConditionalMutualInformation(unittest.TestCase):
         
         self.assertAlmostEqual(conditional_mutual_information(input_1, input_2, condition), conditional_mutual_information(input_2, input_1, condition), places=5)
 
-    
+if __name__ == '__main__':
+    unittest.main()

@@ -99,6 +99,7 @@ class TestNoCostMethod(unittest.TestCase):
         prev_variable_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        beta = 10
 
         selected_feature, criterion_value, cost = no_cost_find_best_feature(
                                     j_criterion_func=cife, 
@@ -106,7 +107,8 @@ class TestNoCostMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs, 
-                                    prev_variables_index=prev_variable_index)
+                                    prev_variables_index=prev_variable_index,
+                                    beta=beta)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(criterion_value, float)
         self.assertIsInstance(cost, float) 
@@ -125,3 +127,6 @@ class TestNoCostMethod(unittest.TestCase):
                                             possible_variables_index=candidates_index,
                                             costs=costs,
                                             prev_variables_index=prev_variables_index)   
+
+if __name__ == '__main__':
+    unittest.main()

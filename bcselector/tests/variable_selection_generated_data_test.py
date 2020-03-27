@@ -34,4 +34,5 @@ class TestMatrixGenerator(unittest.TestCase):
         self.assertEqual(len(dvs.variables_selected_order), len(costs))
         self.assertAlmostEqual(sum(costs), sum(dvs.cost_variables_selected_order))
 
-   
+if __name__ == '__main__':
+    unittest.main()   

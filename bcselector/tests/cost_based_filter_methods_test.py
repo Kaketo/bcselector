@@ -318,3 +318,6 @@ class TestDifferenceMethod(unittest.TestCase):
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_2)
         self.assertNotEqual(criterion_value_1,criterion_value_2)
+
+if __name__ == '__main__':
+    unittest.main()

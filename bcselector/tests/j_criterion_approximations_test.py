@@ -42,14 +42,15 @@ class TestMIFS(unittest.TestCase):
         diverse_target = np.random.randint(0,10,(100))
         prev_variable_index = [3,4,5]
         candidate_index = 1
-        self.assertIsInstance(mifs(zeros_matrix, diverse_target, prev_variable_index, candidate_index),float)
+        with self.assertWarns(Warning): mifs(zeros_matrix, diverse_target, prev_variable_index, candidate_index)
 
     def test_too_high_candidate_index(self):
         zeros_matrix = np.zeros((100,50))
         diverse_target = np.random.randint(0,10,(100))
         prev_variable_index = [3,4,5]
         too_high_index = 51
-        with self.assertRaises(AssertionError): mifs(zeros_matrix, diverse_target, prev_variable_index, too_high_index)    
+        beta = 2
+        with self.assertRaises(AssertionError): mifs(zeros_matrix, diverse_target, prev_variable_index, too_high_index, beta=beta)    
 
     def test_theoretical_value(self):
         integer_matrix = np.random.randint(0,10,(100,50))
@@ -60,3 +61,6 @@ class TestMIFS(unittest.TestCase):
         beta_2 = 10
         self.assertGreater(mifs(integer_matrix,diverse_target,prev_variable_index,candidate_index,beta = beta_1), 
                             mifs(integer_matrix,diverse_target,prev_variable_index,candidate_index,beta = beta_2))
+
+if __name__ == '__main__':
+    unittest.main()

@@ -335,3 +335,6 @@ class TestNoCostVariableSelector(unittest.TestCase):
         ncvs = NoCostVariableSelector()
         model = LinearRegression()
         with self.assertRaises(AssertionError): ncvs.scoreCV(model)
+
+if __name__ == '__main__':
+    unittest.main()

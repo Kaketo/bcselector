@@ -83,3 +83,6 @@ class TestDataFrameGenerator(unittest.TestCase):
         self.assertNotAlmostEqual(y_1.sum(), y_3.sum(), places = 5)
         self.assertAlmostEqual(costs_1.sum(), costs_2.sum(), places = 5)
         self.assertNotAlmostEqual(costs_1.sum(), costs_3.sum(), places = 5)
+
+if __name__ == '__main__':
+    unittest.main()
