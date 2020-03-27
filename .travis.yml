@@ -4,15 +4,16 @@ python:
   - "3.7"
 
 before_install:
-- python --version
-- pip install -U pip
-- pip install coverage
+  - python --version
+  - pip install -U pip
+  - pip install coverage
 
 install:
-- pip install -r requirements.txt
+  - pip install -r requirements.txt
 
 script:
-- python bcselector/run_tests.py
+  - python bcselector/run_tests.py
+  - coverage run bcselector/run_tests.py
 
 after_success:
-  - coverage run tests.py
+  - coverage
