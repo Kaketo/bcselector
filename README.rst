@@ -1,8 +1,8 @@
-.. image:: https://travis-ci.com/Kaketo/bcselector.svg?branch=master
-    :target: https://travis-ci.com/Kaketo/bcselector===========
+===========
 bcselector
 ===========
-
+.. image:: https://travis-ci.com/Kaketo/bcselector.svg?branch=master
+    :target: https://travis-ci.com/Kaketo/bcselector
 
 What is it?
 -----------
