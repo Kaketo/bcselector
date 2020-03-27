@@ -1,4 +1,5 @@
-===========
+.. image:: https://travis-ci.com/Kaketo/bcselector.svg?branch=master
+    :target: https://travis-ci.com/Kaketo/bcselector===========
 bcselector
 ===========
 
