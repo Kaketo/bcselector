@@ -1,0 +1,16 @@
+language: python
+python:
+  - "3.7"
+# command to install dependencies
+before_install:
+  - python --version
+  - pip install -U pip
+  - pip install -U unittest
+  - pip install codecov
+install:
+  - pip install -r requirements.txt
+# command to run tests
+script:
+  - tests/*
+after_success:
+  - codecov # submit coverage
