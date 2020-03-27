@@ -10,6 +10,6 @@ install:
   - pip install -r requirements.txt
 # command to run tests
 script:
-  - python -m unittest discover tests
+  - unittest discover -s bcselector/tests/ -p "*_test.py" -v
 after_success:
   - codecov # submit coverage
