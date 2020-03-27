@@ -1,5 +1,5 @@
 
-##bcselector
+## bcselector
 
 [![Build Status](https://travis-ci.com/Kaketo/bcselector.svg?branch=master)](https://travis-ci.com/Kaketo/bcselector)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
