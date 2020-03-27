@@ -29,6 +29,7 @@ class TestMatrixGenerator(unittest.TestCase):
         dvs.scoreCV(model=model, cv = 5)
         dvs.plot_scores(compare_no_cost_method=True, model=model)
 
+        # Then
         self.assertIsInstance(dvs.variables_selected_order, list)
         self.assertEqual(len(dvs.variables_selected_order), len(costs))
         self.assertAlmostEqual(sum(costs), sum(dvs.cost_variables_selected_order))

@@ -189,7 +189,7 @@ class TestDiffVariableSelector(unittest.TestCase):
 
     def test_plot_comparision(self):
         mg = MatrixGenerator()
-        X,y,costs = mg.generate(n_cols=10, noise_sigma_man_std=(0,0.1))
+        X,y,costs = mg.generate(n_cols=10)
         lamb = 1
 
         dvs = DiffVariableSelector()

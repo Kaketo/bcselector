@@ -30,6 +30,7 @@ class _MockVariableSelector():
 
         self.model = None
         self.scoring = None
+        self.beta = None
 
         self.fig = None
         self.ax = None
@@ -37,6 +38,9 @@ class _MockVariableSelector():
     def fit(self, data, target_variable, costs, j_criterion_func = 'cife', seed = 42, **kwargs):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
+
+        if 'beta' in kwargs.keys():
+            self.beta = kwargs['beta']
 
         # data & costs
         assert isinstance(data, np.ndarray) or isinstance(data, pd.DataFrame), "Argument `data` must be numpy.ndarray or pandas.DataFrame"
@@ -122,7 +126,8 @@ class _MockVariableSelector():
                                 target_variable = self.target_variable, 
                                 prev_variables_index = list(S),
                                 possible_variables_index = list(U),
-                                costs = self.costs)
+                                costs = self.costs,
+                                beta = self.beta)
             S.add(k)
             variables_selected_order.append(k)
             cost_variables_selected_order.append(cost)
@@ -131,7 +136,7 @@ class _MockVariableSelector():
         current_cost = 0
         self.no_cost_total_scores = []
         self.no_cost_total_costs = []
-        
+
         for i in range(1,len(variables_selected_order) + 1):
             cur_vars = variables_selected_order[0:i]
             score = cross_val_score(estimator=self.model, X = self.data[:,cur_vars], y = self.target_variable, **kwargs).mean()

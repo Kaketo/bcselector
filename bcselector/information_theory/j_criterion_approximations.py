@@ -59,13 +59,13 @@ def mifs(data, target_variable, prev_variables_index, candidate_variable_index, 
     for i in prev_variables_index:
         assert isinstance(i, int), "All previous variable indexes must be int."
 
-    if 'beta' not in kwargs.keys():
+    if kwargs.get('beta') is None:
         beta = 1
-        warnings.warn('Parameter \'beta\' not provided, default value of 1 is selected.')
+        warnings.warn("Parameter `beta` not provided, default value of 1 is selected.", Warning)
     else:
         beta = kwargs.pop('beta')
-        assert isinstance(beta,int) or isinstance(beta,float), "Argument 'beta' must be int or float"
-        assert len(kwargs) == 0, 'Unused parameters ' + str(list(kwargs.keys()))
+    
+    assert isinstance(beta,int) or isinstance(beta,float), "Argument 'beta' must be int or float"
 
     candidate_variable = data[:,candidate_variable_index]
     
@@ -75,7 +75,7 @@ def mifs(data, target_variable, prev_variables_index, candidate_variable_index, 
     
     return mutual_information(candidate_variable, target_variable) - beta*redundancy_sum
 
-def mrmr(data, target_variable, prev_variables_index, candidate_variable_index):
+def mrmr(data, target_variable, prev_variables_index, candidate_variable_index, **kwargs):
     """
     This estimator computes the Max-Relevance Min-Redundancy criterion.
     ----------
@@ -114,7 +114,7 @@ def mrmr(data, target_variable, prev_variables_index, candidate_variable_index):
     return mutual_information(candidate_variable, target_variable) - 1/prev_variables_len*redundancy_sum
 
 
-def jmi(data, target_variable, prev_variables_index, candidate_variable_index):
+def jmi(data, target_variable, prev_variables_index, candidate_variable_index, **kwargs):
     """
     This estimator computes the Joint Mutual Information criterion.
     ----------
@@ -184,13 +184,13 @@ def cife(data, target_variable, prev_variables_index, candidate_variable_index, 
     for i in prev_variables_index:
         assert isinstance(i, int), "All previous variable indexes must be int."
 
-    if 'beta' not in kwargs.keys():
+    if kwargs.get('beta') is None:
         beta = 1
-        warnings.warn('Parameter \'beta\' not provided, default value of 1 is selected.')
+        warnings.warn("Parameter `beta` not provided, default value of 1 is selected.")
     else:
         beta = kwargs.pop('beta')
-        assert isinstance(beta,int) or isinstance(beta,float), "Argument 'beta' must be int or float"
-        assert len(kwargs) == 0, 'Unused parameters ' + str(list(kwargs.keys()))
+
+    assert isinstance(beta,int) or isinstance(beta,float), "Argument 'beta' must be int or float"
 
     candidate_variable = data[:,candidate_variable_index]
     
