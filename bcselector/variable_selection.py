@@ -31,6 +31,7 @@ class _MockVariableSelector():
         self.model = None
         self.scoring = None
         self.beta = None
+        self.cv_kwargs = None
 
         self.fig = None
         self.ax = None
@@ -98,6 +99,8 @@ class _MockVariableSelector():
             self.total_scores.append(score)
             self.total_costs.append(current_cost)
 
+        self.cv_kwargs = kwargs
+
     def plot_scores(self, budget = None):
         assert self.total_scores, "Run scoreCV method first."
         
@@ -139,7 +142,13 @@ class _MockVariableSelector():
 
         for i in range(1,len(variables_selected_order) + 1):
             cur_vars = variables_selected_order[0:i]
-            score = cross_val_score(estimator=self.model, X = self.data[:,cur_vars], y = self.target_variable, **kwargs).mean()
+            score = cross_val_score(estimator=self.model, 
+                                    X = self.data[:,cur_vars], 
+                                    y = self.target_variable, 
+                                    cv = self.cv_kwargs.get('cv'), 
+                                    scoring = self.cv_kwargs.get('scoring'),
+                                    n_jobs=self.cv_kwargs.get('n_jobs')
+                                ).mean()
             current_cost += self.costs[i-1]
             self.no_cost_total_scores.append(score)
             self.no_cost_total_costs.append(current_cost)
