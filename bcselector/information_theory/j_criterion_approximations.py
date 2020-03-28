@@ -5,6 +5,8 @@ from bcselector.information_theory.basic_approximations import entropy, conditio
 def mim(data, target_variable, candidate_variable_index, **kwargs):
     """
     This estimator computes the Mutual Information Maximisation criterion.
+
+    Parameters
     ----------
     data : np.array matrix
         Matrix of data set. Columns are variables, rows are observations.
@@ -12,6 +14,7 @@ def mim(data, target_variable, candidate_variable_index, **kwargs):
         Target variable. Can not be in data!
     candidate_variable_index : int
         Index of candidate variable in data matrix.
+
     Returns
     -------
     j_criterion_value : float
@@ -32,6 +35,8 @@ def mim(data, target_variable, candidate_variable_index, **kwargs):
 def mifs(data, target_variable, prev_variables_index, candidate_variable_index, **kwargs):
     """
     This estimator computes the Mutual Information Feature Selection criterion.
+
+    Parameters
     ----------
     data : np.array matrix
         Matrix of data set. Columns are variables, rows are observations.
@@ -43,6 +48,7 @@ def mifs(data, target_variable, prev_variables_index, candidate_variable_index, 
         Index of candidate variable in data matrix.
     beta: float
         Impact of redundancy segment in MIFS approximation. Higher the beta is, higher the impact.
+
     Returns
     -------
     j_criterion_value : float
@@ -78,6 +84,8 @@ def mifs(data, target_variable, prev_variables_index, candidate_variable_index, 
 def mrmr(data, target_variable, prev_variables_index, candidate_variable_index, **kwargs):
     """
     This estimator computes the Max-Relevance Min-Redundancy criterion.
+
+    Parameters
     ----------
     data : np.array matrix
         Matrix of data set. Columns are variables, rows are observations.
@@ -87,6 +95,7 @@ def mrmr(data, target_variable, prev_variables_index, candidate_variable_index, 
         Indexes of previously selected variables.
     candidate_variable_index : int
         Index of candidate variable in data matrix.
+        
     Returns
     -------
     j_criterion_value : float
@@ -117,6 +126,8 @@ def mrmr(data, target_variable, prev_variables_index, candidate_variable_index, 
 def jmi(data, target_variable, prev_variables_index, candidate_variable_index, **kwargs):
     """
     This estimator computes the Joint Mutual Information criterion.
+
+    Parameters
     ----------
     data : np.array matrix
         Matrix of data set. Columns are variables, rows are observations.
@@ -126,6 +137,7 @@ def jmi(data, target_variable, prev_variables_index, candidate_variable_index, *
         Indexes of previously selected variables.
     candidate_variable_index : int
         Index of candidate variable in data matrix.
+
     Returns
     -------
     j_criterion_value : float
@@ -157,6 +169,8 @@ def jmi(data, target_variable, prev_variables_index, candidate_variable_index, *
 def cife(data, target_variable, prev_variables_index, candidate_variable_index, **kwargs):
     """
     This estimator computes the Conditional Infomax Feature Extraction criterion.
+
+    Parameters
     ----------
     data : np.array matrix
         Matrix of data set. Columns are variables, rows are observations.
@@ -168,6 +182,7 @@ def cife(data, target_variable, prev_variables_index, candidate_variable_index, 
         Index of candidate variable in data matrix.
     beta: float
         Impact of redundancy segment in MIFS approximation. Higher the beta is, higher the impact.
+        
     Returns
     -------
     j_criterion_value : float

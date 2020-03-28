@@ -1,19 +1,34 @@
 import numpy as np
 
+__all__ = [
+    'entropy',
+    'conditional_entropy',
+    'mutual_information',
+    'conditional_mutual_information'
+]
+
 def entropy(vector, base=None):
-    """
-    This estimator computes the entropy of the empirical probability distribution.
+    """This estimator computes the entropy of the empirical probability distribution.
+
+    Parameters
     ----------
     vector : list or np.array
         Vector of which entropy is calculated. 
-    base : int or float
+    base : int or float (default=np.e)
         Base of the logarithm in entropy approximation
-            - if None, np.e is selected and entropy is returned in nats.
+
     Returns
-    -------
+    --------
     vector_entropy : float
         Approximated entropy
+
+    Examples
+    --------
+    >>> from bcselector.information_theory.basic_approximations import entropy::
+    >>> foo = [1,4,1,2,5,6,3]
+    >>> entropy(foo)
     """
+    
     assert isinstance(vector, (list)) or (isinstance(vector, np.ndarray) and len(vector.shape) == 1), "Argument 'vector' not in the right shape. Use list or numpy (n,) shape instead"
     assert len(vector) > 0, "Argument 'vector' can't be empty"
 
@@ -29,20 +44,22 @@ def entropy(vector, base=None):
     return -(norm_counts * np.log(norm_counts)/np.log(base)).sum()
 
 def conditional_entropy(vector,condition, base=None):
-    """
-    This estimator computes the conditional entropy of the empirical probability distribution.
+    """This estimator computes the conditional entropy of the empirical probability distribution.
+
+    Parameters
     ----------
-    vector : list or np.array
-        Vector of which entropy is calculated. 
+    vector: list or np.array
+        Vector of which entropy is calculated.
     condition: list or np.array
         Vector of condition for entropy.
-    base : int or float
-        Base of the logarithm in entropy approximation
-            - if None, np.e is selected and entropy is returned in nats.
+    base: int or float
+        Base of the logarithm in entropy approximation. If None, np.e is selected and entropy is returned in nats.
+
     Returns
-    -------
-    vector_entropy : float
+    --------
+    vector_entropy: float
         Approximated entropy.
+
     """
     assert isinstance(vector, (list)) or (isinstance(vector, np.ndarray) and len(vector.shape) == 1), "Argument 'vector' not in the right shape. Use list or numpy (n,) shape instead."
     assert isinstance(condition, (list)) or (isinstance(condition, np.ndarray) and len(condition.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
@@ -66,29 +83,32 @@ def conditional_entropy(vector,condition, base=None):
     return np.sum(cond_entropy)
 
 def mutual_information(vector_1, vector_2, base=None):
-    """
-    This estimator computes the mutual information of two vectors with method of the empirical probability distribution.
-    ----------
+    """This estimator computes the mutual information of two vectors with method of the empirical probability distribution.
+
+    Parameters
+    -----------
     vector_1 : list or np.array
         Vector of one variable. 
-    vector_2: list or np.array
+    vector_2 : list or np.array
         Vector of one variable. 
     base : int or float
-        Base of the logarithm in entropy approximation
-            - if None, np.e is selected and entropy is returned in nats.
+        Base of the logarithm in entropy approximation. If None, np.e is selected and entropy is returned in nats.
+
     Returns
-    -------
-    variables_mutual_information : float
+    --------
+    variables_mutual_information: float
         Approximated mutual information between variables.
+
     """
     vector_1_entropy = entropy(vector=vector_1, base=base)
     cond_entropy = conditional_entropy(vector=vector_1, condition=vector_2, base=base)
     return vector_1_entropy - cond_entropy
 
 def conditional_mutual_information(vector_1, vector_2, condition, base = None):
-    """
-    This estimator computes the conditional mutual information of two vectors and condition vector with method of the empirical probability distribution.
-    ----------
+    """This estimator computes the conditional mutual information of two vectors and condition vector with method of the empirical probability distribution.
+
+    Parameters
+    -----------
     vector_1 : list or np.array
         Vector of one variable. 
     vector_2: list or np.array
@@ -96,12 +116,13 @@ def conditional_mutual_information(vector_1, vector_2, condition, base = None):
     condition: list or np.array
         Vector of condition for mutual information.
     base : int or float
-        Base of the logarithm in entropy approximation
-            - if None, np.e is selected and entropy is returned in nats.
+        Base of the logarithm in entropy approximation. If None, np.e is selected and entropy is returned in nats.
+
     Returns
-    -------
+    --------
     variables_conditional_mutual_information : float
         Approximated conditional mutual information between variables.
+
     """
     assert isinstance(vector_1, (list)) or (isinstance(vector_1, np.ndarray) and len(vector_1.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
     assert isinstance(vector_2, (list)) or (isinstance(vector_2, np.ndarray) and len(vector_2.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
