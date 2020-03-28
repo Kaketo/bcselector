@@ -101,6 +101,9 @@ class _MockVariableSelector():
             self.total_scores.append(score)
             self.total_costs.append(current_cost)
 
+        kwargs['scoring'] = scoring
+        kwargs['cv'] = cv
+        kwargs['seed'] = seed
         self.cv_kwargs = kwargs
 
     def plot_scores(self, budget = None):
@@ -110,14 +113,8 @@ class _MockVariableSelector():
         if budget is not None:
             assert isinstance(budget,(int,float)), "Argument `budget` must be float or int."
             self.ax.axvline(x=budget)
-        self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
-    
-        self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 14)
-        self.ax.tick_params(size=14)
-        self.ax.set_xlabel('Cost')
-        self.ax.set_ylabel(self.scoring)
 
-    def _no_cost_scoreCV(self, scoring = 'roc_auc', cv = 4, **kwargs):
+    def _no_cost_scoreCV(self, **kwargs):
         # Rank variables with NoCostVariableSelector
         S = set()
         U = set([i for i in range(self.data.shape[1])])
@@ -198,10 +195,16 @@ class DiffVariableSelector(_MockVariableSelector):
         super().plot_scores(budget=budget)
         if compare_no_cost_method is True:
             super()._no_cost_scoreCV()
-
             self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')
             self.ax.legend()
+        else:
+            self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
+
+        self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 14)
+        self.ax.tick_params(size=14)
+        self.ax.set_xlabel('Cost')
+        self.ax.set_ylabel(self.scoring)
         plt.show()
 
 class FractionVariableSelector(_MockVariableSelector):
@@ -248,10 +251,16 @@ class FractionVariableSelector(_MockVariableSelector):
         super().plot_scores(budget=budget)
         if compare_no_cost_method is True:
             super()._no_cost_scoreCV()
-
             self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')
             self.ax.legend()
+        else:
+            self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
+            
+        self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 14)
+        self.ax.tick_params(size=14)
+        self.ax.set_xlabel('Cost')
+        self.ax.set_ylabel(self.scoring)
         plt.show()
 
 
