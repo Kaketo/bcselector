@@ -21,6 +21,8 @@ class _MockVariableSelector():
 
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
+        self.no_cost_variables_selected_order = []
+        self.no_cost_cost_variables_selected_order = []
         self.j_criterion_func = None
 
         self.total_scores = None
@@ -92,10 +94,10 @@ class _MockVariableSelector():
         assert len(self.variables_selected_order) > 0, "Run fit method first."
         current_cost = 0
 
-        for i in range(1,len(self.variables_selected_order) + 1):
-            cur_vars = self.variables_selected_order[0:i]
+        for i,var_id in enumerate(self.variables_selected_order):
+            cur_vars = self.variables_selected_order[0:i+1]
             score = cross_val_score(estimator=self.model, X=self.data[:,cur_vars], y=self.target_variable, scoring=scoring, cv=cv, **kwargs).mean()
-            current_cost += self.costs[i-1]
+            current_cost += self.costs[var_id]
             self.total_scores.append(score)
             self.total_costs.append(current_cost)
 
@@ -120,8 +122,8 @@ class _MockVariableSelector():
         S = set()
         U = set([i for i in range(self.data.shape[1])])
 
-        variables_selected_order = []
-        cost_variables_selected_order = []
+        self.no_cost_variables_selected_order = []
+        self.no_cost_cost_variables_selected_order = []
 
         while len(U) > 0:
             k, _, cost = no_cost_find_best_feature(j_criterion_func = self.j_criterion_func, 
@@ -132,16 +134,16 @@ class _MockVariableSelector():
                                 costs = self.costs,
                                 beta = self.beta)
             S.add(k)
-            variables_selected_order.append(k)
-            cost_variables_selected_order.append(cost)
+            self.no_cost_variables_selected_order.append(k)
+            self.no_cost_cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
 
         current_cost = 0
         self.no_cost_total_scores = []
         self.no_cost_total_costs = []
 
-        for i in range(1,len(variables_selected_order) + 1):
-            cur_vars = variables_selected_order[0:i]
+        for i,var_id in enumerate(self.no_cost_variables_selected_order):
+            cur_vars = self.no_cost_variables_selected_order[0:i+1]
             score = cross_val_score(estimator=self.model, 
                                     X = self.data[:,cur_vars], 
                                     y = self.target_variable, 
@@ -149,7 +151,7 @@ class _MockVariableSelector():
                                     scoring = self.cv_kwargs.get('scoring'),
                                     n_jobs=self.cv_kwargs.get('n_jobs')
                                 ).mean()
-            current_cost += self.costs[i-1]
+            current_cost += self.costs[var_id]
             self.no_cost_total_scores.append(score)
             self.no_cost_total_costs.append(current_cost)
 
