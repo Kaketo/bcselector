@@ -12,21 +12,22 @@ def entropy(vector, base=None):
 
     Parameters
     ----------
-    vector : list or np.array
+    vector: list or np.array
         Vector of which entropy is calculated. 
-    base : int or float (default=np.e)
+    base: int or float (default=np.e)
         Base of the logarithm in entropy approximation
 
     Returns
     --------
-    vector_entropy : float
+    vector_entropy: float
         Approximated entropy
 
     Examples
     --------
-    >>> from bcselector.information_theory.basic_approximations import entropy::
+    >>> from bcselector.information_theory.basic_approximations import entropy
     >>> foo = [1,4,1,2,5,6,3]
     >>> entropy(foo)
+
     """
     
     assert isinstance(vector, (list)) or (isinstance(vector, np.ndarray) and len(vector.shape) == 1), "Argument 'vector' not in the right shape. Use list or numpy (n,) shape instead"
