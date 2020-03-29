@@ -19,7 +19,7 @@ with codecs.open("requirements.txt") as f:
     REQUIREMENTS = f.read().splitlines()
 
 DESCRIPTION = 'Python package to help you in variable selection.'
-LONG_DESCRIPTION = read('README.md')
+LONG_DESCRIPTION = read('README.rst')
 
 setup(
     name='bcselector',
