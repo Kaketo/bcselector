@@ -1,6 +1,7 @@
 bcselector
 ===========
 
+.. image:: https://github.com/Kaketo/bcselector/blob/master/docs/img/logo.png
 .. image:: https://img.shields.io/badge/python-3.7-blue.svg
     :target: http://badge.fury.io/py/Paralytics
 .. image:: https://badge.fury.io/py/bcselector.svg
