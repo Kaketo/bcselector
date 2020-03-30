@@ -46,7 +46,7 @@ class MatrixGenerator(_BasicDataGenerator):
         # Generate basic dataset
         X,y = self._generate_basic_dataset(loc=0, scale=1)
         # Generate noise
-        noise, noise_sigmas = self._generate_noise(sigma_min=0.1, sigma_max=1)
+        noise, noise_sigmas = self._generate_noise(sigma_min=self.noise_sigma_min, sigma_max=self.noise_sigma_max)
         X_transformed = X + noise
 
         # Calculate costs
