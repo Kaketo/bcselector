@@ -15,7 +15,6 @@ class _BasicDataGenerator():
             self.seed = np.random.randint(0, 420000)
         else:
             self.seed = seed
-        np.random.seed(seed = self.seed)
 
 class MatrixGenerator(_BasicDataGenerator):
     def __init__(self):
@@ -38,7 +37,8 @@ class MatrixGenerator(_BasicDataGenerator):
         assert isinstance(noise_sigma_range, tuple) and len(noise_sigma_range) == 2, "Argument `noise_sigma_man_std` must be tuple of length 2."
 
         super().generate(n_rows, n_cols, seed)
-        
+        np.random.seed(seed = self.seed)
+
         self.loc = 0
         self.noise_sigma_min = noise_sigma_range[0]
         self.noise_sigma_max = noise_sigma_range[1]
