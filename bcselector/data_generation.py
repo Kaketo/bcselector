@@ -21,11 +21,13 @@ class MatrixGenerator(_BasicDataGenerator):
         super().__init__()
     
     def _generate_basic_dataset(self, loc = 0, scale = 1):
+        np.random.seed(seed = self.seed)
         X = np.random.normal(loc = loc, scale = scale, size = (self.n_rows,self.n_cols))
         y = np.random.binomial(1, np.exp(X.sum(axis=1))/(1+np.exp(X.sum(axis=1))))
         return X,y
 
     def _generate_noise(self, sigma_min, sigma_max, loc = 0):
+        np.random.seed(seed = self.seed)
         noise_sigmas = np.random.uniform(sigma_min, sigma_max, size = self.n_cols)
         noise = np.random.normal(loc = loc, scale = noise_sigmas, size = (self.n_rows,self.n_cols))
         return noise, noise_sigmas
