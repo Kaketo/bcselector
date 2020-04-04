@@ -191,7 +191,7 @@ class DiffVariableSelector(_MockVariableSelector):
             self.cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
 
-    def plot_scores(self, budget = None, compare_no_cost_method = False, **kwargs):
+    def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, **kwargs):
         super().plot_scores(budget=budget)
         if compare_no_cost_method is True:
             super()._no_cost_scoreCV()
@@ -205,6 +205,10 @@ class DiffVariableSelector(_MockVariableSelector):
         self.ax.tick_params(size=14)
         self.ax.set_xlabel('Cost')
         self.ax.set_ylabel(self.scoring)
+        if savefig == True:
+            assert kwargs.get('fig_name'), "Must specify `fig_name` as key word argument"
+            name = kwargs.pop('fig_name')
+            plt.savefig(name, **kwargs)
         plt.show()
 
 class FractionVariableSelector(_MockVariableSelector):
@@ -247,7 +251,7 @@ class FractionVariableSelector(_MockVariableSelector):
             self.cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
     
-    def plot_scores(self, budget = None, compare_no_cost_method = False, **kwargs):
+    def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, **kwargs):
         super().plot_scores(budget=budget)
         if compare_no_cost_method is True:
             super()._no_cost_scoreCV()
@@ -261,6 +265,10 @@ class FractionVariableSelector(_MockVariableSelector):
         self.ax.tick_params(size=14)
         self.ax.set_xlabel('Cost')
         self.ax.set_ylabel(self.scoring)
+        if savefig == True:
+            assert kwargs.get('fig_name'), "Must specify `fig_name` as key word argument"
+            name = kwargs.pop('fig_name')
+            plt.savefig(name, **kwargs)
         plt.show()
 
 
