@@ -31,7 +31,7 @@ class MatrixGenerator(_BasicDataGenerator):
         noise = np.random.normal(loc = loc, scale = noise_sigmas, size = (self.n_rows,self.n_cols))
         return noise
 
-    def generate(self,n_rows = 100, n_basic_cols = 10, loc = 0,  noise_sigmas = None, seed = None, round_level = None):
+    def generate(self,n_rows = 100, n_basic_cols = 10, loc = 0,  noise_sigmas = None, basic_cost = 10, seed = None, round_level = None):
         assert isinstance(n_rows, int), "Argument `n_rows` must be int."
         assert isinstance(n_basic_cols, int), "Argument `n_cols` must be int."
         assert isinstance(loc, int), "Argument `loc` must be int or float."
@@ -47,7 +47,7 @@ class MatrixGenerator(_BasicDataGenerator):
 
         # Generate basic features
         X_basic,y = self._generate_basic_dataset(loc=0, scale=1)
-        costs = [20 for i in range(self.n_cols)]
+        costs = [basic_cost for i in range(self.n_cols)]
         if self.noise_sigmas is None:
             return X_basic, y, costs
         
@@ -57,14 +57,14 @@ class MatrixGenerator(_BasicDataGenerator):
             noise = self._generate_noise(sigma = noise_sigma, loc = 0)
             X_transformed = X_basic + noise
             X = np.concatenate((X,X_transformed), axis=1)
-            costs = costs + [1/noise_sigma for i in range(self.n_cols)]
+            costs = costs + [1/noise_sigma/basic_cost for i in range(self.n_cols)]
 
         # Round output if selected
         if round_level:
             X = X.round(round_level)
         
         # Add non-siginificant noise to costs
-        costs = [cost + np.random.normal(0,1) for cost in costs]
+        costs = [cost + abs(np.random.normal(0,1)) for cost in costs]
         return X, y, costs
 
 class DataFrameGenerator(MatrixGenerator):
