@@ -197,12 +197,12 @@ class DiffVariableSelector(_MockVariableSelector):
             super()._no_cost_scoreCV()
             self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')
-            self.ax.legend()
+            self.ax.legend(prop={"size":16})
         else:
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
 
         self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 18)
-        self.ax.tick_params(size=14)
+        self.ax.tick_params(axis='both', which='major', labelsize=16)
         self.ax.set_xlabel('Cost', fontsize = 16)
         self.ax.set_ylabel(self.scoring, fontsize = 16)
         if savefig == True:
@@ -257,12 +257,12 @@ class FractionVariableSelector(_MockVariableSelector):
             super()._no_cost_scoreCV()
             self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')
-            self.ax.legend()
+            self.ax.legend(prop={"size":16})
         else:
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
             
         self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 20)
-        self.ax.tick_params(size=16)
+        self.ax.tick_params(axis='both', which='major', labelsize=16)
         self.ax.set_xlabel('Cost', fontsize = 16)
         self.ax.set_ylabel(self.scoring, fontsize = 16)
         if savefig == True:
