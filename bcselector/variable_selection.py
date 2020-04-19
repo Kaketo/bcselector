@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 from bcselector.filter_methods.cost_based_filter_methods import difference_find_best_feature, fraction_find_best_feature
 from bcselector.filter_methods.no_cost_based_filter_methods import no_cost_find_best_feature
@@ -177,7 +178,8 @@ class DiffVariableSelector(_MockVariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        while len(U) > 0:
+        for i in tqdm(range(len(U))):
+        # while len(U) > 0:
             k, _, cost = difference_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
                                 target_variable = self.target_variable, 
@@ -237,7 +239,8 @@ class FractionVariableSelector(_MockVariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        while len(U) > 0:
+        for i in tqdm(range(len(U))):
+        # while len(U) > 0:
             k, _, cost = fraction_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
                                 target_variable = self.target_variable, 
