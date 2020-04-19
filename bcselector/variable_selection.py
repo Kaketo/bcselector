@@ -95,7 +95,7 @@ class _MockVariableSelector():
         assert len(self.variables_selected_order) > 0, "Run fit method first."
         current_cost = 0
 
-        for i,var_id in enumerate(self.variables_selected_order):
+        for i,var_id in enumerate(tqdm(self.variables_selected_order, desc='CV Scoring')):
             cur_vars = self.variables_selected_order[0:i+1]
             score = cross_val_score(estimator=self.model, X=self.data[:,cur_vars], y=self.target_variable, scoring=scoring, cv=cv, **kwargs).mean()
             current_cost += self.costs[var_id]
@@ -178,7 +178,7 @@ class DiffVariableSelector(_MockVariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        for i in tqdm(range(len(U))):
+        for i in tqdm(range(len(U)), desc='Selecting Features'):
         # while len(U) > 0:
             k, _, cost = difference_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
@@ -239,7 +239,7 @@ class FractionVariableSelector(_MockVariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        for i in tqdm(range(len(U))):
+        for i in tqdm(range(len(U)), desc='Selecting Features'):
         # while len(U) > 0:
             k, _, cost = fraction_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
