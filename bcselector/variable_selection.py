@@ -201,10 +201,10 @@ class DiffVariableSelector(_MockVariableSelector):
         else:
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
 
-        self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 14)
+        self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 18)
         self.ax.tick_params(size=14)
-        self.ax.set_xlabel('Cost')
-        self.ax.set_ylabel(self.scoring)
+        self.ax.set_xlabel('Cost', fontsize = 16)
+        self.ax.set_ylabel(self.scoring, fontsize = 16)
         if savefig == True:
             assert kwargs.get('fig_name'), "Must specify `fig_name` as key word argument"
             name = kwargs.pop('fig_name')
@@ -261,10 +261,10 @@ class FractionVariableSelector(_MockVariableSelector):
         else:
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
             
-        self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 14)
-        self.ax.tick_params(size=14)
-        self.ax.set_xlabel('Cost')
-        self.ax.set_ylabel(self.scoring)
+        self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 20)
+        self.ax.tick_params(size=16)
+        self.ax.set_xlabel('Cost', fontsize = 16)
+        self.ax.set_ylabel(self.scoring, fontsize = 16)
         if savefig == True:
             assert kwargs.get('fig_name'), "Must specify `fig_name` as key word argument"
             name = kwargs.pop('fig_name')
