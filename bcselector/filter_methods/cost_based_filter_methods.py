@@ -38,9 +38,9 @@ def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possi
                                     **kwargs)
         variables_result.append(j_criterion_value)
 
-    if any(i < 0 for i in variables_result):
+    if any(i < 1 for i in variables_result):
         sub_add = abs(min(variables_result))
-        variables_result = [i + sub_add for i in variables_result]
+        variables_result = [i + sub_add + 1 for i in variables_result]
 
     variables_result = [i / cost**r for i in variables_result]
     k = np.argmax(variables_result)
