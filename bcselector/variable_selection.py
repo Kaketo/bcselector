@@ -35,6 +35,7 @@ class _MockVariableSelector():
         self.scoring = None
         self.beta = None
         self.cv_kwargs = None
+        self.number_of_features = None
 
         self.fig = None
         self.ax = None
@@ -123,7 +124,7 @@ class _MockVariableSelector():
         self.no_cost_variables_selected_order = []
         self.no_cost_cost_variables_selected_order = []
 
-        while len(U) > 0:
+        for i in tqdm(range(len(U)), desc='Selecting No-cost Features'):
             k, _, cost = no_cost_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
                                 target_variable = self.target_variable, 
@@ -135,6 +136,8 @@ class _MockVariableSelector():
             self.no_cost_variables_selected_order.append(k)
             self.no_cost_cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
+            if len(S) == self.number_of_features:
+                break
 
         current_cost = 0
         self.no_cost_total_scores = []
@@ -166,11 +169,14 @@ class DiffVariableSelector(_MockVariableSelector):
     --------
 
     """
-    def fit(self, data, target_variable, costs, lamb, j_criterion_func = 'cife', **kwargs):
+    def fit(self, data, target_variable, costs, lamb,j_criterion_func = 'cife', number_of_features = None, **kwargs):
         # lamb
         assert isinstance(lamb, int) or isinstance(lamb, float), "Argument `lamb` must be integer or float"
         self.lamb = lamb
         super().fit(data, target_variable, costs, j_criterion_func, **kwargs)
+
+        if number_of_features is None:
+            self.number_of_features = self.data.shape[1]
         
         S = set()
         U = set([i for i in range(self.data.shape[1])])
@@ -192,7 +198,8 @@ class DiffVariableSelector(_MockVariableSelector):
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
-            if len(U) == 30:
+
+            if len(S) == self.number_of_features:
                 break
 
     def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, **kwargs):
@@ -228,13 +235,16 @@ class FractionVariableSelector(_MockVariableSelector):
     --------
 
     """
-    def fit(self, data, target_variable, costs, r, j_criterion_func = 'cife', **kwargs):
+    def fit(self, data, target_variable, costs, r, j_criterion_func = 'cife', number_of_features = None, **kwargs):
         # r
         assert isinstance(r, int) or isinstance(r, float), "Argument `r` must be integer or float"
         self.r = r
 
         super().fit(data, target_variable, costs, j_criterion_func, **kwargs)
         
+        if number_of_features is None:
+            self.number_of_features = self.data.shape[1]
+
         S = set()
         U = set([i for i in range(self.data.shape[1])])
 
@@ -255,7 +265,7 @@ class FractionVariableSelector(_MockVariableSelector):
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
-            if len(U) == 30:
+            if len(S) == self.number_of_features:
                 break
     
     def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, **kwargs):
@@ -303,7 +313,7 @@ class NoCostVariableSelector(_MockVariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        while len(U) > 0:
+        for i in tqdm(range(len(U)), desc='Scoring No-cost Features'):
             k, _, cost = no_cost_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
                                 target_variable = self.target_variable, 
@@ -314,6 +324,8 @@ class NoCostVariableSelector(_MockVariableSelector):
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
+            if len(S) == self.number_of_features:
+                break
 
     def plot_scores(self, model):
         super().plot_scores(model)
