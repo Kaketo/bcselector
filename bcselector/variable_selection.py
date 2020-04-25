@@ -192,6 +192,8 @@ class DiffVariableSelector(_MockVariableSelector):
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
+            if len(U) > 0:
+                break
 
     def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, **kwargs):
         super().plot_scores(budget=budget)
@@ -253,6 +255,8 @@ class FractionVariableSelector(_MockVariableSelector):
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
+            if len(U) > 0:
+                break
     
     def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, **kwargs):
         super().plot_scores(budget=budget)
