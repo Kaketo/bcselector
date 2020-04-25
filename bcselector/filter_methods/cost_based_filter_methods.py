@@ -30,8 +30,11 @@ def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possi
         Cost of best selected feature
     """
     variables_result = []
+    costs_tmp = []
     for i in possible_variables_index:
         cost = 1 if costs[i] == 0 else costs[i]
+        costs_tmp.append(cost)
+
         j_criterion_value = j_criterion_func(data, 
                                     target_variable=target_variable, 
                                     candidate_variable_index=i,
@@ -42,7 +45,8 @@ def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possi
         sub_add = abs(min(variables_result))
         variables_result = [i + sub_add + 1 for i in variables_result]
 
-    variables_result = [i / cost**r for i in variables_result]
+    for i, var_score, cost in enumerate(zip(variables_result, costs_tmp)):
+        variables_result[i] = var_score / cost**r 
     k = np.argmax(variables_result)
     return possible_variables_index[k], variables_result[k], costs[possible_variables_index[k]]
 
