@@ -177,6 +177,8 @@ class DiffVariableSelector(_MockVariableSelector):
 
         if number_of_features is None:
             self.number_of_features = self.data.shape[1]
+        else:
+            self.number_of_features = number_of_features
         
         S = set()
         U = set([i for i in range(self.data.shape[1])])
@@ -244,6 +246,8 @@ class FractionVariableSelector(_MockVariableSelector):
         
         if number_of_features is None:
             self.number_of_features = self.data.shape[1]
+        else:
+            self.number_of_features = number_of_features
 
         S = set()
         U = set([i for i in range(self.data.shape[1])])
