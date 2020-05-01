@@ -30,6 +30,7 @@ def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possi
         Cost of best selected feature
     """
     variables_result = []
+    variables_result_no_cost = []
     costs_tmp = []
     for i in possible_variables_index:
         cost = 1 if costs[i] == 0 else costs[i]
@@ -41,14 +42,18 @@ def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possi
                                     **kwargs)
         variables_result.append(j_criterion_value)
 
+    # When any element of variables_result is negative
     if any(i < 0 for i in variables_result):
         sub_add = abs(min(variables_result))
         variables_result = [i + sub_add for i in variables_result]
 
+    variables_result_no_cost = variables_result.copy()
+    
     for i, (var_score, cost) in enumerate(zip(variables_result, costs_tmp)):
         variables_result[i] = var_score / cost**r 
     k = np.argmax(variables_result)
-    return possible_variables_index[k], variables_result[k], costs[possible_variables_index[k]]
+    k_no_cost = np.argmax(variables_result_no_cost)
+    return possible_variables_index[k], variables_result[k], costs[possible_variables_index[k]], possible_variables_index[k_no_cost], variables_result[k_no_cost], costs[possible_variables_index[k_no_cost]]
 
 def difference_find_best_feature(j_criterion_func, lamb, data, target_variable, possible_variables_index, costs, **kwargs):
     """
@@ -80,13 +85,16 @@ def difference_find_best_feature(j_criterion_func, lamb, data, target_variable, 
         Cost of best selected feature
     """
     variables_result = []
+    variables_result_no_cost = []
     for i in possible_variables_index:
         j_criterion_value = j_criterion_func(data, 
                                     target_variable = target_variable, 
                                     candidate_variable_index=i,
                                     **kwargs)
         variables_result.append(j_criterion_value - lamb*costs[i])
+        variables_result_no_cost.append(j_criterion_value)
     k = np.argmax(variables_result)
-    return possible_variables_index[k], variables_result[k], costs[possible_variables_index[k]]
+    k_no_cost = np.argmax(variables_result_no_cost)
+    return possible_variables_index[k], variables_result[k], costs[possible_variables_index[k]], possible_variables_index[k_no_cost], variables_result[k_no_cost], costs[possible_variables_index[k_no_cost]]
 
 
