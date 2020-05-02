@@ -22,8 +22,6 @@ class _MockVariableSelector():
 
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
-        self.no_cost_variables_selected_order = []
-        self.no_cost_cost_variables_selected_order = []
         self.j_criterion_func = None
 
         self.total_scores = None
@@ -117,6 +115,28 @@ class _MockVariableSelector():
             self.ax.axvline(x=budget)
 
     def _no_cost_scoreCV(self, **kwargs):
+        # Rank variables with NoCostVariableSelector
+        S = set()
+        U = set([i for i in range(self.data.shape[1])])
+
+        self.no_cost_variables_selected_order = []
+        self.no_cost_cost_variables_selected_order = []
+
+        for i in tqdm(range(len(U)), desc='Selecting No-cost Features'):
+            k, _, cost = no_cost_find_best_feature(j_criterion_func = self.j_criterion_func, 
+                                data = self.data, 
+                                target_variable = self.target_variable, 
+                                prev_variables_index = list(S),
+                                possible_variables_index = list(U),
+                                costs = self.costs,
+                                beta = self.beta)
+            S.add(k)
+            self.no_cost_variables_selected_order.append(k)
+            self.no_cost_cost_variables_selected_order.append(cost)
+            U = U.difference(set([k]))
+            if len(S) == self.number_of_features:
+                break
+
         current_cost = 0
         self.no_cost_total_scores = []
         self.no_cost_total_costs = []
@@ -166,7 +186,7 @@ class DiffVariableSelector(_MockVariableSelector):
 
         for i in tqdm(range(self.number_of_features), desc='Selecting Features'):
         # while len(U) > 0:
-            k, _, cost, k_no_cost, _, cost_no_cost = difference_find_best_feature(j_criterion_func = self.j_criterion_func, 
+            k, _, cost = difference_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                                                                     data = self.data, 
                                                                                     target_variable = self.target_variable, 
                                                                                     prev_variables_index = list(S),
@@ -177,8 +197,6 @@ class DiffVariableSelector(_MockVariableSelector):
             S.add(k)
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
-            self.no_cost_variables_selected_order.append(k_no_cost)
-            self.no_cost_cost_variables_selected_order.append(cost_no_cost)
             U = U.difference(set([k]))
 
             if len(S) == self.number_of_features:
@@ -237,7 +255,7 @@ class FractionVariableSelector(_MockVariableSelector):
 
         for i in tqdm(range(self.number_of_features), desc='Selecting Features'):
         # while len(U) > 0:
-            k, _, cost, k_no_cost, _, cost_no_cost = fraction_find_best_feature(j_criterion_func = self.j_criterion_func, 
+            k, _, cost = fraction_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
                                 target_variable = self.target_variable, 
                                 prev_variables_index = list(S),
@@ -248,8 +266,6 @@ class FractionVariableSelector(_MockVariableSelector):
             S.add(k)
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
-            self.no_cost_variables_selected_order.append(k_no_cost)
-            self.no_cost_cost_variables_selected_order.append(cost_no_cost)
             U = U.difference(set([k]))
             if len(S) == self.number_of_features:
                 break
