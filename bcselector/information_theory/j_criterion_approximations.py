@@ -74,8 +74,10 @@ def mifs(data, target_variable, prev_variables_index, candidate_variable_index, 
     assert isinstance(beta,int) or isinstance(beta,float), "Argument 'beta' must be int or float"
 
     candidate_variable = data[:,candidate_variable_index]
-    
-    redundancy_sum = np.apply_along_axis(mutual_information, axis = 0, arr = data[:,prev_variables_index], vector_2=candidate_variable).sum()
+    if len(prev_variables_index) == 0:
+        redundancy_sum = 0
+    else:
+        redundancy_sum = np.apply_along_axis(mutual_information, axis = 0, arr = data[:,prev_variables_index], vector_2=candidate_variable).sum()
     
     return mutual_information(candidate_variable, target_variable) - beta*redundancy_sum
 
