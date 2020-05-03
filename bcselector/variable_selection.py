@@ -122,7 +122,7 @@ class _MockVariableSelector():
         self.no_cost_variables_selected_order = []
         self.no_cost_cost_variables_selected_order = []
 
-        for i in tqdm(range(len(U)), desc='Selecting No-cost Features'):
+        for i in tqdm(range(self.number_of_features), desc='Selecting No-cost Features'):
             k, _, cost = no_cost_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
                                 target_variable = self.target_variable, 
