@@ -75,9 +75,7 @@ def mifs(data, target_variable, prev_variables_index, candidate_variable_index, 
 
     candidate_variable = data[:,candidate_variable_index]
     
-    redundancy_sum = 0
-    for var in prev_variables_index:
-        redundancy_sum += mutual_information(data[:,var], candidate_variable)
+    redundancy_sum = np.apply_along_axis(mutual_information, axis = 0, arr = data[:,prev_variables_index], vector_2=candidate_variable).sum()
     
     return mutual_information(candidate_variable, target_variable) - beta*redundancy_sum
 
@@ -116,9 +114,7 @@ def mrmr(data, target_variable, prev_variables_index, candidate_variable_index, 
     candidate_variable = data[:,candidate_variable_index]
     prev_variables_len = 1 if len(prev_variables_index) == 0 else len(prev_variables_index)
     
-    redundancy_sum = 0
-    for var in prev_variables_index:
-        redundancy_sum += mutual_information(data[:,var], candidate_variable)
+    redundancy_sum = np.apply_along_axis(mutual_information, axis = 0, arr = data[:,prev_variables_index], vector_2=candidate_variable).sum()
     
     return mutual_information(candidate_variable, target_variable) - 1/prev_variables_len*redundancy_sum
 
@@ -157,12 +153,10 @@ def jmi(data, target_variable, prev_variables_index, candidate_variable_index, *
     candidate_variable = data[:,candidate_variable_index]
     prev_variables_len = 1 if len(prev_variables_index) == 0 else len(prev_variables_index)
 
-    redundancy_sum = 0
-    for var in prev_variables_index:
-        
-        a = mutual_information(data[:,var], candidate_variable)
-        b = conditional_mutual_information(data[:,var], candidate_variable, target_variable)
-        redundancy_sum += a - b
+    a = np.apply_along_axis(mutual_information, axis = 0, arr = data[:,prev_variables_index], vector_2=candidate_variable).sum()
+    b = np.apply_along_axis(conditional_mutual_information, axis = 0, arr = data[:,prev_variables_index], vector_2=candidate_variable, condition=target_variable).sum()
+
+    redundancy_sum = a - b
 
     return mutual_information(candidate_variable, target_variable) - 1/prev_variables_len*redundancy_sum
 
@@ -209,10 +203,9 @@ def cife(data, target_variable, prev_variables_index, candidate_variable_index, 
 
     candidate_variable = data[:,candidate_variable_index]
     
-    redundancy_sum = 0
-    for var in prev_variables_index:
-        a = mutual_information(data[:,var], candidate_variable)
-        b = conditional_mutual_information(data[:,var], candidate_variable, target_variable)
-        redundancy_sum += a - b
+    a = np.apply_along_axis(mutual_information, axis = 0, arr = data[:,prev_variables_index], vector_2=candidate_variable).sum()
+    b = np.apply_along_axis(conditional_mutual_information, axis = 0, arr = data[:,prev_variables_index], vector_2=candidate_variable, condition=target_variable).sum()
+
+    redundancy_sum = a - b
         
     return mutual_information(candidate_variable, target_variable) - beta*redundancy_sum
