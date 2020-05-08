@@ -63,8 +63,6 @@ class MatrixGenerator(_BasicDataGenerator):
         if round_level:
             X = X.round(round_level)
         
-        # Add non-siginificant noise to costs
-        costs = [cost + abs(np.random.normal(0,1)) for cost in costs]
         return X, y, costs
 
 class DataFrameGenerator(MatrixGenerator):
