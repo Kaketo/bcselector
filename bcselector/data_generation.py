@@ -76,7 +76,11 @@ class DataFrameGenerator(MatrixGenerator):
     def generate(self,n_rows = 100, n_basic_cols = 10, loc = 0,  noise_sigmas = None, seed = None, round_level = None):
         X,y,costs = super().generate(n_rows = n_rows, n_basic_cols = n_basic_cols, loc = loc,  noise_sigmas = noise_sigmas, seed = seed, round_level = round_level)
         # Generate colnames
-        cols = self._generate_colnames(self.n_cols)
+        if noise_sigmas is None:
+            noise_sigmas_len = 0
+        else:
+            noise_sigmas_len = len(noise_sigmas)
+        cols = self._generate_colnames(self.n_cols + self.n_cols*noise_sigmas_len)
 
         # Zip costs
         costs_dict = dict(zip(cols,costs))
