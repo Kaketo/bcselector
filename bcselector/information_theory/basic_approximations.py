@@ -76,12 +76,18 @@ def conditional_entropy(vector,condition, base=None):
         "Entropy for one number is zero"
         return 0.0
 
-    unique_condition_values = np.unique(condition)
+    # sort values to use np.split later
+    vector_sorted = vector[condition.argsort()]
+    condition_sorted = condition[condition.argsort()]
+
+    binvalues = np.split(vector_sorted, np.unique(condition_sorted, return_index = True)[1][1:])
+    _,counts = np.unique(condition_sorted, return_counts=True)
+    binprobas = counts / counts.sum()
     cond_entropy = 0
-    for i in unique_condition_values:
-        condition_proba = np.sum(condition == i) / len(condition)
-        cond_entropy += entropy(vector[condition == i],base=base) * condition_proba
-    return np.sum(cond_entropy)
+
+    for values, proba in zip(binvalues, binprobas):
+        cond_entropy += entropy(values, base=base) * proba
+    return cond_entropy
 
 def mutual_information(vector_1, vector_2, base=None):
     """This estimator computes the mutual information of two vectors with method of the empirical probability distribution.
@@ -142,9 +148,16 @@ def conditional_mutual_information(vector_1, vector_2, condition, base = None):
         "Entropy for one number is zero"
         return 0.0
 
-    unique_condition_values = np.unique(condition)
+    vector_1_sorted = vector_1[condition.argsort()]
+    vector_2_sorted = vector_2[condition.argsort()]
+    condition_sorted = condition[condition.argsort()]
+
+    binvalues_1 = np.split(vector_1_sorted, np.unique(condition_sorted, return_index = True)[1][1:])
+    binvalues_2 = np.split(vector_2_sorted, np.unique(condition_sorted, return_index = True)[1][1:])
+    _,counts = np.unique(condition_sorted, return_counts=True)
+    binprobas = counts / counts.sum()
     cond_mutual_info = 0
-    for i in unique_condition_values:
-        condition_proba = np.sum(condition == i) / len(condition)
-        cond_mutual_info += mutual_information(vector_1[condition == i], vector_2[condition == i], base=base) * condition_proba
-    return np.sum(cond_mutual_info)
+
+    for value_1, value_2, proba in zip(binvalues_1, binvalues_2, binprobas):
+        cond_mutual_info += mutual_information(value_1, value_2, base=base) * proba
+    return cond_mutual_info

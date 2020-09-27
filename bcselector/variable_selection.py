@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 from bcselector.filter_methods.cost_based_filter_methods import difference_find_best_feature, fraction_find_best_feature
 from bcselector.filter_methods.no_cost_based_filter_methods import no_cost_find_best_feature
@@ -21,8 +22,6 @@ class _MockVariableSelector():
 
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
-        self.no_cost_variables_selected_order = []
-        self.no_cost_cost_variables_selected_order = []
         self.j_criterion_func = None
 
         self.total_scores = None
@@ -34,6 +33,7 @@ class _MockVariableSelector():
         self.scoring = None
         self.beta = None
         self.cv_kwargs = None
+        self.number_of_features = None
 
         self.fig = None
         self.ax = None
@@ -94,7 +94,7 @@ class _MockVariableSelector():
         assert len(self.variables_selected_order) > 0, "Run fit method first."
         current_cost = 0
 
-        for i,var_id in enumerate(self.variables_selected_order):
+        for i,var_id in enumerate(tqdm(self.variables_selected_order, desc='CV Scoring')):
             cur_vars = self.variables_selected_order[0:i+1]
             score = cross_val_score(estimator=self.model, X=self.data[:,cur_vars], y=self.target_variable, scoring=scoring, cv=cv, **kwargs).mean()
             current_cost += self.costs[var_id]
@@ -122,7 +122,7 @@ class _MockVariableSelector():
         self.no_cost_variables_selected_order = []
         self.no_cost_cost_variables_selected_order = []
 
-        while len(U) > 0:
+        for i in tqdm(range(self.number_of_features), desc='Selecting No-cost Features'):
             k, _, cost = no_cost_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
                                 target_variable = self.target_variable, 
@@ -134,6 +134,8 @@ class _MockVariableSelector():
             self.no_cost_variables_selected_order.append(k)
             self.no_cost_cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
+            if len(S) == self.number_of_features:
+                break
 
         current_cost = 0
         self.no_cost_total_scores = []
@@ -165,11 +167,16 @@ class DiffVariableSelector(_MockVariableSelector):
     --------
 
     """
-    def fit(self, data, target_variable, costs, lamb, j_criterion_func = 'cife', **kwargs):
+    def fit(self, data, target_variable, costs, lamb,j_criterion_func = 'cife', number_of_features = None, **kwargs):
         # lamb
         assert isinstance(lamb, int) or isinstance(lamb, float), "Argument `lamb` must be integer or float"
         self.lamb = lamb
         super().fit(data, target_variable, costs, j_criterion_func, **kwargs)
+
+        if number_of_features is None:
+            self.number_of_features = self.data.shape[1]
+        else:
+            self.number_of_features = number_of_features
         
         S = set()
         U = set([i for i in range(self.data.shape[1])])
@@ -177,19 +184,23 @@ class DiffVariableSelector(_MockVariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        while len(U) > 0:
+        for i in tqdm(range(self.number_of_features), desc='Selecting Features'):
+        # while len(U) > 0:
             k, _, cost = difference_find_best_feature(j_criterion_func = self.j_criterion_func, 
-                                data = self.data, 
-                                target_variable = self.target_variable, 
-                                prev_variables_index = list(S),
-                                possible_variables_index = list(U),
-                                costs = self.costs,
-                                lamb = self.lamb,
-                                **kwargs)
+                                                                                    data = self.data, 
+                                                                                    target_variable = self.target_variable, 
+                                                                                    prev_variables_index = list(S),
+                                                                                    possible_variables_index = list(U),
+                                                                                    costs = self.costs,
+                                                                                    lamb = self.lamb,
+                                                                                    **kwargs)
             S.add(k)
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
+
+            if len(S) == self.number_of_features:
+                break
 
     def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, **kwargs):
         super().plot_scores(budget=budget)
@@ -197,14 +208,14 @@ class DiffVariableSelector(_MockVariableSelector):
             super()._no_cost_scoreCV()
             self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')
-            self.ax.legend()
+            self.ax.legend(prop={"size":16})
         else:
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
 
-        self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 14)
-        self.ax.tick_params(size=14)
-        self.ax.set_xlabel('Cost')
-        self.ax.set_ylabel(self.scoring)
+        self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 18)
+        self.ax.tick_params(axis='both', which='major', labelsize=16)
+        self.ax.set_xlabel('Cost', fontsize = 16)
+        self.ax.set_ylabel(self.scoring, fontsize = 16)
         if savefig == True:
             assert kwargs.get('fig_name'), "Must specify `fig_name` as key word argument"
             name = kwargs.pop('fig_name')
@@ -224,20 +235,26 @@ class FractionVariableSelector(_MockVariableSelector):
     --------
 
     """
-    def fit(self, data, target_variable, costs, r, j_criterion_func = 'cife', **kwargs):
+    def fit(self, data, target_variable, costs, r, j_criterion_func = 'cife', number_of_features = None, **kwargs):
         # r
         assert isinstance(r, int) or isinstance(r, float), "Argument `r` must be integer or float"
         self.r = r
 
         super().fit(data, target_variable, costs, j_criterion_func, **kwargs)
         
+        if number_of_features is None:
+            self.number_of_features = self.data.shape[1]
+        else:
+            self.number_of_features = number_of_features
+
         S = set()
         U = set([i for i in range(self.data.shape[1])])
 
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        while len(U) > 0:
+        for i in tqdm(range(self.number_of_features), desc='Selecting Features'):
+        # while len(U) > 0:
             k, _, cost = fraction_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
                                 target_variable = self.target_variable, 
@@ -250,6 +267,8 @@ class FractionVariableSelector(_MockVariableSelector):
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
+            if len(S) == self.number_of_features:
+                break
     
     def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, **kwargs):
         super().plot_scores(budget=budget)
@@ -257,14 +276,14 @@ class FractionVariableSelector(_MockVariableSelector):
             super()._no_cost_scoreCV()
             self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')
-            self.ax.legend()
+            self.ax.legend(prop={"size":16})
         else:
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
             
-        self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 14)
-        self.ax.tick_params(size=14)
-        self.ax.set_xlabel('Cost')
-        self.ax.set_ylabel(self.scoring)
+        self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 20)
+        self.ax.tick_params(axis='both', which='major', labelsize=16)
+        self.ax.set_xlabel('Cost', fontsize = 16)
+        self.ax.set_ylabel(self.scoring, fontsize = 16)
         if savefig == True:
             assert kwargs.get('fig_name'), "Must specify `fig_name` as key word argument"
             name = kwargs.pop('fig_name')
@@ -296,7 +315,7 @@ class NoCostVariableSelector(_MockVariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        while len(U) > 0:
+        for i in tqdm(range(len(U)), desc='Scoring No-cost Features'):
             k, _, cost = no_cost_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
                                 target_variable = self.target_variable, 
@@ -307,6 +326,8 @@ class NoCostVariableSelector(_MockVariableSelector):
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
+            if len(S) == self.number_of_features:
+                break
 
     def plot_scores(self, model):
         super().plot_scores(model)

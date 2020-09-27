@@ -15,7 +15,7 @@ class TestMatrixGenerator(unittest.TestCase):
 
         # When
         mg = MatrixGenerator()
-        X, y, costs = mg.generate(n_rows=n_rows, n_cols=n_cols, seed=2)
+        X, y, costs = mg.generate(n_rows=n_rows, n_basic_cols=n_cols, seed=2)
         lamb = 1
         beta = 0.5
 

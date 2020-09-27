@@ -14,7 +14,7 @@ class TestMatrixGenerator(unittest.TestCase):
 
         # When
         mg = MatrixGenerator()
-        X, y, costs = mg.generate(n_rows=n_rows,n_cols=n_cols,seed=seed)
+        X, y, costs = mg.generate(n_rows=n_rows,n_basic_cols=n_cols,seed=seed)
 
         # Then
         self.assertEqual(X.shape[0],n_rows)
@@ -30,9 +30,9 @@ class TestMatrixGenerator(unittest.TestCase):
 
         # When
         mg = MatrixGenerator()
-        X_1, y_1, costs_1 = mg.generate(n_rows=n_rows,n_cols=n_cols,seed=seed)
-        X_2, y_2, costs_2 = mg.generate(n_rows=n_rows,n_cols=n_cols,seed=seed)
-        X_3, y_3, costs_3 = mg.generate(n_rows=n_rows,n_cols=n_cols,seed=seed + 1)
+        X_1, y_1, costs_1 = mg.generate(n_rows=n_rows,n_basic_cols=n_cols,seed=seed)
+        X_2, y_2, costs_2 = mg.generate(n_rows=n_rows,n_basic_cols=n_cols,seed=seed)
+        X_3, y_3, costs_3 = mg.generate(n_rows=n_rows,n_basic_cols=n_cols,seed=seed + 1)
 
         # Then
         self.assertAlmostEqual(X_1.sum(), X_2.sum(), places = 5)
@@ -52,7 +52,7 @@ class TestDataFrameGenerator(unittest.TestCase):
 
         # When
         mg = DataFrameGenerator()
-        X, y, costs = mg.generate(n_rows=n_rows,n_cols=n_cols,seed=seed)
+        X, y, costs = mg.generate(n_rows=n_rows,n_basic_cols=n_cols,seed=seed)
 
         # Then
         self.assertEqual(X.shape[0],n_rows)
@@ -68,9 +68,9 @@ class TestDataFrameGenerator(unittest.TestCase):
 
         # When
         mg = DataFrameGenerator()
-        X_1, y_1, costs_1 = mg.generate(n_rows=n_rows,n_cols=n_cols,seed=seed)
-        X_2, y_2, costs_2 = mg.generate(n_rows=n_rows,n_cols=n_cols,seed=seed)
-        X_3, y_3, costs_3 = mg.generate(n_rows=n_rows,n_cols=n_cols,seed=seed + 1)
+        X_1, y_1, costs_1 = mg.generate(n_rows=n_rows,n_basic_cols=n_cols,seed=seed)
+        X_2, y_2, costs_2 = mg.generate(n_rows=n_rows,n_basic_cols=n_cols,seed=seed)
+        X_3, y_3, costs_3 = mg.generate(n_rows=n_rows,n_basic_cols=n_cols,seed=seed + 1)
         costs_1 = sum(costs_1.values())
         costs_2 = sum(costs_2.values())
         costs_3 = sum(costs_3.values())
