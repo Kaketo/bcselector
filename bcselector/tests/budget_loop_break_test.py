@@ -15,7 +15,7 @@ class TestMatrixGenerator(unittest.TestCase):
 
         # When
         mg = MatrixGenerator()
-        X, y, costs = mg.generate(n_rows=n_rows, n_basic_cols=n_cols, seed=2)
+        X, y, costs = mg.generate(n_rows=n_rows, n_basic_cols=n_cols, noise_sigmas = [2,3], seed=2)
         lamb = 1
         beta = 0.5
 
@@ -25,11 +25,9 @@ class TestMatrixGenerator(unittest.TestCase):
                 costs=costs,
                 lamb=lamb,
                 j_criterion_func='cife',
-                budget = 15, 
+                budget = 5, 
                 stop_budget=True,
                 beta=beta)
-        dvs.scoreCV(model=model, cv = 5)
-        dvs.plot_scores(compare_no_cost_method=True, model=model)
 
         # Then
         self.assertGreater(len(costs), len(dvs.variables_selected_order))
