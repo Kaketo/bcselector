@@ -31,13 +31,13 @@ class MatrixGenerator(_BasicDataGenerator):
         noise = np.random.normal(loc = loc, scale = noise_sigmas, size = (self.n_rows,self.n_cols))
         return noise
 
-    def generate(self,n_rows = 100, n_basic_cols = 10, loc = 0,  noise_sigmas = None, basic_cost = 10, seed = None, round_level = None):
+    def generate(self,n_rows = 100, n_basic_cols = 10, loc = 0,  noise_sigmas = None, basic_cost = 1, seed = None, round_level = None):
         assert isinstance(n_rows, int), "Argument `n_rows` must be int."
         assert isinstance(n_basic_cols, int), "Argument `n_cols` must be int."
         assert isinstance(loc, int), "Argument `loc` must be int or float."
-        assert (isinstance(noise_sigmas, list)) or noise_sigmas is None, "Argument `noise_sigmas` must be list of floats from range (0,1]."
-        if noise_sigmas is not None:
-            assert ((min(noise_sigmas) > 0) and (max(noise_sigmas) <= 1)), "Argument `noise_sigmas` must be list of floats from range (0,1]."
+        # assert (isinstance(noise_sigmas, list)) or noise_sigmas is None, "Argument `noise_sigmas` must be list of floats from range (0,1]."
+        # if noise_sigmas is not None:
+        #     assert ((min(noise_sigmas) > 0) and (max(noise_sigmas) <= 1)), "Argument `noise_sigmas` must be list of floats from range (0,1]."
         
 
         super().generate(n_rows, n_basic_cols, seed)
@@ -57,7 +57,7 @@ class MatrixGenerator(_BasicDataGenerator):
             noise = self._generate_noise(sigma = noise_sigma, loc = 0)
             X_transformed = X_basic + noise
             X = np.concatenate((X,X_transformed), axis=1)
-            costs = costs + [1/noise_sigma/basic_cost for i in range(self.n_cols)]
+            costs = costs + [1/(noise_sigma + basic_cost) for i in range(self.n_cols)]
 
         # Round output if selected
         if round_level:

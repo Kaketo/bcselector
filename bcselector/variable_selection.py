@@ -2,7 +2,8 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt
-from tqdm import tqdm
+from tqdm import tqdm_notebook as tqdm
+import warnings
 
 from bcselector.filter_methods.cost_based_filter_methods import difference_find_best_feature, fraction_find_best_feature
 from bcselector.filter_methods.no_cost_based_filter_methods import no_cost_find_best_feature
@@ -19,6 +20,8 @@ class _MockVariableSelector():
         self.data = None
         self.target_variable = None
         self.costs = None
+        self.budget = None
+        self.criterion_values = []
 
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
@@ -38,7 +41,8 @@ class _MockVariableSelector():
         self.fig = None
         self.ax = None
 
-    def fit(self, data, target_variable, costs, j_criterion_func = 'cife', seed = 42, **kwargs):
+
+    def fit(self, data, target_variable, costs, j_criterion_func = 'cife', seed = 42, budget = None, **kwargs):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
@@ -80,6 +84,11 @@ class _MockVariableSelector():
         assert j_criterion_func in ['mim','mifs','mrmr','jmi','cife'], "Argument `j_criterion_func` must be one of ['mim','mifs','mrmr','jmi','cife']"
         self.j_criterion_func = j_criterion_dict[j_criterion_func]
 
+        if budget is not None:
+            assert isinstance(budget,(int,float)), "Argument `budget` must be float or int."
+            assert budget >= 0, "Budget must be greater or equal 0."
+            self.budget = budget
+
     def get_ranked_variables(self):
         return self.variables_selected_order
     
@@ -113,6 +122,10 @@ class _MockVariableSelector():
         if budget is not None:
             assert isinstance(budget,(int,float)), "Argument `budget` must be float or int."
             self.ax.axvline(x=budget)
+        elif self.budget is not None:
+            self.ax.axvline(x=self.budget)
+        else:
+            pass
 
     def _no_cost_scoreCV(self, **kwargs):
         # Rank variables with NoCostVariableSelector
@@ -167,16 +180,18 @@ class DiffVariableSelector(_MockVariableSelector):
     --------
 
     """
-    def fit(self, data, target_variable, costs, lamb,j_criterion_func = 'cife', number_of_features = None, **kwargs):
+    def fit(self, data, target_variable, costs, lamb,j_criterion_func = 'cife', number_of_features = None, budget = None, stop_budget = False, **kwargs):
         # lamb
         assert isinstance(lamb, int) or isinstance(lamb, float), "Argument `lamb` must be integer or float"
         self.lamb = lamb
-        super().fit(data, target_variable, costs, j_criterion_func, **kwargs)
+        super().fit(data=data, target_variable=target_variable, costs=costs, j_criterion_func=j_criterion_func, budget=budget, **kwargs)
 
         if number_of_features is None:
             self.number_of_features = self.data.shape[1]
         else:
             self.number_of_features = number_of_features
+        if self.budget is None and stop_budget == True:
+            warnings.warn("Unused argument `stop_budget`. Works only with `budget` argument.")
         
         S = set()
         U = set([i for i in range(self.data.shape[1])])
@@ -186,7 +201,7 @@ class DiffVariableSelector(_MockVariableSelector):
 
         for i in tqdm(range(self.number_of_features), desc='Selecting Features'):
         # while len(U) > 0:
-            k, _, cost = difference_find_best_feature(j_criterion_func = self.j_criterion_func, 
+            k, criterion_value, cost = difference_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                                                                     data = self.data, 
                                                                                     target_variable = self.target_variable, 
                                                                                     prev_variables_index = list(S),
@@ -195,13 +210,18 @@ class DiffVariableSelector(_MockVariableSelector):
                                                                                     lamb = self.lamb,
                                                                                     **kwargs)
             S.add(k)
+
+            if stop_budget is True and sum(self.cost_variables_selected_order, cost) > (self.budget or np.inf):
+                break
+
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
+            self.criterion_values.append(criterion_value)
             U = U.difference(set([k]))
 
             if len(S) == self.number_of_features:
                 break
-
+            
     def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, **kwargs):
         super().plot_scores(budget=budget)
         if compare_no_cost_method is True:
@@ -235,17 +255,19 @@ class FractionVariableSelector(_MockVariableSelector):
     --------
 
     """
-    def fit(self, data, target_variable, costs, r, j_criterion_func = 'cife', number_of_features = None, **kwargs):
+    def fit(self, data, target_variable, costs, r, j_criterion_func = 'cife', number_of_features = None, budget = None, stop_budget = False, **kwargs):
         # r
         assert isinstance(r, int) or isinstance(r, float), "Argument `r` must be integer or float"
         self.r = r
 
-        super().fit(data, target_variable, costs, j_criterion_func, **kwargs)
+        super().fit(data=data, target_variable=target_variable, costs=costs, j_criterion_func=j_criterion_func, budget=budget, **kwargs)
         
         if number_of_features is None:
             self.number_of_features = self.data.shape[1]
         else:
             self.number_of_features = number_of_features
+        if self.budget is None and stop_budget == True:
+            warnings.warn("Unused argument `stop_budget`. Works only with `budget` argument.")
 
         S = set()
         U = set([i for i in range(self.data.shape[1])])
@@ -255,7 +277,7 @@ class FractionVariableSelector(_MockVariableSelector):
 
         for i in tqdm(range(self.number_of_features), desc='Selecting Features'):
         # while len(U) > 0:
-            k, _, cost = fraction_find_best_feature(j_criterion_func = self.j_criterion_func, 
+            k, criterion_value, cost = fraction_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
                                 target_variable = self.target_variable, 
                                 prev_variables_index = list(S),
@@ -264,8 +286,13 @@ class FractionVariableSelector(_MockVariableSelector):
                                 r = self.r,
                                 **kwargs)
             S.add(k)
+
+            if stop_budget is True and sum(self.cost_variables_selected_order, cost) > (self.budget or np.inf):
+                break
+
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
+            self.criterion_values.append(criterion_value)
             U = U.difference(set([k]))
             if len(S) == self.number_of_features:
                 break
