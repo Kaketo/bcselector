@@ -22,6 +22,7 @@ class _MockVariableSelector():
         self.costs = None
         self.budget = None
         self.criterion_values = []
+        self.filter_values = []
 
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
@@ -201,7 +202,7 @@ class DiffVariableSelector(_MockVariableSelector):
 
         for i in tqdm(range(self.number_of_features), desc=f'Selecting Features for r = {self.lamb}'):
         # while len(U) > 0:
-            k, _, criterion_value, cost = difference_find_best_feature(j_criterion_func = self.j_criterion_func, 
+            k, filter_value, criterion_value, cost = difference_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                                                                     data = self.data, 
                                                                                     target_variable = self.target_variable, 
                                                                                     prev_variables_index = list(S),
@@ -211,12 +212,13 @@ class DiffVariableSelector(_MockVariableSelector):
                                                                                     **kwargs)
             S.add(k)
 
-            if stop_budget is True and sum(self.cost_variables_selected_order, cost) > (self.budget or np.inf):
+            if stop_budget is True and (sum(self.cost_variables_selected_order) + cost) > (self.budget or np.inf):
                 break
 
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
             self.criterion_values.append(criterion_value)
+            self.filter_values.append(filter_value)
             U = U.difference(set([k]))
 
             if len(S) == self.number_of_features:
@@ -277,7 +279,7 @@ class FractionVariableSelector(_MockVariableSelector):
 
         for i in tqdm(range(self.number_of_features), desc=f'Selecting Features for r = {self.r}'):
         # while len(U) > 0:
-            k, _, criterion_value, cost = fraction_find_best_feature(j_criterion_func = self.j_criterion_func, 
+            k, filter_value, criterion_value, cost = fraction_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
                                 target_variable = self.target_variable, 
                                 prev_variables_index = list(S),
@@ -287,12 +289,13 @@ class FractionVariableSelector(_MockVariableSelector):
                                 **kwargs)
             S.add(k)
 
-            if stop_budget is True and sum(self.cost_variables_selected_order, cost) > (self.budget or np.inf):
+            if stop_budget is True and (sum(self.cost_variables_selected_order) + cost) > (self.budget or np.inf):
                 break
 
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
             self.criterion_values.append(criterion_value)
+            self.filter_values.append(filter_value)
             U = U.difference(set([k]))
             if len(S) == self.number_of_features:
                 break
