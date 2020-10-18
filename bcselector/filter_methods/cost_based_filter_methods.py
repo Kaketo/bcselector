@@ -29,7 +29,7 @@ def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possi
     cost_of_best_feature : float or int
         Cost of best selected feature
     """
-    variables_result = []
+    criterion_values = []
     costs_tmp = []
     for i in possible_variables_index:
         cost = 1 if costs[i] == 0 else costs[i]
@@ -39,17 +39,21 @@ def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possi
                                     target_variable=target_variable, 
                                     candidate_variable_index=i,
                                     **kwargs)
-        variables_result.append(j_criterion_value)
+        criterion_values.append(j_criterion_value)
 
-    # When any element of variables_result is negative
-    if any(i < 0 for i in variables_result):
-        m = abs(min(variables_result))
-        variables_result = [i + m for i in variables_result]
+    # When any element of criterion_values is negative
+    if any(i < 0 for i in criterion_values):
+        m = abs(min(criterion_values))
+        criterion_values = [i + m for i in criterion_values]
+    else:
+        m = 0
     
-    for i, (var_score, cost) in enumerate(zip(variables_result, costs_tmp)):
-        variables_result[i] = var_score / cost**r 
-    k = np.argmax(variables_result)
-    return possible_variables_index[k], variables_result[k], costs[possible_variables_index[k]]
+    filter_values = criterion_values.copy()
+    for i, (var_score, cost) in enumerate(zip(criterion_values, costs_tmp)):
+        filter_values[i] = var_score / cost**r 
+    k = np.argmax(filter_values)
+
+    return possible_variables_index[k], filter_values[k], criterion_values[k] - m, costs[possible_variables_index[k]]
 
 def difference_find_best_feature(j_criterion_func, lamb, data, target_variable, possible_variables_index, costs, **kwargs):
     """
@@ -80,14 +84,16 @@ def difference_find_best_feature(j_criterion_func, lamb, data, target_variable, 
     cost_of_best_feature : float or int
         Cost of best selected feature
     """
-    variables_result = []
+    criterion_values = []
+    filter_values = []
     for i in possible_variables_index:
         j_criterion_value = j_criterion_func(data, 
                                     target_variable = target_variable, 
                                     candidate_variable_index=i,
                                     **kwargs)
-        variables_result.append(j_criterion_value - lamb*costs[i])
-    k = np.argmax(variables_result)
-    return possible_variables_index[k], variables_result[k], costs[possible_variables_index[k]]
+        criterion_values.append(j_criterion_value)
+        filter_values.append(j_criterion_value - lamb*costs[i])
+    k = np.argmax(filter_values)
+    return possible_variables_index[k], filter_values[k], criterion_values[k], costs[possible_variables_index[k]]
 
 
