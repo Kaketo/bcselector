@@ -22,3 +22,10 @@ Installation
 bcselector can be installed from [PyPI](https://pypi.org/project/bcselector): ::
 
     pip install bcselector
+
+Change log
+----------
+**0.0.21**:
+
+- Add budget parameter to fit function.
+- Small fixes in criterion/filter values return.
