@@ -200,7 +200,7 @@ class DiffVariableSelector(_MockVariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        for i in tqdm(range(self.number_of_features), desc=f'Selecting Features for r = {self.lamb}'):
+        for i in tqdm(range(self.number_of_features), desc=f'Selecting Features for r = {self.lamb:0.3f}'):
         # while len(U) > 0:
             k, filter_value, criterion_value, cost = difference_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                                                                     data = self.data, 
@@ -277,7 +277,7 @@ class FractionVariableSelector(_MockVariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        for i in tqdm(range(self.number_of_features), desc=f'Selecting Features for r = {self.r}'):
+        for i in tqdm(range(self.number_of_features), desc=f'Selecting Features for r = {self.r:0.3f}'):
         # while len(U) > 0:
             k, filter_value, criterion_value, cost = fraction_find_best_feature(j_criterion_func = self.j_criterion_func, 
                                 data = self.data, 
