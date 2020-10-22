@@ -33,3 +33,8 @@ Change log
 **0.0.22**
 
 - Add filter_values to selection loop.
+
+**0.0.23**
+
+- Fix filter_values to selection loop to be rounded.
+- Add discretization to data generation
