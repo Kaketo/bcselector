@@ -78,7 +78,7 @@ class DataFrameGenerator(MatrixGenerator):
         new_cols = ['var_' + str(i) for i in np.arange(1,n+1)]
         return new_cols
 
-    def generate(self,n_rows = 100, n_basic_cols = 10, loc = 0,  noise_sigmas = None, seed = None, discretize_method = 'uniform', discretize_bins=10):
+    def generate(self,n_rows = 100, n_basic_cols = 10, loc = 0,  noise_sigmas = None, basic_cost = 1, seed = None, discretize_method = 'uniform', discretize_bins=10):
         X,y,costs = super().generate(n_rows = n_rows, n_basic_cols = n_basic_cols, loc = loc,  noise_sigmas = noise_sigmas, seed = seed, discretize_method = discretize_method, discretize_bins=discretize_bins)
         # Generate colnames
         if noise_sigmas is None:
