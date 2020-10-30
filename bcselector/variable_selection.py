@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import cross_val_score
 import matplotlib.pyplot as plt
-from tqdm import tqdm_notebook as tqdm
+from tqdm import tqdm
 import warnings
 
 from bcselector.filter_methods.cost_based_filter_methods import difference_find_best_feature, fraction_find_best_feature
@@ -20,9 +20,12 @@ class _MockVariableSelector():
         self.data = None
         self.target_variable = None
         self.costs = None
+        self.normalized_costs = None
         self.budget = None
         self.criterion_values = []
         self.filter_values = []
+        self.colnames = None
+        self.stop_budget = False
 
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
@@ -59,13 +62,22 @@ class _MockVariableSelector():
 
         if isinstance(data, pd.DataFrame):
             self.data = data.values
+            self.colnames = data.columns
             if isinstance(costs,dict):
                 self.costs = [costs[x] for x in data.columns]
             else:
                 self.costs = costs
         else:
             self.data = data
+            self.colnames = ['var_' + str(i) for i in np.arange(1,self.data.shape[1]+1)]
             self.costs = costs
+
+        # normalized costs
+        if (min(self.costs) >= 0) and (max(self.costs) <= 1):
+                self.normalized_costs = self.costs
+        else:
+            # I add 0.0001 to avoid 0 cost feature
+            self.normalized_costs = list((np.array(self.costs) - min(self.costs) + 0.0001)/(max(self.costs)-min(self.costs)+0.0001))
 
         assert len(self.data.shape) == 2, "For `data` argument use numpy array of shape (n,p) or pandas DataFrame" 
         assert data.shape[1] == len(costs), "Length od cost must equal number of columns in `data`"
@@ -119,7 +131,7 @@ class _MockVariableSelector():
     def plot_scores(self, budget = None):
         assert self.total_scores, "Run scoreCV method first."
         
-        self.fig, self.ax = plt.subplots(figsize=(10, 5))
+        self.fig, self.ax = plt.subplots(figsize=(12, 8))
         if budget is not None:
             assert isinstance(budget,(int,float)), "Argument `budget` must be float or int."
             self.ax.axvline(x=budget)
@@ -128,7 +140,7 @@ class _MockVariableSelector():
         else:
             pass
 
-    def _no_cost_scoreCV(self, **kwargs):
+    def _no_cost_scoreCV(self, stop_budget=False, **kwargs):
         # Rank variables with NoCostVariableSelector
         S = set()
         U = set([i for i in range(self.data.shape[1])])
@@ -149,6 +161,8 @@ class _MockVariableSelector():
             self.no_cost_cost_variables_selected_order.append(cost)
             U = U.difference(set([k]))
             if len(S) == self.number_of_features:
+                break
+            if stop_budget is True and (sum(self.no_cost_cost_variables_selected_order) + cost) > (self.budget or np.inf):
                 break
 
         current_cost = 0
@@ -185,6 +199,7 @@ class DiffVariableSelector(_MockVariableSelector):
         # lamb
         assert isinstance(lamb, int) or isinstance(lamb, float), "Argument `lamb` must be integer or float"
         self.lamb = lamb
+        self.stop_budget = stop_budget
         super().fit(data=data, target_variable=target_variable, costs=costs, j_criterion_func=j_criterion_func, budget=budget, **kwargs)
 
         if number_of_features is None:
@@ -209,6 +224,7 @@ class DiffVariableSelector(_MockVariableSelector):
                                                                                     prev_variables_index = list(S),
                                                                                     possible_variables_index = list(U),
                                                                                     costs = self.costs,
+                                                                                    normalized_costs=self.normalized_costs,
                                                                                     lamb = self.lamb,
                                                                                     **kwargs)
             S.add(k)
@@ -225,24 +241,69 @@ class DiffVariableSelector(_MockVariableSelector):
             if len(S) == self.number_of_features:
                 break
             
-    def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, **kwargs):
+    def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, annotate=False, **kwargs):
         super().plot_scores(budget=budget)
+        move_horizontal = max(self.total_costs)/100
+        move_vertical = max(self.total_scores)/100
         if compare_no_cost_method is True:
-            super()._no_cost_scoreCV()
+            super()._no_cost_scoreCV(stop_budget=self.stop_budget)
             self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')
-            self.ax.legend(prop={"size":16})
+            self.ax.legend(prop={"size":16}, loc='lower right')
+
+            if annotate == True:
+                move_horizontal = max(self.no_cost_total_costs + self.total_costs)/100
+                move_vertical = max(self.no_cost_total_scores + self.total_scores)/100
+                costs_normalized_to_alpha = self.normalized_costs = list((
+                    np.array(self.no_cost_cost_variables_selected_order)\
+                     - min(self.no_cost_cost_variables_selected_order) + 0.2)\
+                     /(max(self.no_cost_cost_variables_selected_order)\
+                     -min(self.no_cost_cost_variables_selected_order)+0.2))
+                for i, txt in enumerate(self.no_cost_variables_selected_order):
+                    self.ax.annotate(
+                        txt, 
+                        (self.no_cost_total_costs[i], self.no_cost_total_scores[i]),
+                        bbox=dict(boxstyle="round", alpha=costs_normalized_to_alpha[i], color='red'), 
+                        xytext=(self.no_cost_total_costs[i]+move_horizontal, self.no_cost_total_scores[i]+move_vertical*0.5), 
+                        size=10,
+                        color = 'white')
         else:
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
+        
+        if annotate == True:
+            costs_normalized_to_alpha = self.normalized_costs = list((
+                    np.array(self.cost_variables_selected_order)\
+                     - min(self.cost_variables_selected_order) + 0.2)\
+                     /(max(self.cost_variables_selected_order)\
+                     -min(self.cost_variables_selected_order)+0.2))
+            for i, txt in enumerate(self.variables_selected_order):
+                self.ax.annotate(
+                    txt, 
+                    (self.total_costs[i], self.total_scores[i]),
+                    bbox=dict(boxstyle="round", alpha=costs_normalized_to_alpha[i], color='blue'), 
+                    xytext=(self.total_costs[i]+move_horizontal, self.total_scores[i]-move_vertical),
+                    size=10,
+                    color = 'white')
+
 
         self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 18)
         self.ax.tick_params(axis='both', which='major', labelsize=16)
         self.ax.set_xlabel('Cost', fontsize = 16)
         self.ax.set_ylabel(self.scoring, fontsize = 16)
+
+        # BBox with feature names
+        if annotate == True:
+            variables_idx = np.sort(self.variables_selected_order)
+            variables_names = [self.colnames[i] for i in variables_idx]
+            textstr = '\n'.join([str(idx) + ': ' + name for idx,name in zip(variables_idx, variables_names)])
+            props = dict(boxstyle='round', facecolor='gray', alpha=0.1)
+            self.ax.text(0.72, 0.72, textstr, transform=self.ax.transAxes, fontsize=14,verticalalignment='top', bbox=props, size=12, color = 'gray')
+
         if savefig == True:
             assert kwargs.get('fig_name'), "Must specify `fig_name` as key word argument"
             name = kwargs.pop('fig_name')
             plt.savefig(name, **kwargs)
+        plt.tight_layout()
         plt.show()
 
 class FractionVariableSelector(_MockVariableSelector):
@@ -262,6 +323,7 @@ class FractionVariableSelector(_MockVariableSelector):
         # r
         assert isinstance(r, int) or isinstance(r, float), "Argument `r` must be integer or float"
         self.r = r
+        self.stop_budget = stop_budget
 
         super().fit(data=data, target_variable=target_variable, costs=costs, j_criterion_func=j_criterion_func, budget=budget, **kwargs)
         
@@ -287,6 +349,7 @@ class FractionVariableSelector(_MockVariableSelector):
                                 prev_variables_index = list(S),
                                 possible_variables_index = list(U),
                                 costs = self.costs,
+                                normalized_costs=self.normalized_costs,
                                 r = self.r,
                                 **kwargs)
             S.add(k)
@@ -302,26 +365,70 @@ class FractionVariableSelector(_MockVariableSelector):
             if len(S) == self.number_of_features:
                 break
     
-    def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, **kwargs):
+    def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, annotate=False, **kwargs):
         super().plot_scores(budget=budget)
+        move_horizontal = max(self.total_costs)/100
+        move_vertical = max(self.total_scores)/100
         if compare_no_cost_method is True:
-            super()._no_cost_scoreCV()
+            super()._no_cost_scoreCV(stop_budget=self.stop_budget)
             self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')
-            self.ax.legend(prop={"size":16})
+            self.ax.legend(prop={"size":16}, loc='lower right')
+
+            if annotate == True:
+                move_horizontal = max(self.no_cost_total_costs + self.total_costs)/100
+                move_vertical = max(self.no_cost_total_scores + self.total_scores)/100
+                costs_normalized_to_alpha = self.normalized_costs = list((
+                    np.array(self.no_cost_cost_variables_selected_order)\
+                     - min(self.no_cost_cost_variables_selected_order) + 0.2)\
+                     /(max(self.no_cost_cost_variables_selected_order)\
+                     -min(self.no_cost_cost_variables_selected_order)+0.2))
+                for i, txt in enumerate(self.no_cost_variables_selected_order):
+                    self.ax.annotate(
+                        txt, 
+                        (self.no_cost_total_costs[i], self.no_cost_total_scores[i]),
+                        bbox=dict(boxstyle="round", alpha=costs_normalized_to_alpha[i], color='red'), 
+                        xytext=(self.no_cost_total_costs[i]+move_horizontal, self.no_cost_total_scores[i]+move_vertical*0.5), 
+                        size=10,
+                        color = 'white')
         else:
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
-            
-        self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 20)
+        
+        if annotate == True:
+            costs_normalized_to_alpha = self.normalized_costs = list((
+                    np.array(self.cost_variables_selected_order)\
+                     - min(self.cost_variables_selected_order) + 0.2)\
+                     /(max(self.cost_variables_selected_order)\
+                     -min(self.cost_variables_selected_order)+0.2))
+            for i, txt in enumerate(self.variables_selected_order):
+                self.ax.annotate(
+                    txt, 
+                    (self.total_costs[i], self.total_scores[i]),
+                    bbox=dict(boxstyle="round", alpha=costs_normalized_to_alpha[i], color='blue'), 
+                    xytext=(self.total_costs[i]+move_horizontal, self.total_scores[i]-move_vertical),
+                    size=10,
+                    color = 'white')
+
+
+        self.ax.set_title('Model ' + self.scoring + ' vs cost' , fontsize = 18)
         self.ax.tick_params(axis='both', which='major', labelsize=16)
         self.ax.set_xlabel('Cost', fontsize = 16)
         self.ax.set_ylabel(self.scoring, fontsize = 16)
+
+        # BBox with feature names
+        if annotate == True:
+            variables_idx = np.sort(self.variables_selected_order)
+            variables_names = [self.colnames[i] for i in variables_idx]
+            textstr = '\n'.join([str(idx) + ': ' + name for idx,name in zip(variables_idx, variables_names)])
+            props = dict(boxstyle='round', facecolor='gray', alpha=0.1)
+            self.ax.text(0.72, 0.72, textstr, transform=self.ax.transAxes, fontsize=14,verticalalignment='top', bbox=props, size=12, color = 'gray')
+
         if savefig == True:
             assert kwargs.get('fig_name'), "Must specify `fig_name` as key word argument"
             name = kwargs.pop('fig_name')
             plt.savefig(name, **kwargs)
+        plt.tight_layout()
         plt.show()
-
 
 
 class NoCostVariableSelector(_MockVariableSelector):

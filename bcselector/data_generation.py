@@ -55,7 +55,7 @@ class MatrixGenerator(_BasicDataGenerator):
         # Generate perturbed features
         X = X_basic.copy()
         for noise_sigma in self.noise_sigmas:
-            noise = self._generate_noise(sigma = noise_sigma, loc = 0)
+            noise = self._generate_noise(sigma = noise_sigma/(len(noise_sigmas)), loc = 0)
             X_transformed = X_basic + noise
             X = np.concatenate((X,X_transformed), axis=1)
             costs = costs + [1/(noise_sigma + basic_cost) for i in range(self.n_cols)]
