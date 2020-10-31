@@ -2,6 +2,7 @@ import unittest
 import numpy as np
 import pandas as pd
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score
 
 from bcselector.variable_selection import DiffVariableSelector, FractionVariableSelector, NoCostVariableSelector
 from bcselector.data_generation import MatrixGenerator, DataFrameGenerator
@@ -16,17 +17,17 @@ class TestMatrixGenerator(unittest.TestCase):
         # When
         mg = MatrixGenerator()
         X, y, costs = mg.generate(n_rows=n_rows, n_basic_cols=n_cols, noise_sigmas=[0.1,0.5], seed=2)
-        lamb = 1
+        r = 1
         beta = 0.5
 
-        dvs = DiffVariableSelector()
+        dvs = FractionVariableSelector()
         dvs.fit(data=X,
                 target_variable=y,
                 costs=costs,
-                lamb=lamb,
+                r=r,
                 j_criterion_func='cife',
                 beta=beta)
-        dvs.scoreCV(model=model, cv = 5)
+        dvs.score(model=model, scoring_function=roc_auc_score)
         dvs.plot_scores(compare_no_cost_method=True, model=model, annotate=True)
 
         # Then
@@ -53,7 +54,7 @@ class TestMatrixGenerator(unittest.TestCase):
                 r=r,
                 j_criterion_func='cife',
                 beta=0.05)
-        fvs.scoreCV(model=model, cv = 5)
+        fvs.score(model=model, scoring_function=roc_auc_score)
         fvs.plot_scores(compare_no_cost_method=True, model=model)
         
         def find_nearest_idx(list, value):
@@ -91,7 +92,7 @@ class TestMatrixGenerator(unittest.TestCase):
                 costs=costs,
                 r=r,
                 j_criterion_func='mim')
-        fvs.scoreCV(model=model, cv = 5)
+        fvs.score(model=model, scoring_function=roc_auc_score)
         fvs.plot_scores(compare_no_cost_method=True, model=model)
         
         def find_nearest_idx(list, value):
