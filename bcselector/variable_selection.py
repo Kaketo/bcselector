@@ -159,11 +159,11 @@ class _MockVariableSelector():
             if annotate == True:
                 move_horizontal = max(self.no_cost_total_costs + self.total_costs)/100
                 move_vertical = max(self.no_cost_total_scores + self.total_scores)/100
-                costs_normalized_to_alpha = self.normalized_costs = list((
+                costs_normalized_to_alpha = list((
                     np.array(self.no_cost_cost_variables_selected_order)\
-                     - min(self.no_cost_cost_variables_selected_order) + 0.4)\
-                     /(max(self.no_cost_cost_variables_selected_order)\
-                     -min(self.no_cost_cost_variables_selected_order)+0.4))
+                     - min(self.costs) + 0.3)\
+                     /(max(self.costs)\
+                     -min(self.costs)+0.3))
                 for i, txt in enumerate(self.no_cost_variables_selected_order):
                     self.ax.annotate(
                         txt, 
@@ -178,9 +178,9 @@ class _MockVariableSelector():
         if annotate == True:
             costs_normalized_to_alpha = self.normalized_costs = list((
                     np.array(self.cost_variables_selected_order)\
-                     - min(self.cost_variables_selected_order) + 0.2)\
-                     /(max(self.cost_variables_selected_order)\
-                     -min(self.cost_variables_selected_order)+0.2))
+                     - min(self.costs) + 0.3)\
+                     /(max(self.costs)\
+                     -min(self.costs)+0.3))
             for i, txt in enumerate(self.variables_selected_order):
                 self.ax.annotate(
                     txt, 
