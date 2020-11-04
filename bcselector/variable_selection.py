@@ -135,7 +135,9 @@ class _MockVariableSelector():
             current_cost += self.costs[var_id]
             self.total_scores.append(score)
             self.total_costs.append(current_cost)
-
+    def score_no_cost(self):
+        self._no_cost_score(stop_budget=self.stop_budget)
+        
     def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, annotate=False, **kwargs):
         assert self.total_scores, "Run `score` method first."
         
@@ -161,9 +163,9 @@ class _MockVariableSelector():
                 move_vertical = max(self.no_cost_total_scores + self.total_scores)/100
                 costs_normalized_to_alpha = list((
                     np.array(self.no_cost_cost_variables_selected_order)\
-                     - min(self.costs) + 0.3)\
+                     - min(self.costs) + 0.7)\
                      /(max(self.costs)\
-                     -min(self.costs)+0.3))
+                     -min(self.costs)+0.7))
                 for i, txt in enumerate(self.no_cost_variables_selected_order):
                     self.ax.annotate(
                         txt, 
@@ -178,9 +180,9 @@ class _MockVariableSelector():
         if annotate == True:
             costs_normalized_to_alpha = self.normalized_costs = list((
                     np.array(self.cost_variables_selected_order)\
-                     - min(self.costs) + 0.3)\
+                     - min(self.costs) + 0.7)\
                      /(max(self.costs)\
-                     -min(self.costs)+0.3))
+                     -min(self.costs)+0.7))
             for i, txt in enumerate(self.variables_selected_order):
                 self.ax.annotate(
                     txt, 
@@ -203,7 +205,7 @@ class _MockVariableSelector():
             variables_costs = [self.costs[i] for i in variables_idx]
             textstr = '\n'.join([str(idx) + ': ' + name + f' C={cost:.2f}' for idx,name,cost in zip(variables_idx, variables_names, variables_costs)])
             props = dict(boxstyle='round', facecolor='gray', alpha=0.1)
-            self.ax.text(0.72, 0.72, textstr, transform=self.ax.transAxes, fontsize=14,verticalalignment='top', bbox=props, size=12, color = 'gray')
+            self.ax.text(0.72, 0.60, textstr, transform=self.ax.transAxes, fontsize=14,verticalalignment='top', bbox=props, size=12, color = 'gray')
 
         if savefig == True:
             assert kwargs.get('fig_name'), "Must specify `fig_name` as key word argument"
