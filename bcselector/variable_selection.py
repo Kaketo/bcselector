@@ -138,10 +138,10 @@ class _MockVariableSelector():
     def score_no_cost(self):
         self._no_cost_score(stop_budget=self.stop_budget)
         
-    def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, annotate=False, **kwargs):
+    def plot_scores(self, budget = None, compare_no_cost_method = False, savefig=False, annotate=False, annotate_box=False, figsize=(12,8), bbox_pos = (0.72, 0.60),  plot_title = None, x_axis_title=None, y_axis_title=None, **kwargs):
         assert self.total_scores, "Run `score` method first."
         
-        self.fig, self.ax = plt.subplots(figsize=(12, 8))
+        self.fig, self.ax = plt.subplots(figsize=figsize)
         if budget is not None:
             assert isinstance(budget,(int,float)), "Argument `budget` must be float or int."
             self.ax.axvline(x=budget, linewidth=3, label = f'budget={budget:.2f}')
@@ -156,7 +156,7 @@ class _MockVariableSelector():
             self._no_cost_score(stop_budget=self.stop_budget)
             self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label = 'no regard to cost')
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label = 'with regard to costs')
-            self.ax.legend(prop={"size":16})
+            self.ax.legend(prop={"size":16}, loc='lower right')
 
             if annotate == True:
                 move_horizontal = max(self.no_cost_total_costs + self.total_costs)/100
@@ -192,20 +192,28 @@ class _MockVariableSelector():
                     size=10,
                     color = 'white')
 
-
-        self.ax.set_title('Model ' + self.scoring_function.__name__ + ' vs cost' , fontsize = 18)
         self.ax.tick_params(axis='both', which='major', labelsize=16)
-        self.ax.set_xlabel('Cost', fontsize = 16)
-        self.ax.set_ylabel(self.scoring_function.__name__, fontsize = 16)
+        if plot_title is None:
+            self.ax.set_title('Model ' + self.scoring_function.__name__ + ' vs cost' , fontsize = 18)
+        else:
+            self.ax.set_title(plot_title , fontsize = 18)
+        if x_axis_title is None:
+            self.ax.set_xlabel('Cost', fontsize = 16)
+        else:
+            self.ax.set_xlabel(x_axis_title, fontsize = 16)
+        if y_axis_title is None:
+            self.ax.set_ylabel(self.scoring_function.__name__, fontsize = 16)
+        else:
+            self.ax.set_ylabel(y_axis_title, fontsize = 16)
 
         # BBox with feature names
-        if annotate == True:
+        if annotate_box == True:
             variables_idx = set(self.variables_selected_order).union(set(self.no_cost_variables_selected_order))
             variables_names = [self.colnames[i] for i in variables_idx]
             variables_costs = [self.costs[i] for i in variables_idx]
             textstr = '\n'.join([str(idx) + ': ' + name + f' C={cost:.2f}' for idx,name,cost in zip(variables_idx, variables_names, variables_costs)])
             props = dict(boxstyle='round', facecolor='gray', alpha=0.1)
-            self.ax.text(0.72, 0.60, textstr, transform=self.ax.transAxes, fontsize=14,verticalalignment='top', bbox=props, size=12, color = 'gray')
+            self.ax.text(bbox_pos[0], bbox_pos[1], textstr, transform=self.ax.transAxes, fontsize=14,verticalalignment='top', bbox=props, size=12, color = 'gray')
 
         if savefig == True:
             assert kwargs.get('fig_name'), "Must specify `fig_name` as key word argument"
