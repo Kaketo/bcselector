@@ -1,6 +1,15 @@
 import numpy as np
 import warnings
-from bcselector.information_theory.basic_approximations import entropy, conditional_entropy, mutual_information, conditional_mutual_information
+from bcselector.information_theory.basic_approximations import mutual_information, conditional_mutual_information
+
+__all__ = [
+    'mim',
+    'mifs',
+    'mrmr',
+    'jmi',
+    'cife'
+]
+
 
 def mim(data, target_variable, candidate_variable_index, **kwargs):
     """
