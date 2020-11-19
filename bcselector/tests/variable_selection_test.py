@@ -1,7 +1,8 @@
 import unittest
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import roc_auc_score
 
 from bcselector.variable_selection import DiffVariableSelector, FractionVariableSelector, NoCostVariableSelector
 from bcselector.data_generation import MatrixGenerator
@@ -78,7 +79,7 @@ class TestDiffVariableSelector(unittest.TestCase):
 #                 costs=costs,
 #                 lamb=lamb,
 #                 j_criterion_func='mim')
-#         model = LinearRegression()
+#         model = LogisticRegression()
 #         dvs.scoreCV(model)
 #         self.assertListEqual(mim_costs, dvs.cost_variables_selected_order)
 #         self.assertListEqual(mim_order, dvs.variables_selected_order)
@@ -95,7 +96,7 @@ class TestDiffVariableSelector(unittest.TestCase):
 #                 lamb=lamb,
 #                 j_criterion_func='mifs',
 #                 beta=beta)
-#         model = LinearRegression()
+#         model = LogisticRegression()
 #         dvs.scoreCV(model,seed=42)
 
 #         self.assertListEqual(mifs_costs, dvs.cost_variables_selected_order)
@@ -111,7 +112,7 @@ class TestDiffVariableSelector(unittest.TestCase):
 #                 costs=costs,
 #                 lamb=lamb,
 #                 j_criterion_func='mrmr')
-#         model = LinearRegression()
+#         model = LogisticRegression()
 #         dvs.scoreCV(model)
 #         self.assertListEqual(mrmr_costs, dvs.cost_variables_selected_order)
 #         self.assertListEqual(mrmr_order, dvs.variables_selected_order)
@@ -126,7 +127,7 @@ class TestDiffVariableSelector(unittest.TestCase):
 #                 costs=costs,
 #                 lamb=lamb,
 #                 j_criterion_func='jmi')
-#         model = LinearRegression()
+#         model = LogisticRegression()
 #         dvs.scoreCV(model)
 #         self.assertListEqual(jmi_costs, dvs.cost_variables_selected_order)
 #         self.assertListEqual(jmi_order, dvs.variables_selected_order)
@@ -143,7 +144,7 @@ class TestDiffVariableSelector(unittest.TestCase):
 #                 lamb=lamb,
 #                 j_criterion_func='cife',
 #                 beta=beta)
-#         model = LinearRegression()
+#         model = LogisticRegression()
 #         dvs.scoreCV(model)
 
 #         self.assertListEqual(cife_order, dvs.variables_selected_order)
@@ -164,7 +165,7 @@ class TestDiffVariableSelector(unittest.TestCase):
         
         self.assertEqual(dvs.variables_selected_order[0], 2)
 
-    def test_scoreCV(self):
+    def test_score(self):
         integer_matrix = np.random.randint(0,10,(100,10))
         diverse_target = np.random.randint(0,2,(100))
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
@@ -177,15 +178,15 @@ class TestDiffVariableSelector(unittest.TestCase):
                 lamb=lamb,
                 j_criterion_func='mim')
 
-        model = LinearRegression()
-        dvs.scoreCV(model)
+        model = LogisticRegression()
+        dvs.score(model, scoring_function=roc_auc_score)
         
         self.assertEqual(len(dvs.total_scores), len(costs))
 
     def test_run_score_before_fit(self):
         dvs = DiffVariableSelector()
-        model = LinearRegression()
-        with self.assertRaises(AssertionError): dvs.scoreCV(model)
+        model = LogisticRegression()
+        with self.assertRaises(AssertionError): dvs.score(model, scoring_function=roc_auc_score)
 
     def test_plot_without_comparision(self):
         integer_matrix = np.random.randint(0,10,(100,10))
@@ -200,13 +201,13 @@ class TestDiffVariableSelector(unittest.TestCase):
                 lamb=lamb,
                 j_criterion_func='mim')
 
-        model = LinearRegression()
-        dvs.scoreCV(model)
+        model = LogisticRegression()
+        dvs.score(model, scoring_function=roc_auc_score)
         dvs.plot_scores(budget=1)
 
     def test_plot_comparision(self):
         mg = MatrixGenerator()
-        X,y,costs = mg.generate(n_basic_cols=10)
+        X,y,costs = mg.generate(n_basic_cols=10, noise_sigmas=[0.1,1])
         lamb = 1
 
         dvs = DiffVariableSelector()
@@ -216,9 +217,9 @@ class TestDiffVariableSelector(unittest.TestCase):
                 lamb=lamb,
                 j_criterion_func='mim')
 
-        model = LinearRegression()
-        dvs.scoreCV(model)
-        dvs.plot_scores(compare_no_cost_method=True, budget=1, cv = 5, model = model)
+        model = LogisticRegression()
+        dvs.score(model, scoring_function=roc_auc_score)
+        dvs.plot_scores(compare_no_cost_method=True, budget=1, model = model)
 
 class TestFractionVariableSelector(unittest.TestCase):
     def test_numpy_input(self):
@@ -267,7 +268,7 @@ class TestFractionVariableSelector(unittest.TestCase):
         
         self.assertEqual(fvs.variables_selected_order[0], 2)
 
-    def test_scoreCV(self):
+    def test_score(self):
         integer_matrix = np.random.randint(0,10,(100,10))
         diverse_target = np.random.randint(0,2,(100))
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
@@ -280,15 +281,15 @@ class TestFractionVariableSelector(unittest.TestCase):
                 r=r,
                 j_criterion_func='mim')
 
-        model = LinearRegression()
-        fvs.scoreCV(model)
+        model = LogisticRegression()
+        fvs.score(model, scoring_function=roc_auc_score)
         
         self.assertEqual(len(fvs.total_scores), len(costs))
 
     def test_run_score_before_fit(self):
         fvs = FractionVariableSelector()
-        model = LinearRegression()
-        with self.assertRaises(AssertionError): fvs.scoreCV(model)
+        model = LogisticRegression()
+        with self.assertRaises(AssertionError): fvs.score(model, scoring_function=roc_auc_score)
 
     def test_stop_budget(self):
         integer_matrix = pd.DataFrame(np.random.randint(0,10,(100,3)), columns=['AA','BB','CC'])
@@ -349,7 +350,7 @@ class TestNoCostVariableSelector(unittest.TestCase):
         
         self.assertEqual(ncvs.variables_selected_order[0], 2)
 
-    def test_scoreCV(self):
+    def test_score(self):
         integer_matrix = np.random.randint(0,10,(100,10))
         diverse_target = np.random.randint(0,2,(100))
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
@@ -360,15 +361,15 @@ class TestNoCostVariableSelector(unittest.TestCase):
                 costs=costs,
                 j_criterion_func='mim')
 
-        model = LinearRegression()
-        ncvs.scoreCV(model)
+        model = LogisticRegression()
+        ncvs.score(model, scoring_function=roc_auc_score)
         
         self.assertEqual(len(ncvs.total_scores), len(costs))
 
     def test_run_score_before_fit(self):
         ncvs = NoCostVariableSelector()
-        model = LinearRegression()
-        with self.assertRaises(AssertionError): ncvs.scoreCV(model)
+        model = LogisticRegression()
+        with self.assertRaises(AssertionError): ncvs.score(model, scoring_function=roc_auc_score)
 
 if __name__ == '__main__':
     unittest.main()

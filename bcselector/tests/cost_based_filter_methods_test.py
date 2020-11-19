@@ -10,7 +10,8 @@ class TestFractionMethod(unittest.TestCase):
         integer_matrix = np.random.randint(0,10,(100,10))
         diverse_target = np.random.randint(0,10,(100))
         candidates_index = [0,1,2,6,7,8,9]
-        costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        costs = [ 1.76,  0.19, 0.36,  0.96,  0.41,  0.17, 0.36,  0.75,  0.79, 1.38]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         r = 1
         selected_feature, filter_value, criterion_value, cost = fraction_find_best_feature(
             j_criterion_func=mim, 
@@ -18,7 +19,8 @@ class TestFractionMethod(unittest.TestCase):
             data=integer_matrix, 
             target_variable=diverse_target,
             possible_variables_index=candidates_index,
-            costs=costs)
+            costs=costs,
+            normalized_costs=normalized_costs)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(filter_value, float)
         self.assertIsInstance(criterion_value, float)
@@ -30,6 +32,7 @@ class TestFractionMethod(unittest.TestCase):
         prev_variables_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         r = 1
         beta = 1
         selected_feature, filter_value, criterion_value, cost = fraction_find_best_feature(
@@ -39,6 +42,7 @@ class TestFractionMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index,
                                     beta=beta)
         self.assertIsInstance(selected_feature,int)
@@ -52,6 +56,7 @@ class TestFractionMethod(unittest.TestCase):
         prev_variable_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         r = 1
         selected_feature, filter_value, criterion_value, cost = fraction_find_best_feature(
                                     j_criterion_func=mrmr, 
@@ -60,6 +65,7 @@ class TestFractionMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs, 
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variable_index)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(filter_value, float)
@@ -72,6 +78,7 @@ class TestFractionMethod(unittest.TestCase):
         prev_variable_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         r = 1
         selected_feature, filter_value, criterion_value, cost = fraction_find_best_feature(
                                     j_criterion_func=jmi, 
@@ -80,6 +87,7 @@ class TestFractionMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs, 
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variable_index)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(filter_value, float)
@@ -92,6 +100,7 @@ class TestFractionMethod(unittest.TestCase):
         prev_variable_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         r = 1
         beta=1
         selected_feature, filter_value, criterion_value, cost = fraction_find_best_feature(
@@ -101,6 +110,7 @@ class TestFractionMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs, 
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variable_index,
                                     beta=beta)
         self.assertIsInstance(selected_feature,int)
@@ -114,6 +124,7 @@ class TestFractionMethod(unittest.TestCase):
         prev_variables_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         r = 1
         beta_1 = 1
         beta_2 = 10000
@@ -124,6 +135,7 @@ class TestFractionMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_1)
         _, filter_value_2, criterion_value_2, _ = fraction_find_best_feature(
@@ -133,6 +145,7 @@ class TestFractionMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_2)
         self.assertNotEqual(filter_value_1,filter_value_2)
@@ -144,6 +157,7 @@ class TestFractionMethod(unittest.TestCase):
         prev_variables_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         r = 1
         beta_1 = 1
         beta_2 = 10000
@@ -154,6 +168,7 @@ class TestFractionMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_1)
         _, filter_value_2, criterion_value_2, _ = fraction_find_best_feature(
@@ -163,6 +178,7 @@ class TestFractionMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_2)
         self.assertNotEqual(filter_value_1,filter_value_2)                                    
@@ -175,6 +191,7 @@ class TestFractionMethod(unittest.TestCase):
         prev_variables_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 0.1,  0.19, 0.36,  0.96,  0.41,  0.17, 0.36,  0.75,  0.79, 0.99]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         r_1 = 0
         r_2 = 10
         _, filter_value_1, criterion_value_1, _ = fraction_find_best_feature(
@@ -184,6 +201,7 @@ class TestFractionMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index)
         _, filter_value_2, criterion_value_2, _ = fraction_find_best_feature(
                                     j_criterion_func=jmi, 
@@ -192,6 +210,7 @@ class TestFractionMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index)
         assert filter_value_2 > filter_value_1
 
@@ -202,6 +221,7 @@ class TestDifferenceMethod(unittest.TestCase):
         # prev_variable_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         lamb = 1
         selected_feature, filter_value, criterion_value, cost = difference_find_best_feature(
             j_criterion_func=mim, 
@@ -209,7 +229,8 @@ class TestDifferenceMethod(unittest.TestCase):
             data=integer_matrix, 
             target_variable=diverse_target,
             possible_variables_index=candidates_index,
-            costs=costs)
+            costs=costs,
+            normalized_costs=normalized_costs)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(filter_value, float)
         self.assertIsInstance(criterion_value, float)
@@ -221,6 +242,7 @@ class TestDifferenceMethod(unittest.TestCase):
         prev_variables_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         lamb = 1
         beta = 1
         selected_feature, filter_value, criterion_value, cost = difference_find_best_feature(
@@ -230,6 +252,7 @@ class TestDifferenceMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index,
                                     beta=beta)
         self.assertIsInstance(selected_feature,int)
@@ -243,6 +266,7 @@ class TestDifferenceMethod(unittest.TestCase):
         prev_variable_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         lamb = 1
         selected_feature, filter_value, criterion_value, cost = difference_find_best_feature(
                                     j_criterion_func=mrmr, 
@@ -251,6 +275,7 @@ class TestDifferenceMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs, 
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variable_index)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(filter_value, float)
@@ -263,6 +288,7 @@ class TestDifferenceMethod(unittest.TestCase):
         prev_variable_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         lamb = 1
         selected_feature, filter_value, criterion_value, cost = difference_find_best_feature(
                                     j_criterion_func=jmi, 
@@ -271,6 +297,7 @@ class TestDifferenceMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs, 
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variable_index)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(filter_value, float)
@@ -283,6 +310,7 @@ class TestDifferenceMethod(unittest.TestCase):
         prev_variable_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         lamb = 1
         beta=1
         selected_feature, filter_value, criterion_value, cost = difference_find_best_feature(
@@ -292,6 +320,7 @@ class TestDifferenceMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs, 
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variable_index,
                                     beta=beta)
         self.assertIsInstance(selected_feature,int)
@@ -305,6 +334,7 @@ class TestDifferenceMethod(unittest.TestCase):
         prev_variables_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         lamb = 1
         beta_1 = 1
         beta_2 = 10000
@@ -315,6 +345,7 @@ class TestDifferenceMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_1)
         _, filter_value_2, criterion_value_2, _ = difference_find_best_feature(
@@ -324,6 +355,7 @@ class TestDifferenceMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_2)
         self.assertNotEqual(filter_value_1,filter_value_2)                                          
@@ -335,6 +367,7 @@ class TestDifferenceMethod(unittest.TestCase):
         prev_variables_index = [3,4,5]
         candidates_index = [0,1,2,6,7,8,9]
         costs = [ 1.76,  0.19, -0.36,  0.96,  0.41,  0.17, -0.36,  0.75,  0.79, -1.38]
+        normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         lamb = 1
         beta_1 = 1
         beta_2 = 10000
@@ -345,6 +378,7 @@ class TestDifferenceMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_1)
         _, filter_value_2, criterion_value_2, _ = difference_find_best_feature(
@@ -354,6 +388,7 @@ class TestDifferenceMethod(unittest.TestCase):
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
+                                    normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_2)
         self.assertNotEqual(filter_value_1,filter_value_2)                            

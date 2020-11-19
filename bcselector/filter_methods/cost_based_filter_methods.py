@@ -1,6 +1,6 @@
 import numpy as np
 
-def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possible_variables_index, costs, **kwargs):
+def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possible_variables_index, costs, normalized_costs, **kwargs):
     """
     Function that ranks all features with selected j_criterion_func according to fraction method  and returns the feature with highest criterion value.
     ----------
@@ -30,10 +30,10 @@ def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possi
         Cost of best selected feature
     """
     criterion_values = []
-    costs_tmp = []
+    norm_costs_tmp = []
     for i in possible_variables_index:
-        cost = 1 if costs[i] == 0 else costs[i]
-        costs_tmp.append(cost)
+        norm_cost = 0.000001 if normalized_costs[i] == 0 else normalized_costs[i]
+        norm_costs_tmp.append(norm_cost)
 
         j_criterion_value = j_criterion_func(data, 
                                     target_variable=target_variable, 
@@ -49,13 +49,13 @@ def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possi
         m = 0
     
     filter_values = criterion_values.copy()
-    for i, (var_score, cost) in enumerate(zip(criterion_values, costs_tmp)):
-        filter_values[i] = var_score / cost**r 
+    for i, (var_score, norm_cost) in enumerate(zip(criterion_values, norm_costs_tmp)):
+        filter_values[i] = var_score / norm_cost**r 
     k = np.argmax(filter_values)
 
     return possible_variables_index[k], filter_values[k], criterion_values[k] - m, costs[possible_variables_index[k]]
 
-def difference_find_best_feature(j_criterion_func, lamb, data, target_variable, possible_variables_index, costs, **kwargs):
+def difference_find_best_feature(j_criterion_func, lamb, data, target_variable, possible_variables_index, costs, normalized_costs, **kwargs):
     """
     Function that ranks all features with selected j_criterion_func according to difference method and returns the feature with highest criterion value.
     ----------
@@ -92,7 +92,7 @@ def difference_find_best_feature(j_criterion_func, lamb, data, target_variable, 
                                     candidate_variable_index=i,
                                     **kwargs)
         criterion_values.append(j_criterion_value)
-        filter_values.append(j_criterion_value - lamb*costs[i])
+        filter_values.append(j_criterion_value - lamb*normalized_costs[i])
     k = np.argmax(filter_values)
     return possible_variables_index[k], filter_values[k], criterion_values[k], costs[possible_variables_index[k]]
 
