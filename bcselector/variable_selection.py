@@ -12,13 +12,17 @@ from bcselector.filter_methods.no_cost_based_filter_methods import no_cost_find_
 from bcselector.information_theory.j_criterion_approximations import mim, mifs, mrmr, jmi, cife
 
 __all__ = [
-    '_MockVariableSelector',
+    '_VariableSelector',
     'DiffVariableSelector',
     'FractionVariableSelector'
 ]
 
 
-class _MockVariableSelector():
+class _VariableSelector():
+    """
+    Partent class to provide all basic and common functions and attibutes for other selectors.
+    This class does not implement proper `fit` method.
+    """
     def __init__(self):
         self.data = None
         self.target_variable = None
@@ -110,11 +114,11 @@ class _MockVariableSelector():
         # Train test split
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.data, self.target_variable, test_size=test_size, random_state=seed)
 
-    def get_ranked_variables(self):
-        return self.variables_selected_order
+    def get_cost_results(self):
+        return self.variables_selected_order, self.cost_variables_selected_order
 
-    def get_ranked_costs(self):
-        return self.cost_variables_selected_order
+    def get_no_cost_results(self):
+        return self.no_cost_variables_selected_order, self.no_cost_cost_variables_selected_order
 
     def score(self, model, scoring_function, **kwargs):
         self.total_scores = []
@@ -261,20 +265,48 @@ class _MockVariableSelector():
             self.no_cost_total_costs.append(current_cost)
 
 
-class DiffVariableSelector(_MockVariableSelector):
-    """Ranks all features in dataset with difference cost filter method.
-
-    Parameters
-    ----------
-
-    Attributes
-    ----------
-
-    Examples
-    --------
-
+class DiffVariableSelector(_VariableSelector):
+    """
+    Ranks all features in dataset with difference cost filter method.
     """
     def fit(self, data, target_variable, costs, lamb, j_criterion_func='cife', number_of_features=None, budget=None, stop_budget=False, **kwargs):
+        """Ranks all features in dataset with difference cost filter method.
+
+        Parameters
+        ----------
+        data: np.ndarray or pd.
+            Matrix or data frame of data that we want to rank features.
+        target_variable: np.ndarray or pd.core.series.Series
+            Vector or series of target variable. Number of rows in `data` must equal target_variable length
+        costs: list or dict
+            Costs of features. Must be the same size as columns in `data`.
+            When using `data` as np.array, provide `costs` as list of floats or integers.
+            When using `data` as pd.DataFrame, provide `costs` as list of floats or integers or dict {'col_1':cost_1,...}.
+        lamb: int or float
+            Cost scaling parameter. Higher lambda is, higher is the impact of the cost on selection.
+        j_criterion_func: str
+            Method of approximation of the conditional mutual information
+            Must be one of ['mim','mifs','mrmr','jmi','cife'].
+            All methods can be seen by running:
+            >>> from bcselector.information_theory.j_criterion_approximations.__all__
+        number_of_features: int
+            Optional argument, constraint to selected number of features.
+        budget: int or float
+            Optional argument, constraint to selected total cost of features.
+        stop_budget: bool
+            Optional argument, TODO - must delete this argument
+        **kwargs
+            Arguments passed to `difference_find_best_feature()` function and then to `j_criterion_func`.
+
+        Attributes
+        ----------
+
+        Examples
+        --------
+        >>> from bcselector.variable_selection import DiffVariableSelector
+        >>> dvs = DiffVariableSelector()
+        >>> dvs.fit(X, y, costs, lamb=1, j_criterion_func='mim')
+        """
         # lamb
         assert isinstance(lamb, int) or isinstance(lamb, float), "Argument `lamb` must be integer or float"
         self.lamb = lamb
@@ -293,8 +325,6 @@ class DiffVariableSelector(_MockVariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        # for i in tqdm(range(self.number_of_features), desc=f'Selecting Features for r = {self.lamb:0.3f}'):
-        # while len(U) > 0:
         for i in range(self.number_of_features):
             k, filter_value, criterion_value, cost = difference_find_best_feature(
                 j_criterion_func=self.j_criterion_func,
@@ -321,7 +351,7 @@ class DiffVariableSelector(_MockVariableSelector):
                 break
 
 
-class FractionVariableSelector(_MockVariableSelector):
+class FractionVariableSelector(_VariableSelector):
     """Ranks all features in dataset with difference cost filter method.
 
     Parameters
@@ -335,6 +365,43 @@ class FractionVariableSelector(_MockVariableSelector):
 
     """
     def fit(self, data, target_variable, costs, r, j_criterion_func='cife', number_of_features=None, budget=None, stop_budget=False, **kwargs):
+        """Ranks all features in dataset with fraction cost filter method.
+
+        Parameters
+        ----------
+        data: np.ndarray or pd.
+            Matrix or data frame of data that we want to rank features.
+        target_variable: np.ndarray or pd.core.series.Series
+            Vector or series of target variable. Number of rows in `data` must equal target_variable length
+        costs: list or dict
+            Costs of features. Must be the same size as columns in `data`.
+            When using `data` as np.array, provide `costs` as list of floats or integers.
+            When using `data` as pd.DataFrame, provide `costs` as list of floats or integers or dict {'col_1':cost_1,...}.
+        r: int or float
+            Cost scaling parameter. Higher `r` is, higher is the impact of the cost on selection.
+        j_criterion_func: str
+            Method of approximation of the conditional mutual information
+            Must be one of ['mim','mifs','mrmr','jmi','cife'].
+            All methods can be seen by running:
+            >>> from bcselector.information_theory.j_criterion_approximations.__all__
+        number_of_features: int
+            Optional argument, constraint to selected number of features.
+        budget: int or float
+            Optional argument, constraint to selected total cost of features.
+        stop_budget: bool
+            Optional argument, TODO - must delete this argument
+        **kwargs
+            Arguments passed to `fraction_find_best_feature()` function and then to `j_criterion_func`.
+
+        Attributes
+        ----------
+
+        Examples
+        --------
+        >>> from bcselector.variable_selection import FractionVariableSelector
+        >>> fvs = FractionVariableSelector()
+        >>> fvs.fit(X, y, costs, lamb=1, j_criterion_func='mim')
+        """
         # r
         assert isinstance(r, int) or isinstance(r, float), "Argument `r` must be integer or float"
         self.r = r
@@ -354,9 +421,7 @@ class FractionVariableSelector(_MockVariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        # for i in tqdm(range(self.number_of_features), desc=f'Selecting Features for r = {self.r:0.3f}'):
-        # while len(U) > 0:
-        for i in range(self.number_of_features):
+        for i in tqdm(range(self.number_of_features), desc=f'Selecting Features for r = {self.r:0.3f}'):
             k, filter_value, criterion_value, cost = fraction_find_best_feature(
                 j_criterion_func=self.j_criterion_func,
                 data=self.data,
@@ -381,7 +446,7 @@ class FractionVariableSelector(_MockVariableSelector):
                 break
 
 
-class NoCostVariableSelector(_MockVariableSelector):
+class NoCostVariableSelector(_VariableSelector):
     """Ranks all features in dataset with difference cost filter method.
 
     Parameters
