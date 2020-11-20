@@ -1,11 +1,11 @@
-Bcselector: 
+Bcselector
 ****************************
 Python cost-sensitive feature selection library.
 
 .. toctree::
    :glob:
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Contents
 
    readme
    examples
