@@ -1,6 +1,10 @@
 History
 =======
 
+0.0.24
+------
+    * Add first version of documentation.
+
 0.0.23
 ------
     * Fix filter_values to selection loop to be rounded.
