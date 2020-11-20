@@ -1,0 +1,368 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bcselector.information_theory.basic_approximations &mdash; bcselector 0.0.23 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> bcselector
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.23
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">Bcselector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference/index.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">bcselector</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>bcselector.information_theory.basic_approximations</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for bcselector.information_theory.basic_approximations</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;entropy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;conditional_entropy&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mutual_information&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;conditional_mutual_information&#39;</span>
+<span class="p">]</span>
+
+<div class="viewcode-block" id="entropy"><a class="viewcode-back" href="../../../api-reference/information_theory/basic_approximations.html#bcselector.information_theory.basic_approximations.entropy">[docs]</a><span class="k">def</span> <span class="nf">entropy</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This estimator computes the entropy of the empirical probability distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vector: list or np.array</span>
+<span class="sd">        Vector of which entropy is calculated. </span>
+<span class="sd">    base: int or float (default=np.e)</span>
+<span class="sd">        Base of the logarithm in entropy approximation</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    vector_entropy: float</span>
+<span class="sd">        Approximated entropy</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from bcselector.information_theory.basic_approximations import entropy</span>
+<span class="sd">    &gt;&gt;&gt; foo = [1,4,1,2,5,6,3]</span>
+<span class="sd">    &gt;&gt;&gt; entropy(foo)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;Argument &#39;vector&#39; not in the right shape. Use list or numpy (n,) shape instead&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Argument &#39;vector&#39; can&#39;t be empty&quot;</span>
+
+    <span class="n">vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="s2">&quot;Entropy for one number is zero&quot;</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="n">_</span><span class="p">,</span><span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">norm_counts</span> <span class="o">=</span> <span class="n">counts</span> <span class="o">/</span> <span class="n">counts</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">e</span> <span class="k">if</span> <span class="n">base</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">base</span>
+    <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">norm_counts</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">norm_counts</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">base</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="conditional_entropy"><a class="viewcode-back" href="../../../api-reference/information_theory/basic_approximations.html#bcselector.information_theory.basic_approximations.conditional_entropy">[docs]</a><span class="k">def</span> <span class="nf">conditional_entropy</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span><span class="n">condition</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This estimator computes the conditional entropy of the empirical probability distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    vector: list or np.array</span>
+<span class="sd">        Vector of which entropy is calculated.</span>
+<span class="sd">    condition: list or np.array</span>
+<span class="sd">        Vector of condition for entropy.</span>
+<span class="sd">    base: int or float</span>
+<span class="sd">        Base of the logarithm in entropy approximation. If None, np.e is selected and entropy is returned in nats.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    vector_entropy: float</span>
+<span class="sd">        Approximated entropy.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;Argument &#39;vector&#39; not in the right shape. Use list or numpy (n,) shape instead.&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">condition</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;Argument &#39;condition&#39; not in the right shape. Use list or numpy (n,) shape instead.&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Argument &#39;vector&#39; can&#39;t be empty&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Argument &#39;condition&#39; can&#39;t be empty&quot;</span>
+
+    <span class="n">vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
+    <span class="n">condition</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">vector</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">condition</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;Argument &#39;vector&#39; must be the same lenght as &#39;condition&#39;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="s2">&quot;Entropy for one number is zero&quot;</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="c1"># sort values to use np.split later</span>
+    <span class="n">vector_sorted</span> <span class="o">=</span> <span class="n">vector</span><span class="p">[</span><span class="n">condition</span><span class="o">.</span><span class="n">argsort</span><span class="p">()]</span>
+    <span class="n">condition_sorted</span> <span class="o">=</span> <span class="n">condition</span><span class="p">[</span><span class="n">condition</span><span class="o">.</span><span class="n">argsort</span><span class="p">()]</span>
+
+    <span class="n">binvalues</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">vector_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">condition_sorted</span><span class="p">,</span> <span class="n">return_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">_</span><span class="p">,</span><span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">condition_sorted</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">binprobas</span> <span class="o">=</span> <span class="n">counts</span> <span class="o">/</span> <span class="n">counts</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">cond_entropy</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">values</span><span class="p">,</span> <span class="n">proba</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">binvalues</span><span class="p">,</span> <span class="n">binprobas</span><span class="p">):</span>
+        <span class="n">cond_entropy</span> <span class="o">+=</span> <span class="n">entropy</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">)</span> <span class="o">*</span> <span class="n">proba</span>
+    <span class="k">return</span> <span class="n">cond_entropy</span></div>
+
+<div class="viewcode-block" id="mutual_information"><a class="viewcode-back" href="../../../api-reference/information_theory/basic_approximations.html#bcselector.information_theory.basic_approximations.mutual_information">[docs]</a><span class="k">def</span> <span class="nf">mutual_information</span><span class="p">(</span><span class="n">vector_1</span><span class="p">,</span> <span class="n">vector_2</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This estimator computes the mutual information of two vectors with method of the empirical probability distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    vector_1 : list or np.array</span>
+<span class="sd">        Vector of one variable. </span>
+<span class="sd">    vector_2 : list or np.array</span>
+<span class="sd">        Vector of one variable. </span>
+<span class="sd">    base : int or float</span>
+<span class="sd">        Base of the logarithm in entropy approximation. If None, np.e is selected and entropy is returned in nats.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    variables_mutual_information: float</span>
+<span class="sd">        Approximated mutual information between variables.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">vector_1_entropy</span> <span class="o">=</span> <span class="n">entropy</span><span class="p">(</span><span class="n">vector</span><span class="o">=</span><span class="n">vector_1</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">)</span>
+    <span class="n">cond_entropy</span> <span class="o">=</span> <span class="n">conditional_entropy</span><span class="p">(</span><span class="n">vector</span><span class="o">=</span><span class="n">vector_1</span><span class="p">,</span> <span class="n">condition</span><span class="o">=</span><span class="n">vector_2</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">vector_1_entropy</span> <span class="o">-</span> <span class="n">cond_entropy</span></div>
+
+<div class="viewcode-block" id="conditional_mutual_information"><a class="viewcode-back" href="../../../api-reference/information_theory/basic_approximations.html#bcselector.information_theory.basic_approximations.conditional_mutual_information">[docs]</a><span class="k">def</span> <span class="nf">conditional_mutual_information</span><span class="p">(</span><span class="n">vector_1</span><span class="p">,</span> <span class="n">vector_2</span><span class="p">,</span> <span class="n">condition</span><span class="p">,</span> <span class="n">base</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This estimator computes the conditional mutual information of two vectors and condition vector with method of the empirical probability distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    vector_1 : list or np.array</span>
+<span class="sd">        Vector of one variable. </span>
+<span class="sd">    vector_2: list or np.array</span>
+<span class="sd">        Vector of one variable. </span>
+<span class="sd">    condition: list or np.array</span>
+<span class="sd">        Vector of condition for mutual information.</span>
+<span class="sd">    base : int or float</span>
+<span class="sd">        Base of the logarithm in entropy approximation. If None, np.e is selected and entropy is returned in nats.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    variables_conditional_mutual_information : float</span>
+<span class="sd">        Approximated conditional mutual information between variables.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vector_1</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">vector_1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">vector_1</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;Argument &#39;condition&#39; not in the right shape. Use list or numpy (n,) shape instead.&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vector_2</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">vector_2</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">vector_2</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;Argument &#39;condition&#39; not in the right shape. Use list or numpy (n,) shape instead.&quot;</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">condition</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;Argument &#39;condition&#39; not in the right shape. Use list or numpy (n,) shape instead.&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">vector_1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Argument &#39;vector_1&#39; can&#39;t be empty&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">vector_2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Argument &#39;vector_2&#39; can&#39;t be empty&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Argument &#39;condition&#39; can&#39;t be empty&quot;</span>
+
+    <span class="n">vector_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vector_1</span><span class="p">)</span>
+    <span class="n">vector_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vector_2</span><span class="p">)</span>
+    <span class="n">condition</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">vector_1</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">vector_2</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">condition</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">&quot;Argument &#39;vector_1&#39; and &#39;vector_2&#39; must be the same lenght as &#39;condition&#39;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="s2">&quot;Entropy for one number is zero&quot;</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+
+    <span class="n">vector_1_sorted</span> <span class="o">=</span> <span class="n">vector_1</span><span class="p">[</span><span class="n">condition</span><span class="o">.</span><span class="n">argsort</span><span class="p">()]</span>
+    <span class="n">vector_2_sorted</span> <span class="o">=</span> <span class="n">vector_2</span><span class="p">[</span><span class="n">condition</span><span class="o">.</span><span class="n">argsort</span><span class="p">()]</span>
+    <span class="n">condition_sorted</span> <span class="o">=</span> <span class="n">condition</span><span class="p">[</span><span class="n">condition</span><span class="o">.</span><span class="n">argsort</span><span class="p">()]</span>
+
+    <span class="n">binvalues_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">vector_1_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">condition_sorted</span><span class="p">,</span> <span class="n">return_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">binvalues_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">vector_2_sorted</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">condition_sorted</span><span class="p">,</span> <span class="n">return_index</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="n">_</span><span class="p">,</span><span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">condition_sorted</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">binprobas</span> <span class="o">=</span> <span class="n">counts</span> <span class="o">/</span> <span class="n">counts</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="n">cond_mutual_info</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">value_1</span><span class="p">,</span> <span class="n">value_2</span><span class="p">,</span> <span class="n">proba</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">binvalues_1</span><span class="p">,</span> <span class="n">binvalues_2</span><span class="p">,</span> <span class="n">binprobas</span><span class="p">):</span>
+        <span class="n">cond_mutual_info</span> <span class="o">+=</span> <span class="n">mutual_information</span><span class="p">(</span><span class="n">value_1</span><span class="p">,</span> <span class="n">value_2</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">)</span> <span class="o">*</span> <span class="n">proba</span>
+    <span class="k">return</span> <span class="n">cond_mutual_info</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Tomasz Klonecki
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
