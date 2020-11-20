@@ -1,0 +1,294 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Feature Selectors &mdash; bcselector 0.0.23 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> bcselector
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.23
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Bcselector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">API Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">bcselector</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Feature Selectors</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api-reference/variable-selection.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="feature-selectors">
+<h1>Feature Selectors<a class="headerlink" href="#feature-selectors" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="diffvariableselector">
+<h2>DiffVariableSelector<a class="headerlink" href="#diffvariableselector" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="bcselector.variable_selection.DiffVariableSelector">
+<em class="property">class </em><code class="sig-prename descclassname">bcselector.variable_selection.</code><code class="sig-name descname">DiffVariableSelector</code><a class="reference internal" href="../_modules/bcselector/variable_selection.html#DiffVariableSelector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">bcselector.variable_selection._VariableSelector</span></code></p>
+<p>Ranks all features in dataset with difference cost filter method.</p>
+<p class="rubric">Methods Summary</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bcselector.variable_selection.DiffVariableSelector.fit" title="bcselector.variable_selection.DiffVariableSelector.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a>(data, target_variable, costs, lamb[, …])</p></td>
+<td><p>Ranks all features in dataset with difference cost filter method.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bcselector.variable_selection.DiffVariableSelector.score" title="bcselector.variable_selection.DiffVariableSelector.score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code></a>(model, scoring_function, **kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bcselector.variable_selection.DiffVariableSelector.plot_scores" title="bcselector.variable_selection.DiffVariableSelector.plot_scores"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_scores</span></code></a>([budget, …])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#bcselector.variable_selection.DiffVariableSelector.get_cost_results" title="bcselector.variable_selection.DiffVariableSelector.get_cost_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cost_results</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#bcselector.variable_selection.DiffVariableSelector.get_no_cost_results" title="bcselector.variable_selection.DiffVariableSelector.get_no_cost_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_no_cost_results</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods Documentation</p>
+<dl class="method">
+<dt id="bcselector.variable_selection.DiffVariableSelector.fit">
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">target_variable</em>, <em class="sig-param">costs</em>, <em class="sig-param">lamb</em>, <em class="sig-param">j_criterion_func='cife'</em>, <em class="sig-param">number_of_features=None</em>, <em class="sig-param">budget=None</em>, <em class="sig-param">stop_budget=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bcselector/variable_selection.html#DiffVariableSelector.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ranks all features in dataset with difference cost filter method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>np.ndarray</em><em> or </em><em>pd.</em>) – Matrix or data frame of data that we want to rank features.</p></li>
+<li><p><strong>target_variable</strong> (<em>np.ndarray</em><em> or </em><em>pd.core.series.Series</em>) – Vector or series of target variable. Number of rows in <cite>data</cite> must equal target_variable length</p></li>
+<li><p><strong>costs</strong> (<em>list</em><em> or </em><em>dict</em>) – Costs of features. Must be the same size as columns in <cite>data</cite>.
+When using <cite>data</cite> as np.array, provide <cite>costs</cite> as list of floats or integers.
+When using <cite>data</cite> as pd.DataFrame, provide <cite>costs</cite> as list of floats or integers or dict {‘col_1’:cost_1,…}.</p></li>
+<li><p><strong>lamb</strong> (<em>int</em><em> or </em><em>float</em>) – Cost scaling parameter. Higher lambda is, higher is the impact of the cost on selection.</p></li>
+<li><p><strong>j_criterion_func</strong> (<em>str</em>) – Method of approximation of the conditional mutual information
+Must be one of [‘mim’,’mifs’,’mrmr’,’jmi’,’cife’].
+All methods can be seen by running:
+&gt;&gt;&gt; from bcselector.information_theory.j_criterion_approximations.__all__</p></li>
+<li><p><strong>number_of_features</strong> (<em>int</em>) – Optional argument, constraint to selected number of features.</p></li>
+<li><p><strong>budget</strong> (<em>int</em><em> or </em><em>float</em>) – Optional argument, constraint to selected total cost of features.</p></li>
+<li><p><strong>stop_budget</strong> (<em>bool</em>) – Optional argument, TODO - must delete this argument</p></li>
+<li><p><strong>**kwargs</strong> – Arguments passed to <cite>difference_find_best_feature()</cite> function and then to <cite>j_criterion_func</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bcselector.variable_selection</span> <span class="kn">import</span> <span class="n">DiffVariableSelector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dvs</span> <span class="o">=</span> <span class="n">DiffVariableSelector</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dvs</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">costs</span><span class="p">,</span> <span class="n">lamb</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">j_criterion_func</span><span class="o">=</span><span class="s1">&#39;mim&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="bcselector.variable_selection.DiffVariableSelector.score">
+<code class="sig-name descname">score</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">scoring_function</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bcselector.variable_selection.DiffVariableSelector.plot_scores">
+<code class="sig-name descname">plot_scores</code><span class="sig-paren">(</span><em class="sig-param">budget=None</em>, <em class="sig-param">compare_no_cost_method=False</em>, <em class="sig-param">savefig=False</em>, <em class="sig-param">annotate=False</em>, <em class="sig-param">annotate_box=False</em>, <em class="sig-param">figsize=(12</em>, <em class="sig-param">8)</em>, <em class="sig-param">bbox_pos=(0.72</em>, <em class="sig-param">0.6)</em>, <em class="sig-param">plot_title=None</em>, <em class="sig-param">x_axis_title=None</em>, <em class="sig-param">y_axis_title=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.plot_scores" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bcselector.variable_selection.DiffVariableSelector.get_cost_results">
+<code class="sig-name descname">get_cost_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.get_cost_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bcselector.variable_selection.DiffVariableSelector.get_no_cost_results">
+<code class="sig-name descname">get_no_cost_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.get_no_cost_results" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Tomasz Klonecki
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

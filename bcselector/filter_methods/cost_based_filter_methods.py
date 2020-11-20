@@ -1,8 +1,9 @@
 import numpy as np
 
 def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possible_variables_index, costs, normalized_costs, **kwargs):
-    """
-    Function that ranks all features with selected j_criterion_func according to fraction method  and returns the feature with highest criterion value.
+    """Function that ranks all features with selected j_criterion_func according to fraction method  and returns the feature with highest criterion value.
+
+    Parameters
     ----------
     j_criterion_func : function
         Function from bcselector.information_theory.j_criterion_approximations
@@ -18,7 +19,7 @@ def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possi
         Index of all candidate variables in data matrix.
     costs : list of ints or floats
         List of costs of all variables in data matrix.
-     **kwargs
+    **kwargs
         Other parameters passed to j_criterion_func
     Returns
     -------
@@ -56,8 +57,9 @@ def fraction_find_best_feature(j_criterion_func, r, data, target_variable, possi
     return possible_variables_index[k], filter_values[k], criterion_values[k] - m, costs[possible_variables_index[k]]
 
 def difference_find_best_feature(j_criterion_func, lamb, data, target_variable, possible_variables_index, costs, normalized_costs, **kwargs):
-    """
-    Function that ranks all features with selected j_criterion_func according to difference method and returns the feature with highest criterion value.
+    """Function that ranks all features with selected j_criterion_func according to difference method and returns the feature with highest criterion value.
+    
+    Parameters
     ----------
     j_criterion_func : function
         Function from bcselector.information_theory.j_criterion_approximations
