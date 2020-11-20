@@ -16,6 +16,9 @@ Bcselector
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
   :target: https://opensource.org/licenses/MIT
 
+* Documentation: https://kaketo.github.io/bcselector.
+* Repository: https://github.com/Kaketo/bcselector/.
+
 What is it?
 -----------
 **bcselector (Budget-Cost-Selector)** it's a Python package to analyze budget-cost based variable selection in Python.
