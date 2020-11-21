@@ -1,6 +1,8 @@
 ==========
 Bcselector
 ==========
+.. raw:: html
+    <img src="https://raw.githubusercontent.com/Kaketo/bcselector/master/docs/img/logo.png" height="100px">
 
 .. image:: https://raw.githubusercontent.com/Kaketo/bcselector/master/docs/img/logo.png
   :width: 100
