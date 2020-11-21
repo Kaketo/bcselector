@@ -1,11 +1,7 @@
 ==========
 Bcselector
 ==========
-.. raw:: html
-    <img src="https://raw.githubusercontent.com/Kaketo/bcselector/master/docs/img/logo.png" width="100px">
-
-.. image:: https://raw.githubusercontent.com/Kaketo/bcselector/master/docs/img/logo.png
-  :width: 100
+.. image:: https://raw.githubusercontent.com/Kaketo/bcselector/master/docs/img/logo_small.png
 
 .. image:: https://img.shields.io/badge/python-3.7-blue.svg
     :target: http://badge.fury.io/py/Paralytics
