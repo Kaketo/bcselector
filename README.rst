@@ -4,7 +4,7 @@ Bcselector
 .. image:: https://raw.githubusercontent.com/Kaketo/bcselector/master/docs/img/logo_small.png
 
 .. image:: https://img.shields.io/badge/python-3.7-blue.svg
-    :target: http://badge.fury.io/py/Paralytics
+    :target: http://badge.fury.io/py/bcselector
 .. image:: https://badge.fury.io/py/bcselector.svg
     :target: https://badge.fury.io/py/bcselector
 .. image:: https://travis-ci.com/Kaketo/bcselector.svg?branch=master
