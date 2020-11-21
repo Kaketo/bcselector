@@ -30,6 +30,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -89,7 +90,19 @@
               <p class="caption"><span class="caption-text">Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Bcselector</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#data-generation">Data Generation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#matrixgenerator">MatrixGenerator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dataframegenerator">DataFrameGenerator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#feature-selection">Feature Selection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fractionvariableselector">FractionVariableSelector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#diffvariableselector">DiffVariableSelector</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="api-reference/index.html">API Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">History</a></li>
 </ul>
@@ -159,7 +172,198 @@
             
   <div class="section" id="examples">
 <h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
-<p>Simple illustrative examples on how you can quickly start using the <strong>Bcselector</strong> in your projects.</p>
+<p>Simple illustrative examples on how you can quickly start using the <strong>bcselector</strong> package.</p>
+<div class="section" id="data-generation">
+<h2>Data Generation<a class="headerlink" href="#data-generation" title="Permalink to this headline">¶</a></h2>
+<p>First of all lets generate some artificial data, that we are going to use in feature selection.
+Bcselector provides two classes that let us generate data with costs:</p>
+<ul class="simple">
+<li><p><strong>MatrixGenerator</strong> - generates data in <em>np.ndarray</em> and costs as <em>list</em>.</p></li>
+<li><p><strong>DataFrameGenerator</strong> - generates data in <em>pd.DataFrame</em> and costs as <em>dict</em>.</p></li>
+</ul>
+<p>Every method, uses the same algorithm, which is based on one main assumption, that mutual information of a feature and target variable is directly proportional to its cost.
+Higher the cost, lower the noise.</p>
+<ol class="arabic simple">
+<li><p>Simulate <span class="math notranslate nohighlight">\(p\)</span> independent random variables <span class="math notranslate nohighlight">\(X_1,\ldots,X_p\)</span>, where <span class="math notranslate nohighlight">\(X_i\sim N(0,1)\)</span>. We obtain <span class="math notranslate nohighlight">\(p\)</span> variables <span class="math notranslate nohighlight">\(X_i = \{x_1^{(i)},\ldots,x_n^{(i)}\}\)</span>, where <span class="math notranslate nohighlight">\(n\)</span> is a sample size and <span class="math notranslate nohighlight">\(c_i\)</span> is a cost for i-th variable. We assume that all costs are the same, i.e. <span class="math notranslate nohighlight">\(c_i = c_1 = c_2 = \ldots = c_p = 1\)</span>.</p></li>
+<li><p>For each observation <span class="math notranslate nohighlight">\((i)\)</span>, calculate the following term: <span class="math notranslate nohighlight">\(\sigma_i = \frac{e^{\sum_{j=1}^p x_{i}^{(j)}}}{1+e^{\sum_{j=1}^p x_{i}^{(j)}}}.\)</span></p></li>
+<li><p>We generate target variable <span class="math notranslate nohighlight">\(Y = \{y_1, \ldots, y_n\}\)</span>, where <span class="math notranslate nohighlight">\(y_i\)</span> is generated from Bernoulli distribution with success probability <span class="math notranslate nohighlight">\(\sigma_i\)</span>.</p></li>
+<li><p>We generate <span class="math notranslate nohighlight">\(p\)</span> noise random variables <span class="math notranslate nohighlight">\(e_1,\ldots,e_p\)</span>, where <span class="math notranslate nohighlight">\(e_i\sim N(0,\sigma)\)</span>.</p></li>
+<li><p>We create new <span class="math notranslate nohighlight">\(p\)</span> perturbed variables, each is generated as: <span class="math notranslate nohighlight">\(X_i' := X_i + e_i\)</span>. Each variable <span class="math notranslate nohighlight">\(X_i'\)</span> is assigned with cost equal to <span class="math notranslate nohighlight">\(c_i' = \frac{1}{\sigma_i +1}\)</span>.</p></li>
+<li><p>Steps <span class="math notranslate nohighlight">\(4-5\)</span> are repeated for all values from list of standard deviations: <span class="math notranslate nohighlight">\(noise\_sigmas = [\sigma_1, \ldots, \sigma_k]\)</span></p></li>
+<li><p>At the end we obtain <span class="math notranslate nohighlight">\(k*p\)</span> features.</p></li>
+</ol>
+<div class="section" id="matrixgenerator">
+<h3>MatrixGenerator<a class="headerlink" href="#matrixgenerator" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bcselector.data_generation</span> <span class="kn">import</span> <span class="n">MatrixGenerator</span>
+
+<span class="c1"># Fix the seed for reproducibility.</span>
+<span class="n">SEED</span> <span class="o">=</span> <span class="mi">42</span>
+
+<span class="c1"># Data generation arguments:</span>
+<span class="c1"># - data size,</span>
+<span class="c1"># - cost of non-noised feature</span>
+<span class="c1"># - sigma of noise for noised features.</span>
+<span class="n">n_rows</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">n_cols</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">noise_sigmas</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.3</span><span class="p">,</span><span class="mf">0.1</span><span class="p">]</span>
+
+<span class="n">mg</span> <span class="o">=</span> <span class="n">MatrixGenerator</span><span class="p">()</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">costs</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_rows</span><span class="o">=</span><span class="n">n_rows</span><span class="p">,</span>
+    <span class="n">n_basic_cols</span><span class="o">=</span><span class="n">n_cols</span><span class="p">,</span> <span class="p">,</span>
+    <span class="n">noise_sigmas</span><span class="o">=</span><span class="n">noise_sigmas</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="n">SEED</span><span class="p">,</span>
+    <span class="n">discretize_method</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">,</span>
+    <span class="n">discretize_bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="dataframegenerator">
+<h3>DataFrameGenerator<a class="headerlink" href="#dataframegenerator" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">bcselector.data_generation</span> <span class="kn">import</span> <span class="n">DataFrameGenerator</span>
+
+<span class="c1"># Fix the seed for reproducibility.</span>
+<span class="n">SEED</span> <span class="o">=</span> <span class="mi">42</span>
+
+<span class="c1"># Data generation arguments:</span>
+<span class="c1"># - data size,</span>
+<span class="c1"># - cost of non-noised feature,</span>
+<span class="c1"># - sigma of noise for noised features.</span>
+<span class="n">n_rows</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">n_cols</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">noise_sigmas</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.3</span><span class="p">,</span><span class="mf">0.1</span><span class="p">]</span>
+
+<span class="n">dfg</span> <span class="o">=</span> <span class="n">DataFrameGenerator</span><span class="p">()</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">costs</span> <span class="o">=</span> <span class="n">dfg</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_rows</span><span class="o">=</span><span class="n">n_rows</span><span class="p">,</span>
+    <span class="n">n_basic_cols</span><span class="o">=</span><span class="n">n_cols</span><span class="p">,</span> <span class="p">,</span>
+    <span class="n">noise_sigmas</span><span class="o">=</span><span class="n">noise_sigmas</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="n">SEED</span><span class="p">,</span>
+    <span class="n">discretize_method</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">,</span>
+    <span class="n">discretize_bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="feature-selection">
+<h2>Feature Selection<a class="headerlink" href="#feature-selection" title="Permalink to this headline">¶</a></h2>
+<p>For this moment, just two methods of cost-sensitive feature selection methods are implemented:</p>
+<ul class="simple">
+<li><p><strong>FractionVariableSelector</strong> - costs are compared to relation with target variable as difference.</p></li>
+<li><p><strong>DiffVariableSelector</strong> - costs are compared to relation with target variable as fraction.</p></li>
+</ul>
+<div class="section" id="fractionvariableselector">
+<h3>FractionVariableSelector<a class="headerlink" href="#fractionvariableselector" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
+
+<span class="kn">from</span> <span class="nn">bcselector.variable_selection</span> <span class="kn">import</span> <span class="n">FractionVariableSelector</span>
+<span class="kn">from</span> <span class="nn">bcselector.data_generation</span> <span class="kn">import</span> <span class="n">MatrixGenerator</span>
+
+<span class="c1"># Fix the seed for reproducibility.</span>
+<span class="n">SEED</span> <span class="o">=</span> <span class="mi">42</span>
+
+<span class="c1"># Data generation arguments:</span>
+<span class="c1"># - data size,</span>
+<span class="c1"># - cost of non-noised feature,</span>
+<span class="c1"># - sigma of noise for noised features.</span>
+<span class="n">n_rows</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">n_cols</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">noise_sigmas</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.3</span><span class="p">,</span><span class="mf">0.1</span><span class="p">]</span>
+
+<span class="c1"># Generate data</span>
+<span class="n">mg</span> <span class="o">=</span> <span class="n">MatrixGenerator</span><span class="p">()</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">costs</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_rows</span><span class="o">=</span><span class="n">n_rows</span><span class="p">,</span>
+    <span class="n">n_basic_cols</span><span class="o">=</span><span class="n">n_cols</span><span class="p">,</span> <span class="p">,</span>
+    <span class="n">noise_sigmas</span><span class="o">=</span><span class="n">noise_sigmas</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="n">SEED</span><span class="p">,</span>
+    <span class="n">discretize_method</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">,</span>
+    <span class="n">discretize_bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># Arguments for feature selection</span>
+<span class="c1"># - cost scaling parameter,</span>
+<span class="c1"># - kwarg for j_criterion_func,</span>
+<span class="c1"># - model that is fitted on data.</span>
+<span class="n">r</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+
+<span class="c1"># Feature selection</span>
+ <span class="n">dvs</span> <span class="o">=</span> <span class="n">FractionVariableSelector</span><span class="p">()</span>
+ <span class="n">dvs</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+     <span class="n">data</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
+     <span class="n">target_variable</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+     <span class="n">costs</span><span class="o">=</span><span class="n">costs</span><span class="p">,</span>
+     <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span>
+     <span class="n">j_criterion_func</span><span class="o">=</span><span class="s1">&#39;cife&#39;</span><span class="p">,</span>
+     <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">)</span>
+ <span class="n">dvs</span><span class="o">.</span><span class="n">score</span><span class="p">(</span>
+     <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+     <span class="n">scoring_function</span><span class="o">=</span><span class="n">roc_auc_score</span><span class="p">)</span>
+ <span class="n">dvs</span><span class="o">.</span><span class="n">plot_scores</span><span class="p">(</span>
+     <span class="n">compare_no_cost_method</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+     <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+     <span class="n">annotate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="diffvariableselector">
+<h3>DiffVariableSelector<a class="headerlink" href="#diffvariableselector" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
+
+<span class="kn">from</span> <span class="nn">bcselector.variable_selection</span> <span class="kn">import</span> <span class="n">DiffVariableSelector</span>
+<span class="kn">from</span> <span class="nn">bcselector.data_generation</span> <span class="kn">import</span> <span class="n">MatrixGenerator</span>
+
+
+<span class="c1"># Fix the seed for reproducibility.</span>
+<span class="n">SEED</span> <span class="o">=</span> <span class="mi">42</span>
+
+<span class="c1"># Data generation arguments:</span>
+<span class="c1"># - data size,</span>
+<span class="c1"># - cost of non-noised feature,</span>
+<span class="c1"># - sigma of noise for noised features.</span>
+<span class="n">n_rows</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">n_cols</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">noise_sigmas</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span><span class="mf">0.8</span><span class="p">,</span><span class="mf">0.3</span><span class="p">,</span><span class="mf">0.1</span><span class="p">]</span>
+
+<span class="c1"># Generate data</span>
+<span class="n">mg</span> <span class="o">=</span> <span class="n">MatrixGenerator</span><span class="p">()</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">costs</span> <span class="o">=</span> <span class="n">mg</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+    <span class="n">n_rows</span><span class="o">=</span><span class="n">n_rows</span><span class="p">,</span>
+    <span class="n">n_basic_cols</span><span class="o">=</span><span class="n">n_cols</span><span class="p">,</span> <span class="p">,</span>
+    <span class="n">noise_sigmas</span><span class="o">=</span><span class="n">noise_sigmas</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="n">SEED</span><span class="p">,</span>
+    <span class="n">discretize_method</span><span class="o">=</span><span class="s1">&#39;uniform&#39;</span><span class="p">,</span>
+    <span class="n">discretize_bins</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># Arguments for feature selection</span>
+<span class="c1"># - cost scaling parameter,</span>
+<span class="c1"># - model that is fitted on data.</span>
+<span class="n">lamb</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+
+<span class="c1"># Feature selection</span>
+ <span class="n">dvs</span> <span class="o">=</span> <span class="n">DiffVariableSelector</span><span class="p">()</span>
+ <span class="n">dvs</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+     <span class="n">data</span><span class="o">=</span><span class="n">X</span><span class="p">,</span>
+     <span class="n">target_variable</span><span class="o">=</span><span class="n">y</span><span class="p">,</span>
+     <span class="n">costs</span><span class="o">=</span><span class="n">costs</span><span class="p">,</span>
+     <span class="n">lamb</span><span class="o">=</span><span class="n">lamb</span><span class="p">,</span>
+     <span class="n">j_criterion_func</span><span class="o">=</span><span class="s1">&#39;jmi&#39;</span><span class="p">)</span>
+ <span class="n">dvs</span><span class="o">.</span><span class="n">score</span><span class="p">(</span>
+     <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+     <span class="n">scoring_function</span><span class="o">=</span><span class="n">roc_auc_score</span><span class="p">)</span>
+ <span class="n">dvs</span><span class="o">.</span><span class="n">plot_scores</span><span class="p">(</span>
+     <span class="n">compare_no_cost_method</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+     <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+     <span class="n">annotate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 
 
