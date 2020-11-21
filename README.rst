@@ -17,7 +17,7 @@ Bcselector
   :target: https://opensource.org/licenses/MIT
 
 * Documentation: https://kaketo.github.io/bcselector.
-* Repository: https://github.com/Kaketo/bcselector/.
+* Repository: https://github.com/Kaketo/bcselector.
 
 What is it?
 -----------
