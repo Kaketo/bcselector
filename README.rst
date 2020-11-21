@@ -3,7 +3,7 @@ Bcselector
 ==========
 
 .. image:: https://raw.githubusercontent.com/Kaketo/bcselector/master/docs/img/logo.png
-  :width: 200
+  :width: 50
 
 .. image:: https://img.shields.io/badge/python-3.7-blue.svg
     :target: http://badge.fury.io/py/Paralytics
