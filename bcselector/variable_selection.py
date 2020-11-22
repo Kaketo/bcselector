@@ -320,7 +320,7 @@ class _VariableSelector():
         self.no_cost_variables_selected_order = []
         self.no_cost_cost_variables_selected_order = []
 
-        for i in tqdm(range(self.number_of_features), desc='Selecting No-cost Features'):
+        for _ in tqdm(range(self.number_of_features), desc='Selecting No-cost Features'):
             k, _, cost = no_cost_find_best_feature(
                 j_criterion_func=self.j_criterion_func,
                 data=self.data,
@@ -413,7 +413,7 @@ class DiffVariableSelector(_VariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        for i in range(self.number_of_features):
+        for _ in range(self.number_of_features):
             k, filter_value, criterion_value, cost = difference_find_best_feature(
                 j_criterion_func=self.j_criterion_func,
                 data=self.X_train,
@@ -509,7 +509,7 @@ class FractionVariableSelector(_VariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        for i in tqdm(range(self.number_of_features), desc=f'Selecting Features for r = {self.r:0.3f}'):
+        for _ in tqdm(range(self.number_of_features), desc=f'Selecting Features for r = {self.r:0.3f}'):
             k, filter_value, criterion_value, cost = fraction_find_best_feature(
                 j_criterion_func=self.j_criterion_func,
                 data=self.data,
@@ -556,7 +556,7 @@ class NoCostVariableSelector(_VariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        for i in tqdm(range(len(U)), desc='Scoring No-cost Features'):
+        for _ in tqdm(range(len(U)), desc='Scoring No-cost Features'):
             k, _, cost = no_cost_find_best_feature(
                 j_criterion_func=self.j_criterion_func,
                 data=self.data,
