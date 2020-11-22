@@ -161,6 +161,7 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="nn">sklearn</span>
 <span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
 
@@ -272,12 +273,64 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">X_train</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">X_test</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_train</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target_variable</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="n">test_size</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_cost_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Getter to obtain cost-sensitive results.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        variables_selected_order: list</span>
+<span class="sd">            Indexes of features selected.</span>
+<span class="sd">        cost_variables_selected_order: list</span>
+<span class="sd">            Costs of features selected. In the same order as `variables_selected_order`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_selected_order</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Run fit method first.&quot;</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables_selected_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cost_variables_selected_order</span>
 
     <span class="k">def</span> <span class="nf">get_no_cost_results</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Getter to obtain NO-cost-sensitive results.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        variables_selected_order: list</span>
+<span class="sd">            Indexes of features selected.</span>
+<span class="sd">        cost_variables_selected_order: list</span>
+<span class="sd">            Costs of features selected. In the same order as `variables_selected_order`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_cost_variables_selected_order</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;Run fit_no_cost or plot_scores method first.&quot;</span>
+
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">no_cost_variables_selected_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">no_cost_cost_variables_selected_order</span>
 
-    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">scoring_function</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">scoring_function</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method scores selected features step by step by `scoring_function`. In each step one more feature is added.</span>
+<span class="sd">        Of course user can do that on his own, but using `score` function we are sure that feature selection is performed on the same train set and it is much easier to use,</span>
+<span class="sd">        than writing a loop on our own.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        model: sklearn.base.ClassifierMixin</span>
+<span class="sd">            Any classifier from sklearn API.</span>
+<span class="sd">        scoring_function: function</span>
+<span class="sd">            Classification metric function from sklearn. Must be one of [&#39;roc_auc_score&#39;]. For more scoring functions open an GH issue.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        total_scores: list</span>
+<span class="sd">            List of `scoring_function` scores for each step. One step is one feature in algorighm ranking order.</span>
+<span class="sd">        total_costs: list</span>
+<span class="sd">            List of accumulated costs for each step. One step is one feature in algorighm ranking order.</span>
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from bcselector.variable_selection import FractionVariableSelector</span>
+<span class="sd">        &gt;&gt;&gt; from sklearn.metrics import roc_auc_score</span>
+<span class="sd">        &gt;&gt;&gt; from sklearn.linear_model import LogisticRegression</span>
+<span class="sd">        &gt;&gt;&gt; fvs = FractionVariableSelector()</span>
+<span class="sd">        &gt;&gt;&gt; fvs.fit(X, y, costs, lamb=1, j_criterion_func=&#39;mim&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; model = LogisticRegression()</span>
+<span class="sd">        &gt;&gt;&gt; fvs.score(roc_auc_score, model)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">ClassifierMixin</span><span class="p">),</span> <span class="s2">&quot;Model must be sklearn.base.ClassifierMixin.&quot;</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">total_scores</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">total_costs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
@@ -295,13 +348,47 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">total_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">total_costs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_cost</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">score_no_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_no_cost_score</span><span class="p">(</span><span class="n">stop_budget</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stop_budget</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_scores</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_costs</span>
+
+    <span class="k">def</span> <span class="nf">fit_no_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ranks all features in dataset with the same method as previously with `fit` method but costs are not considered at all.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        no_cost_total_scores: list</span>
+<span class="sd">            List of `scoring_function` scores for each step. One step is one feature in algorighm ranking order.</span>
+<span class="sd">        no_cost_total_costs: list</span>
+<span class="sd">            List of accumulated costs for each step. One step is one feature in algorighm ranking order.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; from bcselector.variable_selection import FractionVariableSelector</span>
+<span class="sd">        &gt;&gt;&gt; fvs = FractionVariableSelector()</span>
+<span class="sd">        &gt;&gt;&gt; fvs.fit(X, y, costs, lamb=1, j_criterion_func=&#39;mim&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; fvs.fit_no_cost()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">j_criterion_func</span><span class="p">,</span> <span class="s2">&quot;Must run `fit` method first.&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fit_no_cost</span><span class="p">(</span><span class="n">stop_budget</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stop_budget</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">no_cost_variables_selected_order</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">no_cost_cost_variables_selected_order</span>
 
     <span class="k">def</span> <span class="nf">plot_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">budget</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compare_no_cost_method</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">savefig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">annotate</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">annotate_box</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
                     <span class="n">bbox_pos</span><span class="o">=</span><span class="p">(</span><span class="mf">0.72</span><span class="p">,</span> <span class="mf">0.60</span><span class="p">),</span>
                     <span class="n">plot_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_axis_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_axis_title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Plots scores of each iteration of the algorithm.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        budget: int or float</span>
+<span class="sd">        compare_no_cost_method: bool = False</span>
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_scores</span><span class="p">,</span> <span class="s2">&quot;Run `score` method first.&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
@@ -316,7 +403,8 @@
         <span class="n">move_horizontal</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_costs</span><span class="p">)</span><span class="o">/</span><span class="mi">100</span>
         <span class="n">move_vertical</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_scores</span><span class="p">)</span><span class="o">/</span><span class="mi">100</span>
         <span class="k">if</span> <span class="n">compare_no_cost_method</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_no_cost_score</span><span class="p">(</span><span class="n">stop_budget</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stop_budget</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fit_no_cost</span><span class="p">(</span><span class="n">stop_budget</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">stop_budget</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_score_no_cost</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_cost_total_costs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">no_cost_total_scores</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;no regard to cost&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">total_costs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_scores</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;with regard to costs&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">prop</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">16</span><span class="p">},</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;lower right&#39;</span><span class="p">)</span>
@@ -382,8 +470,7 @@
         <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_no_cost_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stop_budget</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="c1"># Rank variables with NoCostVariableSelector</span>
+    <span class="k">def</span> <span class="nf">_fit_no_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stop_budget</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">S</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="n">U</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])])</span>
 
@@ -408,6 +495,7 @@
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">S</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">number_of_features</span><span class="p">:</span>
                 <span class="k">break</span>
 
+    <span class="k">def</span> <span class="nf">_score_no_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">current_cost</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">no_cost_total_scores</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">no_cost_total_costs</span> <span class="o">=</span> <span class="p">[]</span>

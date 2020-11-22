@@ -30,6 +30,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -189,17 +190,17 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#bcselector.variable_selection.FractionVariableSelector.fit" title="bcselector.variable_selection.FractionVariableSelector.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a>(data, target_variable, costs, r[, …])</p></td>
 <td><p>Ranks all features in dataset with fraction cost filter method.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#bcselector.variable_selection.FractionVariableSelector.score" title="bcselector.variable_selection.FractionVariableSelector.score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code></a>(model, scoring_function, **kwargs)</p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#bcselector.variable_selection.FractionVariableSelector.score" title="bcselector.variable_selection.FractionVariableSelector.score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code></a>(model, scoring_function)</p></td>
+<td><p>Method scores selected features step by step by <cite>scoring_function</cite>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#bcselector.variable_selection.FractionVariableSelector.plot_scores" title="bcselector.variable_selection.FractionVariableSelector.plot_scores"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_scores</span></code></a>([budget, …])</p></td>
-<td><p></p></td>
+<td><p>Plots scores of each iteration of the algorithm.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#bcselector.variable_selection.FractionVariableSelector.get_cost_results" title="bcselector.variable_selection.FractionVariableSelector.get_cost_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cost_results</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Getter to obtain cost-sensitive results.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#bcselector.variable_selection.FractionVariableSelector.get_no_cost_results" title="bcselector.variable_selection.FractionVariableSelector.get_no_cost_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_no_cost_results</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Getter to obtain NO-cost-sensitive results.</p></td>
 </tr>
 </tbody>
 </table>
@@ -238,23 +239,81 @@ All methods can be seen by running:
 
 <dl class="method">
 <dt id="bcselector.variable_selection.FractionVariableSelector.score">
-<code class="sig-name descname">score</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">scoring_function</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.FractionVariableSelector.score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">score</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">scoring_function</em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.FractionVariableSelector.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method scores selected features step by step by <cite>scoring_function</cite>. In each step one more feature is added.
+Of course user can do that on his own, but using <cite>score</cite> function we are sure that feature selection is performed on the same train set and it is much easier to use,
+than writing a loop on our own.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>sklearn.base.ClassifierMixin</em>) – Any classifier from sklearn API.</p></li>
+<li><p><strong>scoring_function</strong> (<em>function</em>) – Classification metric function from sklearn. Must be one of [‘roc_auc_score’]. For more scoring functions open an GH issue.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>total_scores</strong> (<em>list</em>) – List of <cite>scoring_function</cite> scores for each step. One step is one feature in algorighm ranking order.</p></li>
+<li><p><strong>total_costs</strong> (<em>list</em>) – List of accumulated costs for each step. One step is one feature in algorighm ranking order.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bcselector.variable_selection</span> <span class="kn">import</span> <span class="n">FractionVariableSelector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fvs</span> <span class="o">=</span> <span class="n">FractionVariableSelector</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fvs</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">costs</span><span class="p">,</span> <span class="n">lamb</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">j_criterion_func</span><span class="o">=</span><span class="s1">&#39;mim&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fvs</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">roc_auc_score</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="method">
 <dt id="bcselector.variable_selection.FractionVariableSelector.plot_scores">
 <code class="sig-name descname">plot_scores</code><span class="sig-paren">(</span><em class="sig-param">budget=None</em>, <em class="sig-param">compare_no_cost_method=False</em>, <em class="sig-param">savefig=False</em>, <em class="sig-param">annotate=False</em>, <em class="sig-param">annotate_box=False</em>, <em class="sig-param">figsize=(12</em>, <em class="sig-param">8)</em>, <em class="sig-param">bbox_pos=(0.72</em>, <em class="sig-param">0.6)</em>, <em class="sig-param">plot_title=None</em>, <em class="sig-param">x_axis_title=None</em>, <em class="sig-param">y_axis_title=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.FractionVariableSelector.plot_scores" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Plots scores of each iteration of the algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>budget</strong> (<em>int</em><em> or </em><em>float</em>) – </p></li>
+<li><p><strong>compare_no_cost_method</strong> (<em>bool = False</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="bcselector.variable_selection.FractionVariableSelector.get_cost_results">
 <code class="sig-name descname">get_cost_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.FractionVariableSelector.get_cost_results" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Getter to obtain cost-sensitive results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>variables_selected_order</strong> (<em>list</em>) – Indexes of features selected.</p></li>
+<li><p><strong>cost_variables_selected_order</strong> (<em>list</em>) – Costs of features selected. In the same order as <cite>variables_selected_order</cite></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="bcselector.variable_selection.FractionVariableSelector.get_no_cost_results">
 <code class="sig-name descname">get_no_cost_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.FractionVariableSelector.get_no_cost_results" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Getter to obtain NO-cost-sensitive results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>variables_selected_order</strong> (<em>list</em>) – Indexes of features selected.</p></li>
+<li><p><strong>cost_variables_selected_order</strong> (<em>list</em>) – Costs of features selected. In the same order as <cite>variables_selected_order</cite></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -276,17 +335,17 @@ All methods can be seen by running:
 <tr class="row-odd"><td><p><a class="reference internal" href="#bcselector.variable_selection.DiffVariableSelector.fit" title="bcselector.variable_selection.DiffVariableSelector.fit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit</span></code></a>(data, target_variable, costs, lamb[, …])</p></td>
 <td><p>Ranks all features in dataset with difference cost filter method.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#bcselector.variable_selection.DiffVariableSelector.score" title="bcselector.variable_selection.DiffVariableSelector.score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code></a>(model, scoring_function, **kwargs)</p></td>
-<td><p></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#bcselector.variable_selection.DiffVariableSelector.score" title="bcselector.variable_selection.DiffVariableSelector.score"><code class="xref py py-obj docutils literal notranslate"><span class="pre">score</span></code></a>(model, scoring_function)</p></td>
+<td><p>Method scores selected features step by step by <cite>scoring_function</cite>.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#bcselector.variable_selection.DiffVariableSelector.plot_scores" title="bcselector.variable_selection.DiffVariableSelector.plot_scores"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_scores</span></code></a>([budget, …])</p></td>
-<td><p></p></td>
+<td><p>Plots scores of each iteration of the algorithm.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#bcselector.variable_selection.DiffVariableSelector.get_cost_results" title="bcselector.variable_selection.DiffVariableSelector.get_cost_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_cost_results</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Getter to obtain cost-sensitive results.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#bcselector.variable_selection.DiffVariableSelector.get_no_cost_results" title="bcselector.variable_selection.DiffVariableSelector.get_no_cost_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_no_cost_results</span></code></a>()</p></td>
-<td><p></p></td>
+<td><p>Getter to obtain NO-cost-sensitive results.</p></td>
 </tr>
 </tbody>
 </table>
@@ -325,23 +384,81 @@ All methods can be seen by running:
 
 <dl class="method">
 <dt id="bcselector.variable_selection.DiffVariableSelector.score">
-<code class="sig-name descname">score</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">scoring_function</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.score" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">score</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">scoring_function</em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method scores selected features step by step by <cite>scoring_function</cite>. In each step one more feature is added.
+Of course user can do that on his own, but using <cite>score</cite> function we are sure that feature selection is performed on the same train set and it is much easier to use,
+than writing a loop on our own.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> (<em>sklearn.base.ClassifierMixin</em>) – Any classifier from sklearn API.</p></li>
+<li><p><strong>scoring_function</strong> (<em>function</em>) – Classification metric function from sklearn. Must be one of [‘roc_auc_score’]. For more scoring functions open an GH issue.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>total_scores</strong> (<em>list</em>) – List of <cite>scoring_function</cite> scores for each step. One step is one feature in algorighm ranking order.</p></li>
+<li><p><strong>total_costs</strong> (<em>list</em>) – List of accumulated costs for each step. One step is one feature in algorighm ranking order.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bcselector.variable_selection</span> <span class="kn">import</span> <span class="n">FractionVariableSelector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fvs</span> <span class="o">=</span> <span class="n">FractionVariableSelector</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fvs</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">costs</span><span class="p">,</span> <span class="n">lamb</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">j_criterion_func</span><span class="o">=</span><span class="s1">&#39;mim&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fvs</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">roc_auc_score</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="method">
 <dt id="bcselector.variable_selection.DiffVariableSelector.plot_scores">
 <code class="sig-name descname">plot_scores</code><span class="sig-paren">(</span><em class="sig-param">budget=None</em>, <em class="sig-param">compare_no_cost_method=False</em>, <em class="sig-param">savefig=False</em>, <em class="sig-param">annotate=False</em>, <em class="sig-param">annotate_box=False</em>, <em class="sig-param">figsize=(12</em>, <em class="sig-param">8)</em>, <em class="sig-param">bbox_pos=(0.72</em>, <em class="sig-param">0.6)</em>, <em class="sig-param">plot_title=None</em>, <em class="sig-param">x_axis_title=None</em>, <em class="sig-param">y_axis_title=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.plot_scores" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Plots scores of each iteration of the algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>budget</strong> (<em>int</em><em> or </em><em>float</em>) – </p></li>
+<li><p><strong>compare_no_cost_method</strong> (<em>bool = False</em>) – </p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="bcselector.variable_selection.DiffVariableSelector.get_cost_results">
 <code class="sig-name descname">get_cost_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.get_cost_results" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Getter to obtain cost-sensitive results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>variables_selected_order</strong> (<em>list</em>) – Indexes of features selected.</p></li>
+<li><p><strong>cost_variables_selected_order</strong> (<em>list</em>) – Costs of features selected. In the same order as <cite>variables_selected_order</cite></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="bcselector.variable_selection.DiffVariableSelector.get_no_cost_results">
 <code class="sig-name descname">get_no_cost_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.get_no_cost_results" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Getter to obtain NO-cost-sensitive results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>variables_selected_order</strong> (<em>list</em>) – Indexes of features selected.</p></li>
+<li><p><strong>cost_variables_selected_order</strong> (<em>list</em>) – Costs of features selected. In the same order as <cite>variables_selected_order</cite></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
