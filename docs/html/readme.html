@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Bcselector &mdash; bcselector 0.0.24 documentation</title>
+  <title>Bcselector &mdash; bcselector 0.0.30 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.0.24
+                0.0.30
               </div>
             
           
@@ -92,6 +92,9 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Bcselector</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#what-is-it">What is it?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quickstart">Quickstart</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bibliography">Bibliography</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#citations">Citations</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
@@ -189,10 +192,60 @@ on information theory and to propose new variants of these methods considering f
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>bcselector can be installed from [PyPI](<a class="reference external" href="https://pypi.org/project/bcselector">https://pypi.org/project/bcselector</a>):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">bcselector</span>
+<p>bcselector can be installed from [PyPI] (<a class="reference external" href="https://pypi.org/project/bcselector">https://pypi.org/project/bcselector</a>):</p>
+<blockquote>
+<div><p>pip install bcselector</p>
+</div></blockquote>
+</div>
+<div class="section" id="quickstart">
+<h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h2>
+<p>First of all we must have a dataset with classification target variable and a cost assigned to each feature.
+Good sample data could be <a class="reference external" href="https://archive.ics.uci.edu/ml/citation_policy.html">hepatitis</a> from <em>UCI</em> repository [1].</p>
+<p>Lets say that that we have dataset loaded to Python, we need to create <cite>Selector</cite> class and call <cite>fit</cite> method with proper arguments on it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
+
+<span class="kn">from</span> <span class="nn">bcselector.variable_selection</span> <span class="kn">import</span> <span class="n">FractionVariableSelector</span>
+
+<span class="c1"># Arguments for feature selection</span>
+<span class="c1"># r - cost scaling parameter,</span>
+<span class="c1"># beta - kwarg for j_criterion_func,</span>
+<span class="c1"># model - model that is fitted on data.</span>
+<span class="n">r</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">beta</span> <span class="o">=</span> <span class="mf">0.5</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+
+<span class="c1"># Feature selection</span>
+<span class="n">fvs</span> <span class="o">=</span> <span class="n">FractionVariableSelector</span><span class="p">()</span>
+<span class="n">fvs</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">X</span><span class="p">,</span> <span class="n">target_variable</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">costs</span><span class="o">=</span><span class="n">costs</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">j_criterion_func</span><span class="o">=</span><span class="s1">&#39;cife&#39;</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Now we can obtain feature selection results by calling simple getter:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fvs</span><span class="o">.</span><span class="n">get_cost_results</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Or we can score and plot our results with any sklearn model and classification metric:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fvs</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">scoring_function</span><span class="o">=</span><span class="n">roc_auc_score</span><span class="p">)</span>
+<span class="n">fvs</span><span class="o">.</span><span class="n">plot_scores</span><span class="p">(</span><span class="n">compare_no_cost_method</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">annotate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Which results in BC-plot:</p>
+<img alt="https://raw.githubusercontent.com/Kaketo/bcselector/master/docs/img/bc_plot.png" src="https://raw.githubusercontent.com/Kaketo/bcselector/master/docs/img/bc_plot.png" />
+<p>On <em>OX axis</em> we have accumulated cost and on <em>OY axis</em> we see test set score of currently selected set of features.
+- <strong>Blue line</strong> is cost-sensitive method
+- <strong>Red line</strong> is NO-cost method
+- <strong>Blue vertical line</strong> is selected budget
+Small numbers above or below the curve are indexes of selected features. Therefore we can see that first variable selected by cost-sensitive method is on 14th column in dataset <em>X</em>.</p>
+</div>
+<div class="section" id="bibliography">
+<h2>Bibliography<a class="headerlink" href="#bibliography" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>[1] Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [<a class="reference external" href="http://archive.ics.uci.edu/ml">http://archive.ics.uci.edu/ml</a>]. Irvine, CA: University of California, School of Information and Computer Science.</p></li>
+</ul>
+</div>
+<div class="section" id="citations">
+<h2>Citations<a class="headerlink" href="#citations" title="Permalink to this headline">¶</a></h2>
+<p>TBD</p>
 </div>
 </div>
 
