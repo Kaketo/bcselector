@@ -83,6 +83,12 @@ Which results in BC-plot:
 
 .. image:: https://raw.githubusercontent.com/Kaketo/bcselector/master/docs/img/bc_plot.png
 
+On *OX axis* we have accumulated cost and on *OY axis* we see test set score of currently selected set of features.
+- **Blue line** is cost-sensitive method
+- **Red line** is NO-cost method
+- **Blue vertical line** is selected budget
+Small numbers above or below the curve are indexes of selected features. Therefore we can see that first variable selected by cost-sensitive method is on 14th column in dataset *X*.
+
 Bibliography
 ------------
 - [1] Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
