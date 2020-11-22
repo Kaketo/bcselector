@@ -1,11 +1,11 @@
 import unittest
 import numpy as np
-import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import roc_auc_score
 
-from bcselector.variable_selection import DiffVariableSelector, FractionVariableSelector, NoCostVariableSelector
-from bcselector.data_generation import MatrixGenerator, DataFrameGenerator
+from bcselector.variable_selection import FractionVariableSelector
+from bcselector.data_generation import MatrixGenerator
+
 
 class TestMatrixGenerator(unittest.TestCase):
     def test_cife(self):
@@ -16,7 +16,7 @@ class TestMatrixGenerator(unittest.TestCase):
 
         # When
         mg = MatrixGenerator()
-        X, y, costs = mg.generate(n_rows=n_rows, n_basic_cols=n_cols, noise_sigmas=[0.1,0.5], seed=2)
+        X, y, costs = mg.generate(n_rows=n_rows, n_basic_cols=n_cols, noise_sigmas=[0.1, 0.5], seed=2)
         r = 1
         beta = 0.5
 
@@ -40,11 +40,11 @@ class TestMatrixGenerator(unittest.TestCase):
         n_cols = 3
         n_rows = 1000
         model = LogisticRegression()
-        sigmas = [1,10,100]
+        sigmas = [1, 10, 100]
 
         # When
         mg = MatrixGenerator()
-        X,y,costs = mg.generate(n_rows = n_rows, n_basic_cols = n_cols, basic_cost = 1, noise_sigmas = sigmas, seed=42)
+        X, y, costs = mg.generate(n_rows=n_rows, n_basic_cols=n_cols, basic_cost=1, noise_sigmas=sigmas, seed=42)
         r = 0.8
 
         fvs = FractionVariableSelector()
@@ -56,12 +56,12 @@ class TestMatrixGenerator(unittest.TestCase):
                 beta=0.05)
         fvs.score(model=model, scoring_function=roc_auc_score)
         fvs.plot_scores(compare_no_cost_method=True, model=model)
-        
+
         def find_nearest_idx(list, value):
             array = np.asarray(list)
             idx = (np.abs(array - value)).argmin()
             return idx
-        
+
         when_better = []
         for i in range(fvs.data.shape[1]):
             idx_1_no_cost = i
@@ -79,11 +79,11 @@ class TestMatrixGenerator(unittest.TestCase):
         n_cols = 3
         n_rows = 1000
         model = LogisticRegression()
-        sigmas = [1,10,100]
+        sigmas = [1, 10, 100]
 
         # When
         mg = MatrixGenerator()
-        X,y,costs = mg.generate(n_rows = n_rows, n_basic_cols = n_cols, basic_cost = 1, noise_sigmas = sigmas, seed=42)
+        X, y, costs = mg.generate(n_rows=n_rows, n_basic_cols=n_cols, basic_cost=1, noise_sigmas=sigmas, seed=42)
         r = 0.8
 
         fvs = FractionVariableSelector()
@@ -94,12 +94,12 @@ class TestMatrixGenerator(unittest.TestCase):
                 j_criterion_func='mim')
         fvs.score(model=model, scoring_function=roc_auc_score)
         fvs.plot_scores(compare_no_cost_method=True, model=model)
-        
+
         def find_nearest_idx(list, value):
             array = np.asarray(list)
             idx = (np.abs(array - value)).argmin()
             return idx
-        
+
         when_better = []
         for i in range(fvs.data.shape[1]):
             idx_1_no_cost = i
@@ -112,5 +112,6 @@ class TestMatrixGenerator(unittest.TestCase):
         # Then
         self.assertTrue(sum(when_better)/len(when_better) >= 0.5)
 
+
 if __name__ == '__main__':
-    unittest.main()   
+    unittest.main()
