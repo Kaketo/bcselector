@@ -7,13 +7,14 @@ __all__ = [
     'conditional_mutual_information'
 ]
 
+
 def entropy(vector, base=None):
     """This estimator computes the entropy of the empirical probability distribution.
 
     Parameters
     ----------
     vector: list or np.array
-        Vector of which entropy is calculated. 
+        Vector of which entropy is calculated.
     base: int or float (default=np.e)
         Base of the logarithm in entropy approximation
 
@@ -29,7 +30,7 @@ def entropy(vector, base=None):
     >>> entropy(foo)
 
     """
-    
+
     assert isinstance(vector, (list)) or (isinstance(vector, np.ndarray) and len(vector.shape) == 1), "Argument 'vector' not in the right shape. Use list or numpy (n,) shape instead"
     assert len(vector) > 0, "Argument 'vector' can't be empty"
 
@@ -39,12 +40,13 @@ def entropy(vector, base=None):
         "Entropy for one number is zero"
         return 0.0
 
-    _,counts = np.unique(vector, return_counts=True)
+    _, counts = np.unique(vector, return_counts=True)
     norm_counts = counts / counts.sum()
     base = np.e if base is None else base
     return -(norm_counts * np.log(norm_counts)/np.log(base)).sum()
 
-def conditional_entropy(vector,condition, base=None):
+
+def conditional_entropy(vector, condition, base=None):
     """This estimator computes the conditional entropy of the empirical probability distribution.
 
     Parameters
@@ -80,8 +82,8 @@ def conditional_entropy(vector,condition, base=None):
     vector_sorted = vector[condition.argsort()]
     condition_sorted = condition[condition.argsort()]
 
-    binvalues = np.split(vector_sorted, np.unique(condition_sorted, return_index = True)[1][1:])
-    _,counts = np.unique(condition_sorted, return_counts=True)
+    binvalues = np.split(vector_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
+    _, counts = np.unique(condition_sorted, return_counts=True)
     binprobas = counts / counts.sum()
     cond_entropy = 0
 
@@ -89,15 +91,16 @@ def conditional_entropy(vector,condition, base=None):
         cond_entropy += entropy(values, base=base) * proba
     return cond_entropy
 
+
 def mutual_information(vector_1, vector_2, base=None):
     """This estimator computes the mutual information of two vectors with method of the empirical probability distribution.
 
     Parameters
     -----------
     vector_1 : list or np.array
-        Vector of one variable. 
+        Vector of one variable.
     vector_2 : list or np.array
-        Vector of one variable. 
+        Vector of one variable.
     base : int or float
         Base of the logarithm in entropy approximation. If None, np.e is selected and entropy is returned in nats.
 
@@ -111,15 +114,16 @@ def mutual_information(vector_1, vector_2, base=None):
     cond_entropy = conditional_entropy(vector=vector_1, condition=vector_2, base=base)
     return vector_1_entropy - cond_entropy
 
-def conditional_mutual_information(vector_1, vector_2, condition, base = None):
+
+def conditional_mutual_information(vector_1, vector_2, condition, base=None):
     """This estimator computes the conditional mutual information of two vectors and condition vector with method of the empirical probability distribution.
 
     Parameters
     -----------
     vector_1 : list or np.array
-        Vector of one variable. 
+        Vector of one variable.
     vector_2: list or np.array
-        Vector of one variable. 
+        Vector of one variable.
     condition: list or np.array
         Vector of condition for mutual information.
     base : int or float
@@ -152,9 +156,9 @@ def conditional_mutual_information(vector_1, vector_2, condition, base = None):
     vector_2_sorted = vector_2[condition.argsort()]
     condition_sorted = condition[condition.argsort()]
 
-    binvalues_1 = np.split(vector_1_sorted, np.unique(condition_sorted, return_index = True)[1][1:])
-    binvalues_2 = np.split(vector_2_sorted, np.unique(condition_sorted, return_index = True)[1][1:])
-    _,counts = np.unique(condition_sorted, return_counts=True)
+    binvalues_1 = np.split(vector_1_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
+    binvalues_2 = np.split(vector_2_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
+    _, counts = np.unique(condition_sorted, return_counts=True)
     binprobas = counts / counts.sum()
     cond_mutual_info = 0
 
