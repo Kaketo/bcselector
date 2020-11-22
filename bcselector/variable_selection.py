@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+import sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score
 
@@ -115,12 +116,64 @@ class _VariableSelector():
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.data, self.target_variable, test_size=test_size, random_state=seed)
 
     def get_cost_results(self):
+        """Getter to obtain cost-sensitive results.
+
+        Returns
+        -------
+        variables_selected_order: list
+            Indexes of features selected.
+        cost_variables_selected_order: list
+            Costs of features selected. In the same order as `variables_selected_order`
+        """
+        assert len(self.variables_selected_order) > 0, "Run fit method first."
+
         return self.variables_selected_order, self.cost_variables_selected_order
 
     def get_no_cost_results(self):
+        """Getter to obtain NO-cost-sensitive results.
+
+        Returns
+        -------
+        variables_selected_order: list
+            Indexes of features selected.
+        cost_variables_selected_order: list
+            Costs of features selected. In the same order as `variables_selected_order`
+        """
+        assert len(self.no_cost_variables_selected_order) > 0, "Run fit_no_cost or plot_scores method first."
+
         return self.no_cost_variables_selected_order, self.no_cost_cost_variables_selected_order
 
-    def score(self, model, scoring_function, **kwargs):
+    def score(self, model, scoring_function):
+        """Method scores selected features step by step by `scoring_function`. In each step one more feature is added.
+        Of course user can do that on his own, but using `score` function we are sure that feature selection is performed on the same train set and it is much easier to use,
+        than writing a loop on our own.
+
+        Parameters
+        ----------
+        model: sklearn.base.ClassifierMixin
+            Any classifier from sklearn API.
+        scoring_function: function
+            Classification metric function from sklearn. Must be one of ['roc_auc_score']. For more scoring functions open an GH issue.
+
+        Returns
+        -------
+        total_scores: list
+            List of `scoring_function` scores for each step. One step is one feature in algorighm ranking order.
+        total_costs: list
+            List of accumulated costs for each step. One step is one feature in algorighm ranking order.
+        Examples
+        --------
+        >>> from bcselector.variable_selection import FractionVariableSelector
+        >>> from sklearn.metrics import roc_auc_score
+        >>> from sklearn.linear_model import LogisticRegression
+        >>> fvs = FractionVariableSelector()
+        >>> fvs.fit(X, y, costs, lamb=1, j_criterion_func='mim')
+        >>> model = LogisticRegression()
+        >>> fvs.score(roc_auc_score, model)
+        """
+
+        assert isinstance(model, sklearn.base.ClassifierMixin), "Model must be sklearn.base.ClassifierMixin."
+
         self.total_scores = []
         self.total_costs = []
         self.model = model
@@ -138,13 +191,47 @@ class _VariableSelector():
             self.total_scores.append(score)
             self.total_costs.append(current_cost)
 
-    def score_no_cost(self):
-        self._no_cost_score(stop_budget=self.stop_budget)
+        return self.total_scores, self.total_costs
+
+    def fit_no_cost(self):
+        """Ranks all features in dataset with the same method as previously with `fit` method but costs are not considered at all.
+
+        Returns
+        -------
+        no_cost_total_scores: list
+            List of `scoring_function` scores for each step. One step is one feature in algorighm ranking order.
+        no_cost_total_costs: list
+            List of accumulated costs for each step. One step is one feature in algorighm ranking order.
+
+        Examples
+        --------
+        >>> from bcselector.variable_selection import FractionVariableSelector
+        >>> fvs = FractionVariableSelector()
+        >>> fvs.fit(X, y, costs, lamb=1, j_criterion_func='mim')
+        >>> fvs.fit_no_cost()
+        """
+        assert self.j_criterion_func, "Must run `fit` method first."
+        self._fit_no_cost(stop_budget=self.stop_budget)
+        return self.no_cost_variables_selected_order, self.no_cost_cost_variables_selected_order
 
     def plot_scores(self, budget=None, compare_no_cost_method=False, savefig=False, annotate=False, annotate_box=False,
                     figsize=(12, 8),
                     bbox_pos=(0.72, 0.60),
                     plot_title=None, x_axis_title=None, y_axis_title=None, **kwargs):
+        """Plots scores of each iteration of the algorithm.
+
+        Parameters
+        ----------
+        budget: int or float
+        compare_no_cost_method: bool = False
+
+        Attributes
+        ----------
+
+        Examples
+        --------
+
+        """
         assert self.total_scores, "Run `score` method first."
 
         self.fig, self.ax = plt.subplots(figsize=figsize)
@@ -159,7 +246,8 @@ class _VariableSelector():
         move_horizontal = max(self.total_costs)/100
         move_vertical = max(self.total_scores)/100
         if compare_no_cost_method is True:
-            self._no_cost_score(stop_budget=self.stop_budget)
+            self._fit_no_cost(stop_budget=self.stop_budget)
+            self._score_no_cost()
             self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label='no regard to cost')
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label='with regard to costs')
             self.ax.legend(prop={"size": 16}, loc='lower right')
@@ -225,8 +313,7 @@ class _VariableSelector():
         plt.tight_layout()
         plt.show()
 
-    def _no_cost_score(self, stop_budget=False, **kwargs):
-        # Rank variables with NoCostVariableSelector
+    def _fit_no_cost(self, stop_budget=False, **kwargs):
         S = set()
         U = set([i for i in range(self.data.shape[1])])
 
@@ -251,6 +338,7 @@ class _VariableSelector():
             if len(S) == self.number_of_features:
                 break
 
+    def _score_no_cost(self):
         current_cost = 0
         self.no_cost_total_scores = []
         self.no_cost_total_costs = []
