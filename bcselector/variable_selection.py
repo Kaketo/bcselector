@@ -223,14 +223,24 @@ class _VariableSelector():
         Parameters
         ----------
         budget: int or float
+            Budget to be ploted on the figure as vertical line.
         compare_no_cost_method: bool = False
-
-        Attributes
-        ----------
-
-        Examples
-        --------
-
+            Plot no-cost curve on the plot.
+        savefig: bool
+            Save figure with scores, savefig arguments passed with kwargs.
+        annotate: bool
+            Annotate plot with feature indexes on the plot.
+        annotate_box: bool
+            Plot box with features data: id, name and cost.
+        figsize: tuple
+            Figsize.
+        bbox_pos: tuple
+            Position of box with features data.
+        plot_title: str
+        x_axis_title: str
+        y_axis_title: str
+        **kwargs: list
+            Arguments passed to np.savefig()
         """
         assert self.total_scores, "Run `score` method first."
 
@@ -442,14 +452,8 @@ class DiffVariableSelector(_VariableSelector):
 class FractionVariableSelector(_VariableSelector):
     """Ranks all features in dataset with difference cost filter method.
 
-    Parameters
-    ----------
-
     Attributes
     ----------
-
-    Examples
-    --------
 
     """
     def fit(self, data, target_variable, costs, r, j_criterion_func='cife', number_of_features=None, budget=None, stop_budget=False, **kwargs):
@@ -480,9 +484,6 @@ class FractionVariableSelector(_VariableSelector):
             Optional argument, TODO - must delete this argument
         **kwargs
             Arguments passed to `fraction_find_best_feature()` function and then to `j_criterion_func`.
-
-        Attributes
-        ----------
 
         Examples
         --------
@@ -535,18 +536,6 @@ class FractionVariableSelector(_VariableSelector):
 
 
 class NoCostVariableSelector(_VariableSelector):
-    """Ranks all features in dataset with difference cost filter method.
-
-    Parameters
-    ----------
-
-    Attributes
-    ----------
-
-    Examples
-    --------
-
-    """
     def fit(self, data, target_variable, costs, j_criterion_func='cife', **kwargs):
 
         super().fit(data, target_variable, costs, j_criterion_func, **kwargs)

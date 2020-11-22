@@ -30,7 +30,7 @@
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -380,23 +380,33 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        budget: int or float</span>
+<span class="sd">            Budget to be ploted on the figure as vertical line.</span>
 <span class="sd">        compare_no_cost_method: bool = False</span>
-
-<span class="sd">        Attributes</span>
-<span class="sd">        ----------</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-
+<span class="sd">            Plot no-cost curve on the plot.</span>
+<span class="sd">        savefig: bool</span>
+<span class="sd">            Save figure with scores, savefig arguments passed with kwargs.</span>
+<span class="sd">        annotate: bool</span>
+<span class="sd">            Annotate plot with feature indexes on the plot.</span>
+<span class="sd">        annotate_box: bool</span>
+<span class="sd">            Plot box with features data: id, name and cost.</span>
+<span class="sd">        figsize: tuple</span>
+<span class="sd">            Figsize.</span>
+<span class="sd">        bbox_pos: tuple</span>
+<span class="sd">            Position of box with features data.</span>
+<span class="sd">        plot_title: str</span>
+<span class="sd">        x_axis_title: str</span>
+<span class="sd">        y_axis_title: str</span>
+<span class="sd">        **kwargs: list</span>
+<span class="sd">            Arguments passed to np.savefig()</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_scores</span><span class="p">,</span> <span class="s2">&quot;Run `score` method first.&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fig</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">budget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">budget</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">)),</span> <span class="s2">&quot;Argument `budget` must be float or int.&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">budget</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;budget=</span><span class="si">{budget:.2f}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">budget</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;budget=</span><span class="si">{</span><span class="n">budget</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">budget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">budget</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;budget=</span><span class="si">{self.budget:.2f}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">budget</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;budget=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">budget</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">pass</span>
 
@@ -459,7 +469,7 @@
             <span class="n">variables_idx</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables_selected_order</span><span class="p">)</span><span class="o">.</span><span class="n">union</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">no_cost_variables_selected_order</span><span class="p">))</span>
             <span class="n">variables_names</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">colnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">variables_idx</span><span class="p">]</span>
             <span class="n">variables_costs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">costs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">variables_idx</span><span class="p">]</span>
-            <span class="n">textstr</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; C=</span><span class="si">{cost:.2f}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">cost</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">variables_idx</span><span class="p">,</span> <span class="n">variables_names</span><span class="p">,</span> <span class="n">variables_costs</span><span class="p">)])</span>
+            <span class="n">textstr</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;: &#39;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; C=</span><span class="si">{</span><span class="n">cost</span><span class="si">:</span><span class="s1">.2f</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">cost</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">variables_idx</span><span class="p">,</span> <span class="n">variables_names</span><span class="p">,</span> <span class="n">variables_costs</span><span class="p">)])</span>
             <span class="n">props</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">boxstyle</span><span class="o">=</span><span class="s1">&#39;round&#39;</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">bbox_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">bbox_pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">textstr</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">verticalalignment</span><span class="o">=</span><span class="s1">&#39;top&#39;</span><span class="p">,</span> <span class="n">bbox</span><span class="o">=</span><span class="n">props</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
 
@@ -477,7 +487,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">no_cost_variables_selected_order</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">no_cost_cost_variables_selected_order</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_features</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Selecting No-cost Features&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_features</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Selecting No-cost Features&#39;</span><span class="p">):</span>
             <span class="n">k</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">cost</span> <span class="o">=</span> <span class="n">no_cost_find_best_feature</span><span class="p">(</span>
                 <span class="n">j_criterion_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">j_criterion_func</span><span class="p">,</span>
                 <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
@@ -570,7 +580,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">variables_selected_order</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cost_variables_selected_order</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_features</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_features</span><span class="p">):</span>
             <span class="n">k</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">,</span> <span class="n">criterion_value</span><span class="p">,</span> <span class="n">cost</span> <span class="o">=</span> <span class="n">difference_find_best_feature</span><span class="p">(</span>
                 <span class="n">j_criterion_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">j_criterion_func</span><span class="p">,</span>
                 <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">X_train</span><span class="p">,</span>
@@ -599,14 +609,8 @@
 <div class="viewcode-block" id="FractionVariableSelector"><a class="viewcode-back" href="../../api-reference/variable_selection.html#bcselector.variable_selection.FractionVariableSelector">[docs]</a><span class="k">class</span> <span class="nc">FractionVariableSelector</span><span class="p">(</span><span class="n">_VariableSelector</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Ranks all features in dataset with difference cost filter method.</span>
 
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 <div class="viewcode-block" id="FractionVariableSelector.fit"><a class="viewcode-back" href="../../api-reference/variable_selection.html#bcselector.variable_selection.FractionVariableSelector.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">target_variable</span><span class="p">,</span> <span class="n">costs</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">j_criterion_func</span><span class="o">=</span><span class="s1">&#39;cife&#39;</span><span class="p">,</span> <span class="n">number_of_features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">budget</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop_budget</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -638,9 +642,6 @@
 <span class="sd">        **kwargs</span>
 <span class="sd">            Arguments passed to `fraction_find_best_feature()` function and then to `j_criterion_func`.</span>
 
-<span class="sd">        Attributes</span>
-<span class="sd">        ----------</span>
-
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        &gt;&gt;&gt; from bcselector.variable_selection import FractionVariableSelector</span>
@@ -666,7 +667,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">variables_selected_order</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cost_variables_selected_order</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_features</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Selecting Features for r = </span><span class="si">{self.r:0.3f}</span><span class="s1">&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">number_of_features</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Selecting Features for r = </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="si">:</span><span class="s1">0.3f</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">):</span>
             <span class="n">k</span><span class="p">,</span> <span class="n">filter_value</span><span class="p">,</span> <span class="n">criterion_value</span><span class="p">,</span> <span class="n">cost</span> <span class="o">=</span> <span class="n">fraction_find_best_feature</span><span class="p">(</span>
                 <span class="n">j_criterion_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">j_criterion_func</span><span class="p">,</span>
                 <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>
@@ -692,18 +693,6 @@
 
 
 <span class="k">class</span> <span class="nc">NoCostVariableSelector</span><span class="p">(</span><span class="n">_VariableSelector</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Ranks all features in dataset with difference cost filter method.</span>
-
-<span class="sd">    Parameters</span>
-<span class="sd">    ----------</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-
-<span class="sd">    Examples</span>
-<span class="sd">    --------</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">target_variable</span><span class="p">,</span> <span class="n">costs</span><span class="p">,</span> <span class="n">j_criterion_func</span><span class="o">=</span><span class="s1">&#39;cife&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">target_variable</span><span class="p">,</span> <span class="n">costs</span><span class="p">,</span> <span class="n">j_criterion_func</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -713,7 +702,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">variables_selected_order</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cost_variables_selected_order</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">U</span><span class="p">)),</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Scoring No-cost Features&#39;</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">U</span><span class="p">)),</span> <span class="n">desc</span><span class="o">=</span><span class="s1">&#39;Scoring No-cost Features&#39;</span><span class="p">):</span>
             <span class="n">k</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">cost</span> <span class="o">=</span> <span class="n">no_cost_find_best_feature</span><span class="p">(</span>
                 <span class="n">j_criterion_func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">j_criterion_func</span><span class="p">,</span>
                 <span class="n">data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span>

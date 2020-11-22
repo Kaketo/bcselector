@@ -30,7 +30,7 @@
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -174,12 +174,11 @@
 <h1>Feature Selectors<a class="headerlink" href="#feature-selectors" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="fractionvariableselector">
 <h2>FractionVariableSelector<a class="headerlink" href="#fractionvariableselector" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="bcselector.variable_selection.FractionVariableSelector">
 <em class="property">class </em><code class="sig-prename descclassname">bcselector.variable_selection.</code><code class="sig-name descname">FractionVariableSelector</code><a class="reference internal" href="../_modules/bcselector/variable_selection.html#FractionVariableSelector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bcselector.variable_selection.FractionVariableSelector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">bcselector.variable_selection._VariableSelector</span></code></p>
 <p>Ranks all features in dataset with difference cost filter method.</p>
-<p class="rubric">Examples</p>
 <p class="rubric">Methods Summary</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -205,9 +204,9 @@
 </tbody>
 </table>
 <p class="rubric">Methods Documentation</p>
-<dl class="method">
+<dl class="py method">
 <dt id="bcselector.variable_selection.FractionVariableSelector.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">target_variable</em>, <em class="sig-param">costs</em>, <em class="sig-param">r</em>, <em class="sig-param">j_criterion_func='cife'</em>, <em class="sig-param">number_of_features=None</em>, <em class="sig-param">budget=None</em>, <em class="sig-param">stop_budget=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bcselector/variable_selection.html#FractionVariableSelector.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bcselector.variable_selection.FractionVariableSelector.fit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">target_variable</span></em>, <em class="sig-param"><span class="n">costs</span></em>, <em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">j_criterion_func</span><span class="o">=</span><span class="default_value">'cife'</span></em>, <em class="sig-param"><span class="n">number_of_features</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">budget</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop_budget</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bcselector/variable_selection.html#FractionVariableSelector.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bcselector.variable_selection.FractionVariableSelector.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ranks all features in dataset with fraction cost filter method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -237,9 +236,9 @@ All methods can be seen by running:
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bcselector.variable_selection.FractionVariableSelector.score">
-<code class="sig-name descname">score</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">scoring_function</em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.FractionVariableSelector.score" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">score</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">scoring_function</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.FractionVariableSelector.score" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method scores selected features step by step by <cite>scoring_function</cite>. In each step one more feature is added.
 Of course user can do that on his own, but using <cite>score</cite> function we are sure that feature selection is performed on the same train set and it is much easier to use,
 than writing a loop on our own.</p>
@@ -270,22 +269,30 @@ than writing a loop on our own.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bcselector.variable_selection.FractionVariableSelector.plot_scores">
-<code class="sig-name descname">plot_scores</code><span class="sig-paren">(</span><em class="sig-param">budget=None</em>, <em class="sig-param">compare_no_cost_method=False</em>, <em class="sig-param">savefig=False</em>, <em class="sig-param">annotate=False</em>, <em class="sig-param">annotate_box=False</em>, <em class="sig-param">figsize=(12</em>, <em class="sig-param">8)</em>, <em class="sig-param">bbox_pos=(0.72</em>, <em class="sig-param">0.6)</em>, <em class="sig-param">plot_title=None</em>, <em class="sig-param">x_axis_title=None</em>, <em class="sig-param">y_axis_title=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.FractionVariableSelector.plot_scores" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot_scores</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">budget</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">compare_no_cost_method</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">savefig</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">annotate</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">annotate_box</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">figsize</span><span class="o">=</span><span class="default_value">12, 8</span></em>, <em class="sig-param"><span class="n">bbox_pos</span><span class="o">=</span><span class="default_value">0.72, 0.6</span></em>, <em class="sig-param"><span class="n">plot_title</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">x_axis_title</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_axis_title</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.FractionVariableSelector.plot_scores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots scores of each iteration of the algorithm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>budget</strong> (<em>int</em><em> or </em><em>float</em>) – </p></li>
-<li><p><strong>compare_no_cost_method</strong> (<em>bool = False</em>) – </p></li>
+<li><p><strong>budget</strong> (<em>int</em><em> or </em><em>float</em>) – Budget to be ploted on the figure as vertical line.</p></li>
+<li><p><strong>compare_no_cost_method</strong> (<em>bool = False</em>) – Plot no-cost curve on the plot.</p></li>
+<li><p><strong>savefig</strong> (<em>bool</em>) – Save figure with scores, savefig arguments passed with kwargs.</p></li>
+<li><p><strong>annotate</strong> (<em>bool</em>) – Annotate plot with feature indexes on the plot.</p></li>
+<li><p><strong>annotate_box</strong> (<em>bool</em>) – Plot box with features data: id, name and cost.</p></li>
+<li><p><strong>figsize</strong> (<em>tuple</em>) – Figsize.</p></li>
+<li><p><strong>bbox_pos</strong> (<em>tuple</em>) – Position of box with features data.</p></li>
+<li><p><strong>plot_title</strong> (<em>str</em>) – </p></li>
+<li><p><strong>x_axis_title</strong> (<em>str</em>) – </p></li>
+<li><p><strong>y_axis_title</strong> (<em>str</em>) – </p></li>
+<li><p><strong>**kwargs</strong> (<em>list</em>) – Arguments passed to np.savefig()</p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bcselector.variable_selection.FractionVariableSelector.get_cost_results">
 <code class="sig-name descname">get_cost_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.FractionVariableSelector.get_cost_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Getter to obtain cost-sensitive results.</p>
@@ -300,7 +307,7 @@ than writing a loop on our own.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bcselector.variable_selection.FractionVariableSelector.get_no_cost_results">
 <code class="sig-name descname">get_no_cost_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.FractionVariableSelector.get_no_cost_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Getter to obtain NO-cost-sensitive results.</p>
@@ -320,7 +327,7 @@ than writing a loop on our own.</p>
 </div>
 <div class="section" id="diffvariableselector">
 <h2>DiffVariableSelector<a class="headerlink" href="#diffvariableselector" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="bcselector.variable_selection.DiffVariableSelector">
 <em class="property">class </em><code class="sig-prename descclassname">bcselector.variable_selection.</code><code class="sig-name descname">DiffVariableSelector</code><a class="reference internal" href="../_modules/bcselector/variable_selection.html#DiffVariableSelector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">bcselector.variable_selection._VariableSelector</span></code></p>
@@ -350,9 +357,9 @@ than writing a loop on our own.</p>
 </tbody>
 </table>
 <p class="rubric">Methods Documentation</p>
-<dl class="method">
+<dl class="py method">
 <dt id="bcselector.variable_selection.DiffVariableSelector.fit">
-<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">target_variable</em>, <em class="sig-param">costs</em>, <em class="sig-param">lamb</em>, <em class="sig-param">j_criterion_func='cife'</em>, <em class="sig-param">number_of_features=None</em>, <em class="sig-param">budget=None</em>, <em class="sig-param">stop_budget=False</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bcselector/variable_selection.html#DiffVariableSelector.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.fit" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">fit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">target_variable</span></em>, <em class="sig-param"><span class="n">costs</span></em>, <em class="sig-param"><span class="n">lamb</span></em>, <em class="sig-param"><span class="n">j_criterion_func</span><span class="o">=</span><span class="default_value">'cife'</span></em>, <em class="sig-param"><span class="n">number_of_features</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">budget</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop_budget</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bcselector/variable_selection.html#DiffVariableSelector.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.fit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ranks all features in dataset with difference cost filter method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -382,9 +389,9 @@ All methods can be seen by running:
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bcselector.variable_selection.DiffVariableSelector.score">
-<code class="sig-name descname">score</code><span class="sig-paren">(</span><em class="sig-param">model</em>, <em class="sig-param">scoring_function</em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.score" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">score</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">model</span></em>, <em class="sig-param"><span class="n">scoring_function</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.score" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method scores selected features step by step by <cite>scoring_function</cite>. In each step one more feature is added.
 Of course user can do that on his own, but using <cite>score</cite> function we are sure that feature selection is performed on the same train set and it is much easier to use,
 than writing a loop on our own.</p>
@@ -415,22 +422,30 @@ than writing a loop on our own.</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bcselector.variable_selection.DiffVariableSelector.plot_scores">
-<code class="sig-name descname">plot_scores</code><span class="sig-paren">(</span><em class="sig-param">budget=None</em>, <em class="sig-param">compare_no_cost_method=False</em>, <em class="sig-param">savefig=False</em>, <em class="sig-param">annotate=False</em>, <em class="sig-param">annotate_box=False</em>, <em class="sig-param">figsize=(12</em>, <em class="sig-param">8)</em>, <em class="sig-param">bbox_pos=(0.72</em>, <em class="sig-param">0.6)</em>, <em class="sig-param">plot_title=None</em>, <em class="sig-param">x_axis_title=None</em>, <em class="sig-param">y_axis_title=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.plot_scores" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">plot_scores</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">budget</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">compare_no_cost_method</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">savefig</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">annotate</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">annotate_box</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">figsize</span><span class="o">=</span><span class="default_value">12, 8</span></em>, <em class="sig-param"><span class="n">bbox_pos</span><span class="o">=</span><span class="default_value">0.72, 0.6</span></em>, <em class="sig-param"><span class="n">plot_title</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">x_axis_title</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y_axis_title</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.plot_scores" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots scores of each iteration of the algorithm.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>budget</strong> (<em>int</em><em> or </em><em>float</em>) – </p></li>
-<li><p><strong>compare_no_cost_method</strong> (<em>bool = False</em>) – </p></li>
+<li><p><strong>budget</strong> (<em>int</em><em> or </em><em>float</em>) – Budget to be ploted on the figure as vertical line.</p></li>
+<li><p><strong>compare_no_cost_method</strong> (<em>bool = False</em>) – Plot no-cost curve on the plot.</p></li>
+<li><p><strong>savefig</strong> (<em>bool</em>) – Save figure with scores, savefig arguments passed with kwargs.</p></li>
+<li><p><strong>annotate</strong> (<em>bool</em>) – Annotate plot with feature indexes on the plot.</p></li>
+<li><p><strong>annotate_box</strong> (<em>bool</em>) – Plot box with features data: id, name and cost.</p></li>
+<li><p><strong>figsize</strong> (<em>tuple</em>) – Figsize.</p></li>
+<li><p><strong>bbox_pos</strong> (<em>tuple</em>) – Position of box with features data.</p></li>
+<li><p><strong>plot_title</strong> (<em>str</em>) – </p></li>
+<li><p><strong>x_axis_title</strong> (<em>str</em>) – </p></li>
+<li><p><strong>y_axis_title</strong> (<em>str</em>) – </p></li>
+<li><p><strong>**kwargs</strong> (<em>list</em>) – Arguments passed to np.savefig()</p></li>
 </ul>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bcselector.variable_selection.DiffVariableSelector.get_cost_results">
 <code class="sig-name descname">get_cost_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.get_cost_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Getter to obtain cost-sensitive results.</p>
@@ -445,7 +460,7 @@ than writing a loop on our own.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="bcselector.variable_selection.DiffVariableSelector.get_no_cost_results">
 <code class="sig-name descname">get_no_cost_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bcselector.variable_selection.DiffVariableSelector.get_no_cost_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Getter to obtain NO-cost-sensitive results.</p>
