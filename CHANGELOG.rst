@@ -1,6 +1,11 @@
 History
 =======
 
+0.0.30
+------
+    * Add first complete version of documenation and quickstart in README.
+    * Small fixes in variable_selection package. Spliting no-cost fix and score functions.
+
 0.0.24
 ------
     * Add first version of documentation.
