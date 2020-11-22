@@ -42,7 +42,7 @@ MatrixGenerator
    mg = MatrixGenerator()
    X, y, costs = mg.generate(
        n_rows=n_rows, 
-       n_basic_cols=n_cols, ,
+       n_basic_cols=n_cols,
        noise_sigmas=noise_sigmas, 
        seed=SEED,
        discretize_method='uniform', 
@@ -68,7 +68,7 @@ DataFrameGenerator
    dfg = DataFrameGenerator()
    X, y, costs = dfg.generate(
        n_rows=n_rows, 
-       n_basic_cols=n_cols, ,
+       n_basic_cols=n_cols,
        noise_sigmas=noise_sigmas, 
        seed=SEED,
        discretize_method='uniform', 
@@ -106,7 +106,7 @@ FractionVariableSelector
    mg = MatrixGenerator()
    X, y, costs = mg.generate(
        n_rows=n_rows, 
-       n_basic_cols=n_cols, ,
+       n_basic_cols=n_cols,
        noise_sigmas=noise_sigmas, 
        seed=SEED,
        discretize_method='uniform', 
@@ -121,18 +121,18 @@ FractionVariableSelector
    model = LogisticRegression()
 
    # Feature selection
-    dvs = FractionVariableSelector()
-    dvs.fit(
+   fvs = FractionVariableSelector()
+   fvs.fit(
         data=X,
         target_variable=y,
         costs=costs,
         r=r,
         j_criterion_func='cife',
         beta=beta)
-    dvs.score(
+   fvs.score(
         model=model, 
         scoring_function=roc_auc_score)
-    dvs.plot_scores(
+   fvs.plot_scores(
         compare_no_cost_method=True, 
         model=model, 
         annotate=True)
@@ -163,7 +163,7 @@ DiffVariableSelector
    mg = MatrixGenerator()
    X, y, costs = mg.generate(
        n_rows=n_rows, 
-       n_basic_cols=n_cols, ,
+       n_basic_cols=n_cols,
        noise_sigmas=noise_sigmas, 
        seed=SEED,
        discretize_method='uniform', 
@@ -177,17 +177,17 @@ DiffVariableSelector
    model = LogisticRegression()
 
    # Feature selection
-    dvs = DiffVariableSelector()
-    dvs.fit(
+   dvs = DiffVariableSelector()
+   dvs.fit(
         data=X,
         target_variable=y,
         costs=costs,
         lamb=lamb,
         j_criterion_func='jmi')
-    dvs.score(
+   dvs.score(
         model=model, 
         scoring_function=roc_auc_score)
-    dvs.plot_scores(
+   dvs.plot_scores(
         compare_no_cost_method=True, 
         model=model, 
         annotate=True)
