@@ -85,9 +85,9 @@ Which results in BC-plot:
 
 On *OX axis* we have accumulated cost and on *OY axis* we see test set score of currently selected set of features:
 
-- **Blue line** is cost-sensitive method
-- **Red line** is NO-cost method
-- **Blue vertical line** is selected budget
+- **Blue line** is cost-sensitive method selected features order.
+- **Red line** is NO-cost method selected features order.
+- **Blue vertical line** is maximum budget avaliable (user parameter)
 
 Small numbers above or below the curve are indexes of selected features. Therefore we can see that first variable selected by cost-sensitive method is on 14th column in dataset *X*.
 
