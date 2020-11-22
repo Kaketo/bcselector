@@ -35,6 +35,58 @@ on information theory and to propose new variants of these methods considering f
 Installation
 ------------
 
-bcselector can be installed from [PyPI](https://pypi.org/project/bcselector): ::
+bcselector can be installed from [PyPI] (https://pypi.org/project/bcselector):
 
     pip install bcselector
+
+Quickstart
+----------
+
+First of all we must have a dataset with classification target variable and a cost assigned to each feature.
+Good sample data could be `hepatitis <https://archive.ics.uci.edu/ml/citation_policy.html>`_ from *UCI* repository [1].
+
+Lets say that that we have dataset loaded to Python, we need to create `Selector` class and call `fit` method with proper arguments on it:
+
+.. code-block:: python
+
+   from sklearn.linear_model import LogisticRegression
+   from sklearn.metrics import roc_auc_score
+
+   from bcselector.variable_selection import FractionVariableSelector
+
+   # Arguments for feature selection
+   # r - cost scaling parameter, 
+   # beta - kwarg for j_criterion_func,
+   # model - model that is fitted on data.
+   r = 1
+   beta = 0.5
+   model = LogisticRegression()
+
+   # Feature selection
+   fvs = FractionVariableSelector()
+   fvs.fit(data=X, target_variable=y, costs=costs, r=r, j_criterion_func='cife', beta=beta)
+
+Now we can obtain feature selection results by calling simple getter:
+
+.. code-block:: python
+
+   fvs.get_cost_results()
+
+Or we can score and plot our results with any sklearn model and classification metric:
+
+.. code-block:: python
+
+  fvs.score(model=model, scoring_function=roc_auc_score)
+  fvs.plot_scores(compare_no_cost_method=True, model=model, annotate=True)
+
+Which results in BC-plot:
+
+.. image:: https://raw.githubusercontent.com/Kaketo/bcselector/master/docs/img/bc_plot.png
+
+Bibliography
+------------
+- [1] Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
+
+Citations
+---------
+TBD
