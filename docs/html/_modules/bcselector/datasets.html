@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bcselector.datasets &mdash; bcselector 0.0.30 documentation</title>
+  <title>bcselector.datasets &mdash; bcselector 0.0.31 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.0.30
+                0.0.31
               </div>
             
           
@@ -163,13 +163,13 @@
 <span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">KBinsDiscretizer</span>
 
 
-<div class="viewcode-block" id="discretize"><a class="viewcode-back" href="../../api-reference/datasets.html#bcselector.datasets.discretize">[docs]</a><span class="k">def</span> <span class="nf">discretize</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_discretize</span><span class="p">(</span><span class="n">vector</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Discretizes vector with sklearn.preprocessing.KBinsDiscretizer.</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    vector : np.array</span>
-<span class="sd">    **kwargs</span>
+<span class="sd">    kwargs</span>
 <span class="sd">        Arguments passed to sklearn.preprocessing.KBinsDiscretizer constructor.</span>
 
 <span class="sd">    Returns</span>
@@ -179,14 +179,14 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">discretizer</span> <span class="o">=</span> <span class="n">KBinsDiscretizer</span><span class="p">(</span><span class="n">encode</span><span class="o">=</span><span class="s1">&#39;ordinal&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="n">discretized_vector</span> <span class="o">=</span> <span class="n">discretizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">discretized_vector</span></div>
+    <span class="k">return</span> <span class="n">discretized_vector</span>
 
 
 <div class="viewcode-block" id="load_mimic3"><a class="viewcode-back" href="../../api-reference/datasets.html#bcselector.datasets.load_mimic3">[docs]</a><span class="k">def</span> <span class="nf">load_mimic3</span><span class="p">(</span><span class="n">as_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">discretize_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Load and return the mimic3 dataset.</span>
 <span class="sd">    The mimic3 dataset is a medical dataset with multiple target variables.</span>
-<span class="sd">    Dataset is avaliable at Physiobank [1].</span>
-<span class="sd">    Costs of features were collected in article [2].</span>
+<span class="sd">    Dataset is avaliable at Physiobank [1]_.</span>
+<span class="sd">    Costs of features were collected in article [2]_.</span>
 
 <span class="sd">    =================   ==============</span>
 <span class="sd">    Samples total                 6591</span>
@@ -233,7 +233,7 @@
         <span class="n">costs</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">discretize_data</span><span class="p">:</span>
-        <span class="n">data_discretized</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">func1d</span><span class="o">=</span><span class="n">discretize</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">data_discretized</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">func1d</span><span class="o">=</span><span class="n">_discretize</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data_discretized</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">as_frame</span><span class="p">:</span>
@@ -245,7 +245,7 @@
 <div class="viewcode-block" id="load_hepatitis"><a class="viewcode-back" href="../../api-reference/datasets.html#bcselector.datasets.load_hepatitis">[docs]</a><span class="k">def</span> <span class="nf">load_hepatitis</span><span class="p">(</span><span class="n">as_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">discretize_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Load and return the hepatitis dataset provided.</span>
 <span class="sd">    The mimic3 dataset is a small medical dataset with single target variable.</span>
-<span class="sd">    Dataset is collected from UCI repository [3].</span>
+<span class="sd">    Dataset is collected from UCI repository [3]_.</span>
 
 <span class="sd">    =================   ==============</span>
 <span class="sd">    Samples total                  155</span>
@@ -260,7 +260,7 @@
 <span class="sd">        appropriate names. The target is a pandas DataFrame with multiple target variables.</span>
 <span class="sd">    discretize_data: bool, default=True</span>
 <span class="sd">        If True, the returned data is discretized with sklearn.preprocessing.KBinsDiscretizer.</span>
-<span class="sd">    **kwargs</span>
+<span class="sd">    kwargs</span>
 <span class="sd">        Arguments passed to sklearn.preprocessing.KBinsDiscretizer constructor.</span>
 
 <span class="sd">    Returns</span>
@@ -291,7 +291,7 @@
         <span class="n">costs</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">discretize_data</span><span class="p">:</span>
-        <span class="n">data_discretized</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">func1d</span><span class="o">=</span><span class="n">discretize</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">data_discretized</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">func1d</span><span class="o">=</span><span class="n">_discretize</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data_discretized</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">as_frame</span><span class="p">:</span>

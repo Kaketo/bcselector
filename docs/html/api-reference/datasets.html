@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Datasets &mdash; bcselector 0.0.30 documentation</title>
+  <title>Datasets &mdash; bcselector 0.0.31 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.0.30
+                0.0.31
               </div>
             
           
@@ -180,8 +180,8 @@
 <code class="sig-prename descclassname">bcselector.datasets.</code><code class="sig-name descname">load_mimic3</code><span class="sig-paren">(</span><em class="sig-param">as_frame=True</em>, <em class="sig-param">discretize_data=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bcselector/datasets.html#load_mimic3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bcselector.datasets.load_mimic3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load and return the mimic3 dataset.
 The mimic3 dataset is a medical dataset with multiple target variables.
-Dataset is avaliable at Physiobank [1].
-Costs of features were collected in article [2].</p>
+Dataset is avaliable at Physiobank <a class="footnote-reference brackets" href="#id3" id="id1">1</a>.
+Costs of features were collected in article <a class="footnote-reference brackets" href="#id4" id="id2">2</a>.</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 55%" />
@@ -219,10 +219,10 @@ appropriate names. The target is a pandas DataFrame with multiple target variabl
 </dl>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id1"><span class="brackets">1</span></dt>
+<dt class="label" id="id3"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
 <dd><p>MIMIC-III, a freely accessible critical care database. Johnson AEW, Pollard TJ, Shen L, Lehman LH, Feng M, Ghassemi M, Moody B, Szolovits P, Celi LA, and Mark RG. Scientific Data (2016). DOI: 10.1038/sdata.2016.35. Available at: <a class="reference external" href="http://www.nature.com/articles/sdata201635">http://www.nature.com/articles/sdata201635</a>.</p>
 </dd>
-<dt class="label" id="id2"><span class="brackets">2</span></dt>
+<dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
 <dd><p>Paweł Teisseyre, Damien Zufferey, and Marta Słomka. Cost-sensitive classifier chains: Se-lecting low-cost features in multi-label classification.Pattern Recognition, 86, 09 2018.</p>
 </dd>
 </dl>
@@ -241,7 +241,7 @@ appropriate names. The target is a pandas DataFrame with multiple target variabl
 <code class="sig-prename descclassname">bcselector.datasets.</code><code class="sig-name descname">load_hepatitis</code><span class="sig-paren">(</span><em class="sig-param">as_frame=True</em>, <em class="sig-param">discretize_data=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bcselector/datasets.html#load_hepatitis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bcselector.datasets.load_hepatitis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load and return the hepatitis dataset provided.
 The mimic3 dataset is a small medical dataset with single target variable.
-Dataset is collected from UCI repository [3].</p>
+Dataset is collected from UCI repository <a class="footnote-reference brackets" href="#id6" id="id5">3</a>.</p>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 55%" />
@@ -265,7 +265,7 @@ Dataset is collected from UCI repository [3].</p>
 <li><p><strong>as_frame</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, the data is a pandas DataFrame including columns with
 appropriate names. The target is a pandas DataFrame with multiple target variables.</p></li>
 <li><p><strong>discretize_data</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, the returned data is discretized with sklearn.preprocessing.KBinsDiscretizer.</p></li>
-<li><p><strong>**kwargs</strong> – Arguments passed to sklearn.preprocessing.KBinsDiscretizer constructor.</p></li>
+<li><p><strong>kwargs</strong> – Arguments passed to sklearn.preprocessing.KBinsDiscretizer constructor.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -279,7 +279,7 @@ appropriate names. The target is a pandas DataFrame with multiple target variabl
 </dl>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id3"><span class="brackets">3</span></dt>
+<dt class="label" id="id6"><span class="brackets"><a class="fn-backref" href="#id5">3</a></span></dt>
 <dd><p>Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [<a class="reference external" href="http://archive.ics.uci.edu/ml">http://archive.ics.uci.edu/ml</a>]. Irvine, CA: University of California, School of Information and Computer Science.</p>
 </dd>
 </dl>

@@ -88,7 +88,7 @@ def load_mimic3(as_frame=True, discretize_data=True, **kwargs):
 def load_hepatitis(as_frame=True, discretize_data=True, **kwargs):
     """Load and return the hepatitis dataset provided.
     The mimic3 dataset is a small medical dataset with single target variable.
-    Dataset is collected from UCI repository [1]_.
+    Dataset is collected from UCI repository [3]_.
 
     =================   ==============
     Samples total                  155
@@ -117,7 +117,7 @@ def load_hepatitis(as_frame=True, discretize_data=True, **kwargs):
 
     References
     ----------
-    .. [1] Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
+    .. [3] Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
 
     Examples
     --------

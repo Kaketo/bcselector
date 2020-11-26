@@ -1,6 +1,10 @@
 History
 =======
 
+0.0.31
+------
+    * Add buildin data: mimic3 and hepatitis and functions to load them.
+
 0.0.30
 ------
     * Add first complete version of documenation and quickstart in README.
