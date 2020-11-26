@@ -1,0 +1,352 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Datasets &mdash; bcselector 0.0.30 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Information Theory" href="information_theory.html" />
+    <link rel="prev" title="Data Generation" href="data_generation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> bcselector
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0.30
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../readme.html">Bcselector</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples.html">Examples</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="variable_selection.html">Feature Selectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data_generation.html">Data Generation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Datasets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#load-mimic3">load_mimic3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#load-hepatitis">load_hepatitis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="information_theory.html">Information Theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filter_methods.html">Filter Methods</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">bcselector</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">API Reference</a> &raquo;</li>
+        
+      <li>Datasets</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api-reference/datasets.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="datasets">
+<h1>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="load-mimic3">
+<h2>load_mimic3<a class="headerlink" href="#load-mimic3" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bcselector.datasets.load_mimic3">
+<code class="sig-prename descclassname">bcselector.datasets.</code><code class="sig-name descname">load_mimic3</code><span class="sig-paren">(</span><em class="sig-param">as_frame=True</em>, <em class="sig-param">discretize_data=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bcselector/datasets.html#load_mimic3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bcselector.datasets.load_mimic3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load and return the mimic3 dataset.
+The mimic3 dataset is a medical dataset with multiple target variables.
+Dataset is avaliable at Physiobank [1].
+Costs of features were collected in article [2].</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 55%" />
+<col style="width: 45%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Samples total</p></td>
+<td><p>6591</p></td>
+</tr>
+<tr class="row-even"><td><p>Dimensionality</p></td>
+<td><p>306</p></td>
+</tr>
+<tr class="row-odd"><td><p>Target variables</p></td>
+<td><p>10</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>as_frame</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, the data is a pandas DataFrame including columns with
+appropriate names. The target is a pandas DataFrame with multiple target variables.</p></li>
+<li><p><strong>discretize_data</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, the returned data is discretized with sklearn.preprocessing.KBinsDiscretizer.</p></li>
+<li><p><strong>**kwargs</strong> – Arguments passed to sklearn.preprocessing.KBinsDiscretizer constructor.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>data</strong> (<em>{np.ndarray, pd.DataFrame} of shape (6591, 306)</em>) – The data matrix. If <cite>as_frame=True</cite>, <cite>data</cite> will be a pd.DataFrame.</p></li>
+<li><p><strong>target</strong> (<em>{np.ndarray, pd.DataFrame} of shape (6591, 10)</em>) – The binary classification target variable. If <cite>as_frame=True</cite>, <cite>target</cite> will be a pd.DataFrame.</p></li>
+<li><p><strong>costs</strong> (<em>{dict, list)</em>) – Cost of every feature in data. If <cite>as_frame=True</cite>, <cite>target</cite> will be a dict.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id1"><span class="brackets">1</span></dt>
+<dd><p>MIMIC-III, a freely accessible critical care database. Johnson AEW, Pollard TJ, Shen L, Lehman LH, Feng M, Ghassemi M, Moody B, Szolovits P, Celi LA, and Mark RG. Scientific Data (2016). DOI: 10.1038/sdata.2016.35. Available at: <a class="reference external" href="http://www.nature.com/articles/sdata201635">http://www.nature.com/articles/sdata201635</a>.</p>
+</dd>
+<dt class="label" id="id2"><span class="brackets">2</span></dt>
+<dd><p>Paweł Teisseyre, Damien Zufferey, and Marta Słomka. Cost-sensitive classifier chains: Se-lecting low-cost features in multi-label classification.Pattern Recognition, 86, 09 2018.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bcselector.dataset</span> <span class="kn">import</span> <span class="n">load_mimic3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">costs</span> <span class="o">=</span> <span class="n">load_mimic3</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="load-hepatitis">
+<h2>load_hepatitis<a class="headerlink" href="#load-hepatitis" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bcselector.datasets.load_hepatitis">
+<code class="sig-prename descclassname">bcselector.datasets.</code><code class="sig-name descname">load_hepatitis</code><span class="sig-paren">(</span><em class="sig-param">as_frame=True</em>, <em class="sig-param">discretize_data=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/bcselector/datasets.html#load_hepatitis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bcselector.datasets.load_hepatitis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load and return the hepatitis dataset provided.
+The mimic3 dataset is a small medical dataset with single target variable.
+Dataset is collected from UCI repository [3].</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 55%" />
+<col style="width: 45%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Samples total</p></td>
+<td><p>155</p></td>
+</tr>
+<tr class="row-even"><td><p>Dimensionality</p></td>
+<td><p>19</p></td>
+</tr>
+<tr class="row-odd"><td><p>Target variables</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>as_frame</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, the data is a pandas DataFrame including columns with
+appropriate names. The target is a pandas DataFrame with multiple target variables.</p></li>
+<li><p><strong>discretize_data</strong> (<em>bool</em><em>, </em><em>default=True</em>) – If True, the returned data is discretized with sklearn.preprocessing.KBinsDiscretizer.</p></li>
+<li><p><strong>**kwargs</strong> – Arguments passed to sklearn.preprocessing.KBinsDiscretizer constructor.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>data</strong> (<em>{np.ndarray, pd.DataFrame} of shape (6591, 306)</em>) – The data matrix. If <cite>as_frame=True</cite>, <cite>data</cite> will be a pd.DataFrame.</p></li>
+<li><p><strong>target</strong> (<em>{np.ndarray, pd.DataFrame} of shape (6591, 10)</em>) – The binary classification target variable. If <cite>as_frame=True</cite>, <cite>target</cite> will be a pd.DataFrame.</p></li>
+<li><p><strong>costs</strong> (<em>{dict, list)</em>) – Cost of every feature in data. If <cite>as_frame=True</cite>, <cite>target</cite> will be a dict.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id3"><span class="brackets">3</span></dt>
+<dd><p>Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [<a class="reference external" href="http://archive.ics.uci.edu/ml">http://archive.ics.uci.edu/ml</a>]. Irvine, CA: University of California, School of Information and Computer Science.</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">bcselector.dataset</span> <span class="kn">import</span> <span class="n">load_hepatitis</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">costs</span> <span class="o">=</span> <span class="n">load_hepatitis</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="information_theory.html" class="btn btn-neutral float-right" title="Information Theory" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="data_generation.html" class="btn btn-neutral float-left" title="Data Generation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Tomasz Klonecki
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -35,7 +35,7 @@ on information theory and to propose new variants of these methods considering f
 Installation
 ------------
 
-bcselector can be installed from [PyPI] (https://pypi.org/project/bcselector):
+bcselector can be installed from [PyPI] (https://pypi.org/project/bcselector)::
 
     pip install bcselector
 
@@ -93,7 +93,9 @@ Small numbers above or below the curve are indexes of selected features. Therefo
 
 Bibliography
 ------------
-- [1] Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
+- [1] MIMIC-III, a freely accessible critical care database. Johnson AEW, Pollard TJ, Shen L, Lehman LH, Feng M, Ghassemi M, Moody B, Szolovits P, Celi LA, and Mark RG. Scientific Data (2016). DOI: 10.1038/sdata.2016.35. Available at: http://www.nature.com/articles/sdata201635
+- [2] Paweł Teisseyre, Damien Zufferey, and Marta Słomka. Cost-sensitive classifier chains: Se-lecting low-cost features in multi-label classification.Pattern Recognition, 86, 09 2018.
+- [3] Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
 
 Citations
 ---------
