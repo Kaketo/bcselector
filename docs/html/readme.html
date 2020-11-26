@@ -231,16 +231,20 @@ Good sample data could be <a class="reference external" href="https://archive.ic
 </div>
 <p>Which results in BC-plot:</p>
 <img alt="https://raw.githubusercontent.com/Kaketo/bcselector/master/docs/img/bc_plot.png" src="https://raw.githubusercontent.com/Kaketo/bcselector/master/docs/img/bc_plot.png" />
-<p>On <em>OX axis</em> we have accumulated cost and on <em>OY axis</em> we see test set score of currently selected set of features.
-- <strong>Blue line</strong> is cost-sensitive method
-- <strong>Red line</strong> is NO-cost method
-- <strong>Blue vertical line</strong> is selected budget
-Small numbers above or below the curve are indexes of selected features. Therefore we can see that first variable selected by cost-sensitive method is on 14th column in dataset <em>X</em>.</p>
+<p>On <em>OX axis</em> we have accumulated cost and on <em>OY axis</em> we see test set score of currently selected set of features:</p>
+<ul class="simple">
+<li><p><strong>Blue line</strong> is cost-sensitive method selected features order.</p></li>
+<li><p><strong>Red line</strong> is NO-cost method selected features order.</p></li>
+<li><p><strong>Blue vertical line</strong> is maximum budget avaliable (user parameter)</p></li>
+</ul>
+<p>Small numbers above or below the curve are indexes of selected features. Therefore we can see that first variable selected by cost-sensitive method is on 14th column in dataset <em>X</em>.</p>
 </div>
 <div class="section" id="bibliography">
 <h2>Bibliography<a class="headerlink" href="#bibliography" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>[1] Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [<a class="reference external" href="http://archive.ics.uci.edu/ml">http://archive.ics.uci.edu/ml</a>]. Irvine, CA: University of California, School of Information and Computer Science.</p></li>
+<li><p>[2] Paweł Teisseyre, Damien Zufferey, and Marta Słomka. Cost-sensitive classifier chains: Se-lecting low-cost features in multi-label classification.Pattern Recognition, 86, 09 2018.</p></li>
+<li><p>[3] MIMIC-III, a freely accessible critical care database. Johnson AEW, Pollard TJ, Shen L, Lehman LH, Feng M, Ghassemi M, Moody B, Szolovits P, Celi LA, and Mark RG. Scientific Data (2016). DOI: 10.1038/sdata.2016.35. Available at: <a class="reference external" href="http://www.nature.com/articles/sdata201635">http://www.nature.com/articles/sdata201635</a></p></li>
 </ul>
 </div>
 <div class="section" id="citations">
