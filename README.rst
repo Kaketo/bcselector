@@ -35,7 +35,7 @@ on information theory and to propose new variants of these methods considering f
 Installation
 ------------
 
-bcselector can be installed from [PyPI] (https://pypi.org/project/bcselector):
+bcselector can be installed from [PyPI] (https://pypi.org/project/bcselector)::
 
     pip install bcselector
 
