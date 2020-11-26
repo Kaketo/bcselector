@@ -6,13 +6,13 @@ import pandas as pd
 from sklearn.preprocessing import KBinsDiscretizer
 
 
-def discretize(vector, **kwargs):
+def _discretize(vector, **kwargs):
     """Discretizes vector with sklearn.preprocessing.KBinsDiscretizer.
 
     Parameters
     ----------
     vector : np.array
-    **kwargs
+    kwargs
         Arguments passed to sklearn.preprocessing.KBinsDiscretizer constructor.
 
     Returns
@@ -28,8 +28,8 @@ def discretize(vector, **kwargs):
 def load_mimic3(as_frame=True, discretize_data=True, **kwargs):
     """Load and return the mimic3 dataset.
     The mimic3 dataset is a medical dataset with multiple target variables.
-    Dataset is avaliable at Physiobank [1].
-    Costs of features were collected in article [2].
+    Dataset is avaliable at Physiobank [1]_.
+    Costs of features were collected in article [2]_.
 
     =================   ==============
     Samples total                 6591
@@ -76,7 +76,7 @@ def load_mimic3(as_frame=True, discretize_data=True, **kwargs):
         costs = json.load(j)
 
     if discretize_data:
-        data_discretized = np.apply_along_axis(func1d=discretize, axis=0, arr=data.values, **kwargs)
+        data_discretized = np.apply_along_axis(func1d=_discretize, axis=0, arr=data.values, **kwargs)
         data = pd.DataFrame(data_discretized, columns=data.columns)
 
     if as_frame:
@@ -88,7 +88,7 @@ def load_mimic3(as_frame=True, discretize_data=True, **kwargs):
 def load_hepatitis(as_frame=True, discretize_data=True, **kwargs):
     """Load and return the hepatitis dataset provided.
     The mimic3 dataset is a small medical dataset with single target variable.
-    Dataset is collected from UCI repository [3].
+    Dataset is collected from UCI repository [1]_.
 
     =================   ==============
     Samples total                  155
@@ -103,7 +103,7 @@ def load_hepatitis(as_frame=True, discretize_data=True, **kwargs):
         appropriate names. The target is a pandas DataFrame with multiple target variables.
     discretize_data: bool, default=True
         If True, the returned data is discretized with sklearn.preprocessing.KBinsDiscretizer.
-    **kwargs
+    kwargs
         Arguments passed to sklearn.preprocessing.KBinsDiscretizer constructor.
 
     Returns
@@ -117,7 +117,7 @@ def load_hepatitis(as_frame=True, discretize_data=True, **kwargs):
 
     References
     ----------
-    .. [3] Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
+    .. [1] Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
 
     Examples
     --------
@@ -134,7 +134,7 @@ def load_hepatitis(as_frame=True, discretize_data=True, **kwargs):
         costs = json.load(j)
 
     if discretize_data:
-        data_discretized = np.apply_along_axis(func1d=discretize, axis=0, arr=data.values, **kwargs)
+        data_discretized = np.apply_along_axis(func1d=_discretize, axis=0, arr=data.values, **kwargs)
         data = pd.DataFrame(data_discretized, columns=data.columns)
 
     if as_frame:
