@@ -9,5 +9,6 @@ This page gives an overview of all bcselector objects and functions.
 
    variable_selection
    data_generation
+   datasets
    information_theory
    filter_methods
