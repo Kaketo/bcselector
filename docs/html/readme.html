@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Bcselector &mdash; bcselector 0.0.36 documentation</title>
+  <title>Bcselector &mdash; bcselector 0.0.38 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.0.36
+                0.0.38
               </div>
             
           
@@ -206,6 +206,7 @@ Good sample data could be <a class="reference external" href="https://archive.ic
 <span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">roc_auc_score</span>
 
 <span class="kn">from</span> <span class="nn">bcselector.variable_selection</span> <span class="kn">import</span> <span class="n">FractionVariableSelector</span>
+<span class="kn">from</span> <span class="nn">bcselector.datasets</span> <span class="kn">import</span> <span class="n">load_sample</span>
 
 <span class="c1"># Arguments for feature selection</span>
 <span class="c1"># r - cost scaling parameter,</span>
@@ -213,7 +214,10 @@ Good sample data could be <a class="reference external" href="https://archive.ic
 <span class="c1"># model - model that is fitted on data.</span>
 <span class="n">r</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">beta</span> <span class="o">=</span> <span class="mf">0.5</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="c1"># Data</span>
+<span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">costs</span> <span class="o">=</span> <span class="n">load_sample</span><span class="p">()</span>
 
 <span class="c1"># Feature selection</span>
 <span class="n">fvs</span> <span class="o">=</span> <span class="n">FractionVariableSelector</span><span class="p">()</span>
@@ -242,9 +246,7 @@ Good sample data could be <a class="reference external" href="https://archive.ic
 <div class="section" id="bibliography">
 <h2>Bibliography<a class="headerlink" href="#bibliography" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>[1] MIMIC-III, a freely accessible critical care database. Johnson AEW, Pollard TJ, Shen L, Lehman LH, Feng M, Ghassemi M, Moody B, Szolovits P, Celi LA, and Mark RG. Scientific Data (2016). DOI: 10.1038/sdata.2016.35. Available at: <a class="reference external" href="http://www.nature.com/articles/sdata201635">http://www.nature.com/articles/sdata201635</a></p></li>
-<li><p>[2] Paweł Teisseyre, Damien Zufferey, and Marta Słomka. Cost-sensitive classifier chains: Se-lecting low-cost features in multi-label classification.Pattern Recognition, 86, 09 2018.</p></li>
-<li><p>[3] Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [<a class="reference external" href="http://archive.ics.uci.edu/ml">http://archive.ics.uci.edu/ml</a>]. Irvine, CA: University of California, School of Information and Computer Science.</p></li>
+<li><p>[1] Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [<a class="reference external" href="http://archive.ics.uci.edu/ml">http://archive.ics.uci.edu/ml</a>]. Irvine, CA: University of California, School of Information and Computer Science.</p></li>
 </ul>
 </div>
 <div class="section" id="citations">
