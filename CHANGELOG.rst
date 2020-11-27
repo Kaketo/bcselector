@@ -1,6 +1,10 @@
 History
 =======
 
+0.0.35
+------
+    * Added MANIFEST.in file.
+
 0.0.32
 ------
     * Fixed return type of target for hepatitis dataset.
