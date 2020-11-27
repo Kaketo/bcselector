@@ -1,6 +1,10 @@
 History
 =======
 
+0.0.32
+------
+    * Fixed return type of target for hepatitis dataset.
+
 0.0.31
 ------
     * Add buildin data: mimic3 and hepatitis and functions to load them.
