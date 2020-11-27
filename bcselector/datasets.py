@@ -110,7 +110,7 @@ def load_hepatitis(as_frame=True, discretize_data=True, **kwargs):
     -------
     data : {np.ndarray, pd.DataFrame} of shape (6591, 306)
         The data matrix. If `as_frame=True`, `data` will be a pd.DataFrame.
-    target: {np.ndarray, pd.DataFrame} of shape (6591, 10)
+    target: {np.ndarray, pd.Series} of shape (6591, 10)
         The binary classification target variable. If `as_frame=True`, `target` will be a pd.DataFrame.
     costs: {dict, list)
         Cost of every feature in data. If `as_frame=True`, `target` will be a dict.
@@ -138,6 +138,6 @@ def load_hepatitis(as_frame=True, discretize_data=True, **kwargs):
         data = pd.DataFrame(data_discretized, columns=data.columns)
 
     if as_frame:
-        return data, targets, costs
+        return data, targets['Class'], costs
     else:
         return data.values, targets.values, list(costs.values())

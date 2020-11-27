@@ -88,7 +88,7 @@ class TestHepatitis(unittest.TestCase):
 
         # Then
         assert isinstance(X, pd.DataFrame)
-        assert isinstance(y, pd.DataFrame)
+        assert isinstance(y, pd.Series)
         assert isinstance(costs, dict)
 
     def test_data_type_array(self):
