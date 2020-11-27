@@ -1,6 +1,10 @@
 History
 =======
 
+0.0.36
+------
+    * Added sample dataset to work with and function to load it.
+
 0.0.35
 ------
     * Added MANIFEST.in file.
@@ -11,7 +15,7 @@ History
 
 0.0.31
 ------
-    * Add buildin data: mimic3 and hepatitis and functions to load them.
+    * Add buildin data: hepatitis and function to load them.
 
 0.0.30
 ------

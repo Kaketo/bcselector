@@ -53,6 +53,7 @@ Lets say that that we have dataset loaded to Python, we need to create `Selector
    from sklearn.metrics import roc_auc_score
 
    from bcselector.variable_selection import FractionVariableSelector
+   from bcselector.datasets import load_sample
 
    # Arguments for feature selection
    # r - cost scaling parameter, 
@@ -60,7 +61,10 @@ Lets say that that we have dataset loaded to Python, we need to create `Selector
    # model - model that is fitted on data.
    r = 1
    beta = 0.5
-   model = LogisticRegression()
+   model = LogisticRegression(max_iter=1000)
+
+   # Data
+   X,y,costs = load_sample()
 
    # Feature selection
    fvs = FractionVariableSelector()
@@ -93,9 +97,7 @@ Small numbers above or below the curve are indexes of selected features. Therefo
 
 Bibliography
 ------------
-- [1] MIMIC-III, a freely accessible critical care database. Johnson AEW, Pollard TJ, Shen L, Lehman LH, Feng M, Ghassemi M, Moody B, Szolovits P, Celi LA, and Mark RG. Scientific Data (2016). DOI: 10.1038/sdata.2016.35. Available at: http://www.nature.com/articles/sdata201635
-- [2] Paweł Teisseyre, Damien Zufferey, and Marta Słomka. Cost-sensitive classifier chains: Se-lecting low-cost features in multi-label classification.Pattern Recognition, 86, 09 2018.
-- [3] Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
+- [1] Dua, D. and Graff, C. (2019). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. Irvine, CA: University of California, School of Information and Computer Science.
 
 Citations
 ---------

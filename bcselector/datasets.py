@@ -25,16 +25,13 @@ def _discretize(vector, **kwargs):
     return discretized_vector
 
 
-def load_mimic3(as_frame=True, discretize_data=True, **kwargs):
-    """Load and return the mimic3 dataset.
-    The mimic3 dataset is a medical dataset with multiple target variables.
-    Dataset is avaliable at Physiobank [1]_.
-    Costs of features were collected in article [2]_.
+def load_sample(as_frame=True):
+    """Load and return the sample artificial dataset.
 
     =================   ==============
-    Samples total                 6591
-    Dimensionality                 306
-    Target variables                10
+    Samples total                10000
+    Dimensionality                  35
+    Target variables                 1
     =================   ==============
 
     Parameters
@@ -42,45 +39,32 @@ def load_mimic3(as_frame=True, discretize_data=True, **kwargs):
     as_frame : bool, default=True
         If True, the data is a pandas DataFrame including columns with
         appropriate names. The target is a pandas DataFrame with multiple target variables.
-    discretize_data: bool, default=True
-        If True, the returned data is discretized with sklearn.preprocessing.KBinsDiscretizer.
-    **kwargs
-        Arguments passed to sklearn.preprocessing.KBinsDiscretizer constructor.
 
     Returns
     -------
-    data : {np.ndarray, pd.DataFrame} of shape (6591, 306)
+    data : {np.ndarray, pd.DataFrame} of shape (10000, 35)
         The data matrix. If `as_frame=True`, `data` will be a pd.DataFrame.
-    target: {np.ndarray, pd.DataFrame} of shape (6591, 10)
+    target: {np.ndarray, pd.Series} of shape (10000, 35)
         The binary classification target variable. If `as_frame=True`, `target` will be a pd.DataFrame.
     costs: {dict, list)
         Cost of every feature in data. If `as_frame=True`, `target` will be a dict.
 
-    References
-    ----------
-    .. [1] MIMIC-III, a freely accessible critical care database. Johnson AEW, Pollard TJ, Shen L, Lehman LH, Feng M, Ghassemi M, Moody B, Szolovits P, Celi LA, and Mark RG. Scientific Data (2016). DOI: 10.1038/sdata.2016.35. Available at: http://www.nature.com/articles/sdata201635.
-    .. [2] Paweł Teisseyre, Damien Zufferey, and Marta Słomka. Cost-sensitive classifier chains: Se-lecting low-cost features in multi-label classification.Pattern Recognition, 86, 09 2018.
-
     Examples
     --------
-    >>> from bcselector.dataset import load_mimic3
-    >>> data, target, costs = load_mimic3()
+    >>> from bcselector.dataset import load_sample
+    >>> data, target, costs = load_sample()
     """
 
     module_path = dirname(__file__)
     # Load data
-    data = pd.read_csv(join(module_path, 'data', 'mimic3', 'mimic3.csv'))
-    targets = pd.read_csv(join(module_path, 'data', 'mimic3', 'mimic3_targets.csv'))
+    data = pd.read_csv(join(module_path, 'data', 'sample_data', 'sample_data.csv'))
+    targets = pd.read_csv(join(module_path, 'data', 'sample_data', 'sample_target.csv'))
 
-    with open(join(module_path, 'data', 'mimic3', 'mimic3_costs.json'), 'r') as j:
+    with open(join(module_path, 'data', 'sample_data', 'sample_costs.json'), 'r') as j:
         costs = json.load(j)
 
-    if discretize_data:
-        data_discretized = np.apply_along_axis(func1d=_discretize, axis=0, arr=data.values, **kwargs)
-        data = pd.DataFrame(data_discretized, columns=data.columns)
-
     if as_frame:
-        return data, targets, costs
+        return data, targets['Class'], costs
     else:
         return data.values, targets.values, list(costs.values())
 
@@ -134,8 +118,14 @@ def load_hepatitis(as_frame=True, discretize_data=True, **kwargs):
         costs = json.load(j)
 
     if discretize_data:
-        data_discretized = np.apply_along_axis(func1d=_discretize, axis=0, arr=data.values, **kwargs)
-        data = pd.DataFrame(data_discretized, columns=data.columns)
+        data_colnames = data.columns
+        n_bins = kwargs.get('n_bins', 10)
+        col_to_discretize = data.nunique()[data.nunique() > n_bins].index
+        col_not_changing = data.nunique()[data.nunique() <= n_bins].index
+
+        data_discretized = np.apply_along_axis(func1d=_discretize, axis=0, arr=data[col_to_discretize].values, **kwargs)
+        data = pd.concat([pd.DataFrame(data_discretized, columns=col_to_discretize), data[col_not_changing]], axis=1)
+        data = data[data_colnames]
 
     if as_frame:
         return data, targets['Class'], costs
