@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Datasets &mdash; bcselector 0.0.31 documentation</title>
+  <title>Datasets &mdash; bcselector 0.0.32 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                0.0.31
+                0.0.32
               </div>
             
           
@@ -271,7 +271,7 @@ appropriate names. The target is a pandas DataFrame with multiple target variabl
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>data</strong> (<em>{np.ndarray, pd.DataFrame} of shape (6591, 306)</em>) – The data matrix. If <cite>as_frame=True</cite>, <cite>data</cite> will be a pd.DataFrame.</p></li>
-<li><p><strong>target</strong> (<em>{np.ndarray, pd.DataFrame} of shape (6591, 10)</em>) – The binary classification target variable. If <cite>as_frame=True</cite>, <cite>target</cite> will be a pd.DataFrame.</p></li>
+<li><p><strong>target</strong> (<em>{np.ndarray, pd.Series} of shape (6591, 10)</em>) – The binary classification target variable. If <cite>as_frame=True</cite>, <cite>target</cite> will be a pd.DataFrame.</p></li>
 <li><p><strong>costs</strong> (<em>{dict, list)</em>) – Cost of every feature in data. If <cite>as_frame=True</cite>, <cite>target</cite> will be a dict.</p></li>
 </ul>
 </p>
