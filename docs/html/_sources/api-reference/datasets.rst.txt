@@ -1,11 +1,11 @@
 Datasets
 ========
 
-load_mimic3
+load_sample
 -----------
 .. currentmodule:: bcselector.datasets
 
-.. autofunction:: load_mimic3
+.. autofunction:: load_sample
 
 load_hepatitis
 --------------

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bcselector.datasets &mdash; bcselector 0.0.34 documentation</title>
+  <title>bcselector.datasets &mdash; bcselector 0.0.36 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.0.34
+                0.0.36
               </div>
             
           
@@ -182,16 +182,13 @@
     <span class="k">return</span> <span class="n">discretized_vector</span>
 
 
-<div class="viewcode-block" id="load_mimic3"><a class="viewcode-back" href="../../api-reference/datasets.html#bcselector.datasets.load_mimic3">[docs]</a><span class="k">def</span> <span class="nf">load_mimic3</span><span class="p">(</span><span class="n">as_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">discretize_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Load and return the mimic3 dataset.</span>
-<span class="sd">    The mimic3 dataset is a medical dataset with multiple target variables.</span>
-<span class="sd">    Dataset is avaliable at Physiobank [1]_.</span>
-<span class="sd">    Costs of features were collected in article [2]_.</span>
+<div class="viewcode-block" id="load_sample"><a class="viewcode-back" href="../../api-reference/datasets.html#bcselector.datasets.load_sample">[docs]</a><span class="k">def</span> <span class="nf">load_sample</span><span class="p">(</span><span class="n">as_frame</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Load and return the sample artificial dataset.</span>
 
 <span class="sd">    =================   ==============</span>
-<span class="sd">    Samples total                 6591</span>
-<span class="sd">    Dimensionality                 306</span>
-<span class="sd">    Target variables                10</span>
+<span class="sd">    Samples total                10000</span>
+<span class="sd">    Dimensionality                  35</span>
+<span class="sd">    Target variables                 1</span>
 <span class="sd">    =================   ==============</span>
 
 <span class="sd">    Parameters</span>
@@ -199,45 +196,32 @@
 <span class="sd">    as_frame : bool, default=True</span>
 <span class="sd">        If True, the data is a pandas DataFrame including columns with</span>
 <span class="sd">        appropriate names. The target is a pandas DataFrame with multiple target variables.</span>
-<span class="sd">    discretize_data: bool, default=True</span>
-<span class="sd">        If True, the returned data is discretized with sklearn.preprocessing.KBinsDiscretizer.</span>
-<span class="sd">    **kwargs</span>
-<span class="sd">        Arguments passed to sklearn.preprocessing.KBinsDiscretizer constructor.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    data : {np.ndarray, pd.DataFrame} of shape (6591, 306)</span>
+<span class="sd">    data : {np.ndarray, pd.DataFrame} of shape (10000, 35)</span>
 <span class="sd">        The data matrix. If `as_frame=True`, `data` will be a pd.DataFrame.</span>
-<span class="sd">    target: {np.ndarray, pd.DataFrame} of shape (6591, 10)</span>
+<span class="sd">    target: {np.ndarray, pd.Series} of shape (10000, 35)</span>
 <span class="sd">        The binary classification target variable. If `as_frame=True`, `target` will be a pd.DataFrame.</span>
 <span class="sd">    costs: {dict, list)</span>
 <span class="sd">        Cost of every feature in data. If `as_frame=True`, `target` will be a dict.</span>
 
-<span class="sd">    References</span>
-<span class="sd">    ----------</span>
-<span class="sd">    .. [1] MIMIC-III, a freely accessible critical care database. Johnson AEW, Pollard TJ, Shen L, Lehman LH, Feng M, Ghassemi M, Moody B, Szolovits P, Celi LA, and Mark RG. Scientific Data (2016). DOI: 10.1038/sdata.2016.35. Available at: http://www.nature.com/articles/sdata201635.</span>
-<span class="sd">    .. [2] Paweł Teisseyre, Damien Zufferey, and Marta Słomka. Cost-sensitive classifier chains: Se-lecting low-cost features in multi-label classification.Pattern Recognition, 86, 09 2018.</span>
-
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    &gt;&gt;&gt; from bcselector.dataset import load_mimic3</span>
-<span class="sd">    &gt;&gt;&gt; data, target, costs = load_mimic3()</span>
+<span class="sd">    &gt;&gt;&gt; from bcselector.dataset import load_sample</span>
+<span class="sd">    &gt;&gt;&gt; data, target, costs = load_sample()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">module_path</span> <span class="o">=</span> <span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
     <span class="c1"># Load data</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">module_path</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;mimic3&#39;</span><span class="p">,</span> <span class="s1">&#39;mimic3.csv&#39;</span><span class="p">))</span>
-    <span class="n">targets</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">module_path</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;mimic3&#39;</span><span class="p">,</span> <span class="s1">&#39;mimic3_targets.csv&#39;</span><span class="p">))</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">module_path</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;sample_data&#39;</span><span class="p">,</span> <span class="s1">&#39;sample_data.csv&#39;</span><span class="p">))</span>
+    <span class="n">targets</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">module_path</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;sample_data&#39;</span><span class="p">,</span> <span class="s1">&#39;sample_target.csv&#39;</span><span class="p">))</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">module_path</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;mimic3&#39;</span><span class="p">,</span> <span class="s1">&#39;mimic3_costs.json&#39;</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">j</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">join</span><span class="p">(</span><span class="n">module_path</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;sample_data&#39;</span><span class="p">,</span> <span class="s1">&#39;sample_costs.json&#39;</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">j</span><span class="p">:</span>
         <span class="n">costs</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">discretize_data</span><span class="p">:</span>
-        <span class="n">data_discretized</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">func1d</span><span class="o">=</span><span class="n">_discretize</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data_discretized</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
-
     <span class="k">if</span> <span class="n">as_frame</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">costs</span>
+        <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">targets</span><span class="p">[</span><span class="s1">&#39;Class&#39;</span><span class="p">],</span> <span class="n">costs</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">targets</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">costs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
 
@@ -291,8 +275,14 @@
         <span class="n">costs</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">discretize_data</span><span class="p">:</span>
-        <span class="n">data_discretized</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">func1d</span><span class="o">=</span><span class="n">_discretize</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data_discretized</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">data_colnames</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span>
+        <span class="n">n_bins</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;n_bins&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">col_to_discretize</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">nunique</span><span class="p">()[</span><span class="n">data</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">n_bins</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+        <span class="n">col_not_changing</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">nunique</span><span class="p">()[</span><span class="n">data</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">n_bins</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+
+        <span class="n">data_discretized</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">func1d</span><span class="o">=</span><span class="n">_discretize</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arr</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">col_to_discretize</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data_discretized</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">col_to_discretize</span><span class="p">),</span> <span class="n">data</span><span class="p">[</span><span class="n">col_not_changing</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data_colnames</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">as_frame</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">targets</span><span class="p">[</span><span class="s1">&#39;Class&#39;</span><span class="p">],</span> <span class="n">costs</span>
