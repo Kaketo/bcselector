@@ -1,6 +1,10 @@
 History
 =======
 
+0.0.39
+------
+    * Add most proper curves naming in plot.
+
 0.0.36
 ------
     * Added sample dataset to work with and function to load it.
