@@ -27,9 +27,9 @@ class TestSampleData(unittest.TestCase):
         X, y, costs = load_sample()
 
         # Then
-        assert X.shape == (10000, 35)
-        assert y.shape == (10000, )
-        assert len(costs) == 35
+        assert X.shape == (2000, 28)
+        assert y.shape == (2000, )
+        assert len(costs) == 28
 
     def test_data_type_frame(self):
         # Given

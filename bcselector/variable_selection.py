@@ -258,8 +258,8 @@ class _VariableSelector():
         if compare_no_cost_method is True:
             self._fit_no_cost(stop_budget=self.stop_budget)
             self._score_no_cost()
-            self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label='no regard to cost')
-            self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label='with regard to costs')
+            self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label='Traditional feature selection')
+            self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label='Cost sensitive selection')
             self.ax.legend(prop={"size": 16}, loc='lower right')
 
             if annotate:
