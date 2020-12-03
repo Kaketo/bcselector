@@ -8,6 +8,8 @@ import sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score
 
+from adjustText import adjust_text
+
 from bcselector.filter_methods.cost_based_filter_methods import difference_find_best_feature, fraction_find_best_feature
 from bcselector.filter_methods.no_cost_based_filter_methods import no_cost_find_best_feature
 from bcselector.information_theory.j_criterion_approximations import mim, mifs, mrmr, jmi, cife
@@ -253,8 +255,7 @@ class _VariableSelector():
         else:
             pass
 
-        move_horizontal = max(self.total_costs)/100
-        move_vertical = max(self.total_scores)/100
+        annotations = []
         if compare_no_cost_method is True:
             self._fit_no_cost(stop_budget=self.stop_budget)
             self._score_no_cost()
@@ -263,35 +264,40 @@ class _VariableSelector():
             self.ax.legend(prop={"size": 16}, loc='lower right')
 
             if annotate:
-                move_horizontal = max(self.no_cost_total_costs + self.total_costs)/100
-                move_vertical = max(self.no_cost_total_scores + self.total_scores)/100
                 costs_normalized_to_alpha = list(
-                    (np.array(self.no_cost_cost_variables_selected_order) - min(self.costs) + 0.7) /
-                    (max(self.costs) - min(self.costs)+0.7)
+                    (np.array(self.no_cost_cost_variables_selected_order) - min(self.costs))*(1-0.5) /
+                    (max(self.costs) - min(self.costs)) + 0.5
                     )
-                for i, txt in enumerate(self.no_cost_variables_selected_order):
-                    self.ax.annotate(
-                        txt,
-                        (self.no_cost_total_costs[i], self.no_cost_total_scores[i]),
-                        bbox=dict(boxstyle="round", alpha=costs_normalized_to_alpha[i], color='red'),
-                        xytext=(self.no_cost_total_costs[i]+move_horizontal, self.no_cost_total_scores[i]+move_vertical*0.5),
-                        size=10,
-                        color='white')
+                for x, y, txt, alpha in zip(self.no_cost_total_costs, self.no_cost_total_scores, self.no_cost_variables_selected_order, costs_normalized_to_alpha):
+                    annotations.append(
+                        plt.text(
+                            x,
+                            y,
+                            txt,
+                            bbox=dict(boxstyle="round", alpha=alpha, color='red'),
+                            size=10,
+                            color='white'
+                            )
+                    )
         else:
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
 
         if annotate:
-            costs_normalized_to_alpha = self.normalized_costs = list((
-                    np.array(self.cost_variables_selected_order) - min(self.costs) + 0.7) /
-                    (max(self.costs) - min(self.costs)+0.7))
-            for i, txt in enumerate(self.variables_selected_order):
-                self.ax.annotate(
-                    txt,
-                    (self.total_costs[i], self.total_scores[i]),
-                    bbox=dict(boxstyle="round", alpha=costs_normalized_to_alpha[i], color='blue'),
-                    xytext=(self.total_costs[i]+move_horizontal, self.total_scores[i]-move_vertical),
-                    size=10,
-                    color='white')
+            costs_normalized_to_alpha = self.normalized_costs = list(
+                (np.array(self.cost_variables_selected_order) - min(self.costs))*(1-0.5) /
+                (max(self.costs) - min(self.costs)) + 0.6
+            )
+            for x, y, txt, alpha in zip(self.total_costs, self.total_scores, self.variables_selected_order, costs_normalized_to_alpha):
+                annotations.append(
+                    plt.text(
+                        x,
+                        y,
+                        txt,
+                        bbox=dict(boxstyle="round", alpha=alpha, color='blue'),
+                        size=10,
+                        color='white'
+                        )
+                )
 
         self.ax.tick_params(axis='both', which='major', labelsize=16)
         if plot_title is None:
@@ -321,6 +327,7 @@ class _VariableSelector():
             name = kwargs.pop('fig_name')
             plt.savefig(name, **kwargs)
         plt.tight_layout()
+        adjust_text(annotations,  arrowprops=dict(arrowstyle="->", lw=0))
         plt.show()
 
     def _fit_no_cost(self, stop_budget=False, **kwargs):
