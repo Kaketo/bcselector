@@ -8,6 +8,8 @@ import sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_auc_score
 
+from adjustText import adjust_text
+
 from bcselector.filter_methods.cost_based_filter_methods import difference_find_best_feature, fraction_find_best_feature
 from bcselector.filter_methods.no_cost_based_filter_methods import no_cost_find_best_feature
 from bcselector.information_theory.j_criterion_approximations import mim, mifs, mrmr, jmi, cife
@@ -253,8 +255,7 @@ class _VariableSelector():
         else:
             pass
 
-        move_horizontal = max(self.total_costs)/100
-        move_vertical = max(self.total_scores)/100
+        annotations = []
         if compare_no_cost_method is True:
             self._fit_no_cost(stop_budget=self.stop_budget)
             self._score_no_cost()
@@ -263,49 +264,54 @@ class _VariableSelector():
             self.ax.legend(prop={"size": 16}, loc='lower right')
 
             if annotate:
-                move_horizontal = max(self.no_cost_total_costs + self.total_costs)/100
-                move_vertical = max(self.no_cost_total_scores + self.total_scores)/100
                 costs_normalized_to_alpha = list(
-                    (np.array(self.no_cost_cost_variables_selected_order) - min(self.costs) + 0.7) /
-                    (max(self.costs) - min(self.costs)+0.7)
+                    (np.array(self.no_cost_cost_variables_selected_order) - min(self.no_cost_cost_variables_selected_order))*(1-0.5) /
+                    (max(self.no_cost_cost_variables_selected_order) - min(self.no_cost_cost_variables_selected_order)) + 0.5
                     )
-                for i, txt in enumerate(self.no_cost_variables_selected_order):
-                    self.ax.annotate(
-                        txt,
-                        (self.no_cost_total_costs[i], self.no_cost_total_scores[i]),
-                        bbox=dict(boxstyle="round", alpha=costs_normalized_to_alpha[i], color='red'),
-                        xytext=(self.no_cost_total_costs[i]+move_horizontal, self.no_cost_total_scores[i]+move_vertical*0.5),
-                        size=10,
-                        color='white')
+                for x, y, txt, alpha in zip(self.no_cost_total_costs, self.no_cost_total_scores, self.no_cost_variables_selected_order, costs_normalized_to_alpha):
+                    annotations.append(
+                        plt.text(
+                            x,
+                            y,
+                            txt,
+                            bbox=dict(boxstyle="round", alpha=alpha, color='red'),
+                            size=16,
+                            color='white'
+                            )
+                    )
         else:
             self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
 
         if annotate:
-            costs_normalized_to_alpha = self.normalized_costs = list((
-                    np.array(self.cost_variables_selected_order) - min(self.costs) + 0.7) /
-                    (max(self.costs) - min(self.costs)+0.7))
-            for i, txt in enumerate(self.variables_selected_order):
-                self.ax.annotate(
-                    txt,
-                    (self.total_costs[i], self.total_scores[i]),
-                    bbox=dict(boxstyle="round", alpha=costs_normalized_to_alpha[i], color='blue'),
-                    xytext=(self.total_costs[i]+move_horizontal, self.total_scores[i]-move_vertical),
-                    size=10,
-                    color='white')
+            costs_normalized_to_alpha = self.normalized_costs = list(
+                (np.array(self.cost_variables_selected_order) - min(self.cost_variables_selected_order))*(1-0.5) /
+                (max(self.cost_variables_selected_order) - min(self.cost_variables_selected_order)) + 0.5
+            )
+            for x, y, txt, alpha in zip(self.total_costs, self.total_scores, self.variables_selected_order, costs_normalized_to_alpha):
+                annotations.append(
+                    plt.text(
+                        x,
+                        y,
+                        txt,
+                        bbox=dict(boxstyle="round", alpha=alpha, color='blue'),
+                        size=16,
+                        color='white'
+                        )
+                )
 
         self.ax.tick_params(axis='both', which='major', labelsize=16)
         if plot_title is None:
             self.ax.set_title('Model ' + self.scoring_function.__name__ + ' vs cost', fontsize=18)
         else:
-            self.ax.set_title(plot_title, fontsize=18)
+            self.ax.set_title(plot_title, fontsize=35)
         if x_axis_title is None:
-            self.ax.set_xlabel('Cost', fontsize=16)
+            self.ax.set_xlabel('Cost', fontsize=28)
         else:
-            self.ax.set_xlabel(x_axis_title, fontsize=16)
+            self.ax.set_xlabel(x_axis_title, fontsize=28)
         if y_axis_title is None:
-            self.ax.set_ylabel(self.scoring_function.__name__, fontsize=16)
+            self.ax.set_ylabel(self.scoring_function.__name__, fontsize=28)
         else:
-            self.ax.set_ylabel(y_axis_title, fontsize=16)
+            self.ax.set_ylabel(y_axis_title, fontsize=28)
 
         # BBox with feature names
         if annotate_box:
@@ -315,6 +321,10 @@ class _VariableSelector():
             textstr = '\n'.join([str(idx) + ': ' + name + f' C={cost:.2f}' for idx, name, cost in zip(variables_idx, variables_names, variables_costs)])
             props = dict(boxstyle='round', facecolor='gray', alpha=0.1)
             self.ax.text(bbox_pos[0], bbox_pos[1], textstr, transform=self.ax.transAxes, fontsize=14, verticalalignment='top', bbox=props, size=12, color='gray')
+
+        adjust_text(annotations,  arrowprops=dict(arrowstyle="->", lw=0))
+        plt.grid(color='gray', linestyle='dotted', linewidth=1, alpha=0.4)
+        plt.xlim(left=0)
 
         if savefig:
             assert kwargs.get('fig_name'), "Must specify `fig_name` as key word argument"
@@ -510,7 +520,8 @@ class FractionVariableSelector(_VariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        for _ in tqdm(range(self.number_of_features), desc=f'Selecting Features for r = {self.r:0.3f}'):
+        # for _ in tqdm(range(self.number_of_features), desc=f'Selecting Features for r = {self.r:0.3f}'):
+        for _ in range(self.number_of_features):
             k, filter_value, criterion_value, cost = fraction_find_best_feature(
                 j_criterion_func=self.j_criterion_func,
                 data=self.data,
