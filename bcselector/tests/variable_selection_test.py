@@ -151,8 +151,8 @@ class TestDiffVariableSelector(unittest.TestCase):
 #         self.assertListEqual(cife_costs, dvs.cost_variables_selected_order)
         
     def test_theoretical_output(self):
-        integer_matrix = np.array([[0,1,0],[0,1,0],[0,1,2],[0,1,3],[1,1,5]])
-        diverse_target = np.array([0,0,0,0,1])
+        integer_matrix = np.array([[1,1,0],[0,1,0],[0,1,2],[0,1,3],[1,1,5]])
+        diverse_target = np.array([0,1,0,0,1])
         costs = [1,1,1]
         lamb = 1
 
@@ -161,9 +161,10 @@ class TestDiffVariableSelector(unittest.TestCase):
                 target_variable=diverse_target,
                 costs=costs,
                 lamb=lamb,
-                j_criterion_func='mim')
+                j_criterion_func='mim'
+                )
         
-        self.assertEqual(dvs.variables_selected_order[0], 0)
+        self.assertEqual(dvs.variables_selected_order[0], 2)
 
     def test_score(self):
         integer_matrix = np.random.randint(0,10,(100,10))
@@ -254,8 +255,8 @@ class TestFractionVariableSelector(unittest.TestCase):
         self.assertEqual(len(fvs.variables_selected_order), len(costs))
 
     def test_theoretical_output(self):
-        integer_matrix = np.array([[0,1,0],[0,1,0],[0,1,2],[0,1,3],[1,1,5]])
-        diverse_target = np.array([0,0,0,0,1])
+        integer_matrix = np.array([[1,1,0],[0,1,0],[0,1,2],[0,1,3],[1,1,5]])
+        diverse_target = np.array([0,1,0,0,1])
         costs = [1,1,1]
         r = 1
 
@@ -266,7 +267,7 @@ class TestFractionVariableSelector(unittest.TestCase):
                 r=r,
                 j_criterion_func='mim')
         
-        self.assertEqual(fvs.variables_selected_order[0], 0)
+        self.assertEqual(fvs.variables_selected_order[0], 2)
 
     def test_score(self):
         integer_matrix = np.random.randint(0,10,(100,10))
@@ -338,8 +339,8 @@ class TestNoCostVariableSelector(unittest.TestCase):
         self.assertEqual(len(ncvs.variables_selected_order), len(costs))
 
     def test_theoretical_output(self):
-        integer_matrix = np.array([[0,1,0],[0,1,0],[0,1,2],[0,1,3],[1,1,5]])
-        diverse_target = np.array([0,0,0,0,1])
+        integer_matrix = np.array([[1,1,0],[0,1,0],[0,1,2],[0,1,3],[1,1,5]])
+        diverse_target = np.array([0,1,0,0,1])
         costs = [1,1,1]
 
         ncvs = NoCostVariableSelector()
@@ -348,7 +349,7 @@ class TestNoCostVariableSelector(unittest.TestCase):
                 costs=costs,
                 j_criterion_func='mim')
         
-        self.assertEqual(ncvs.variables_selected_order[0], 0)
+        self.assertEqual(ncvs.variables_selected_order[0], 2)
 
     def test_score(self):
         integer_matrix = np.random.randint(0,10,(100,10))
