@@ -1,4 +1,5 @@
 import numpy as np
+from pyitlib import discrete_random_variable as drv
 
 __all__ = [
     'entropy',
@@ -40,10 +41,12 @@ def entropy(vector, base=None):
         "Entropy for one number is zero"
         return 0.0
 
-    _, counts = np.unique(vector, return_counts=True)
-    norm_counts = counts / counts.sum()
+    # _, counts = np.unique(vector, return_counts=True)
+    # norm_counts = counts / counts.sum()
+    # base = np.e if base is None else base
+    # return -(norm_counts * np.log(norm_counts)/np.log(base)).sum()
     base = np.e if base is None else base
-    return -(norm_counts * np.log(norm_counts)/np.log(base)).sum()
+    return float(drv.entropy(vector, base=base))
 
 
 def conditional_entropy(vector, condition, base=None):
@@ -78,18 +81,21 @@ def conditional_entropy(vector, condition, base=None):
         "Entropy for one number is zero"
         return 0.0
 
-    # sort values to use np.split later
-    vector_sorted = vector[condition.argsort()]
-    condition_sorted = condition[condition.argsort()]
+    # # sort values to use np.split later
+    # vector_sorted = vector[condition.argsort()]
+    # condition_sorted = condition[condition.argsort()]
 
-    binvalues = np.split(vector_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
-    _, counts = np.unique(condition_sorted, return_counts=True)
-    binprobas = counts / counts.sum()
-    cond_entropy = 0
+    # binvalues = np.split(vector_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
+    # _, counts = np.unique(condition_sorted, return_counts=True)
+    # binprobas = counts / counts.sum()
+    # cond_entropy = 0
 
-    for values, proba in zip(binvalues, binprobas):
-        cond_entropy += entropy(values, base=base) * proba
-    return cond_entropy
+    # for values, proba in zip(binvalues, binprobas):
+    #     cond_entropy += entropy(values, base=base) * proba
+    # return cond_entropy
+
+    base = np.e if base is None else base
+    return float(drv.entropy_conditional(vector, condition, base=base))
 
 
 def mutual_information(vector_1, vector_2, base=None):
@@ -110,9 +116,10 @@ def mutual_information(vector_1, vector_2, base=None):
         Approximated mutual information between variables.
 
     """
+    base = np.e if base is None else base
     vector_1_entropy = entropy(vector=vector_1, base=base)
     cond_entropy = conditional_entropy(vector=vector_1, condition=vector_2, base=base)
-    return vector_1_entropy - cond_entropy
+    return float(vector_1_entropy - cond_entropy)
 
 
 def conditional_mutual_information(vector_1, vector_2, condition, base=None):
@@ -152,16 +159,18 @@ def conditional_mutual_information(vector_1, vector_2, condition, base=None):
         "Entropy for one number is zero"
         return 0.0
 
-    vector_1_sorted = vector_1[condition.argsort()]
-    vector_2_sorted = vector_2[condition.argsort()]
-    condition_sorted = condition[condition.argsort()]
+    # vector_1_sorted = vector_1[condition.argsort()]
+    # vector_2_sorted = vector_2[condition.argsort()]
+    # condition_sorted = condition[condition.argsort()]
 
-    binvalues_1 = np.split(vector_1_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
-    binvalues_2 = np.split(vector_2_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
-    _, counts = np.unique(condition_sorted, return_counts=True)
-    binprobas = counts / counts.sum()
-    cond_mutual_info = 0
+    # binvalues_1 = np.split(vector_1_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
+    # binvalues_2 = np.split(vector_2_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
+    # _, counts = np.unique(condition_sorted, return_counts=True)
+    # binprobas = counts / counts.sum()
+    # cond_mutual_info = 0
 
-    for value_1, value_2, proba in zip(binvalues_1, binvalues_2, binprobas):
-        cond_mutual_info += mutual_information(value_1, value_2, base=base) * proba
-    return cond_mutual_info
+    # for value_1, value_2, proba in zip(binvalues_1, binvalues_2, binprobas):
+    #     cond_mutual_info += mutual_information(value_1, value_2, base=base) * proba
+    # return cond_mutual_info
+    base = np.e if base is None else base
+    return float(drv.information_mutual_conditional(vector_1, vector_2, condition, base))

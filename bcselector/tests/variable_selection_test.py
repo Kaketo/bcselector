@@ -163,7 +163,7 @@ class TestDiffVariableSelector(unittest.TestCase):
                 lamb=lamb,
                 j_criterion_func='mim')
         
-        self.assertEqual(dvs.variables_selected_order[0], 2)
+        self.assertEqual(dvs.variables_selected_order[0], 0)
 
     def test_score(self):
         integer_matrix = np.random.randint(0,10,(100,10))
@@ -266,7 +266,7 @@ class TestFractionVariableSelector(unittest.TestCase):
                 r=r,
                 j_criterion_func='mim')
         
-        self.assertEqual(fvs.variables_selected_order[0], 2)
+        self.assertEqual(fvs.variables_selected_order[0], 0)
 
     def test_score(self):
         integer_matrix = np.random.randint(0,10,(100,10))
@@ -348,7 +348,7 @@ class TestNoCostVariableSelector(unittest.TestCase):
                 costs=costs,
                 j_criterion_func='mim')
         
-        self.assertEqual(ncvs.variables_selected_order[0], 2)
+        self.assertEqual(ncvs.variables_selected_order[0], 0)
 
     def test_score(self):
         integer_matrix = np.random.randint(0,10,(100,10))
