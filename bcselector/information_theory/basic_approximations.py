@@ -37,16 +37,18 @@ def entropy(vector, base=None):
 
     vector = np.array(vector)
 
+    base = np.e if base is None else base
+
     if len(vector) == 1:
         "Entropy for one number is zero"
         return 0.0
 
-    # _, counts = np.unique(vector, return_counts=True)
-    # norm_counts = counts / counts.sum()
-    # base = np.e if base is None else base
-    # return -(norm_counts * np.log(norm_counts)/np.log(base)).sum()
+    _, counts = np.unique(vector, return_counts=True)
+    norm_counts = counts / counts.sum()
     base = np.e if base is None else base
-    return float(drv.entropy(vector, base=base))
+    return -(norm_counts * np.log(norm_counts)/np.log(base)).sum()
+
+    # return float(drv.entropy(vector, base=base))
 
 
 def conditional_entropy(vector, condition, base=None):
@@ -77,25 +79,26 @@ def conditional_entropy(vector, condition, base=None):
 
     assert vector.shape == condition.shape, "Argument 'vector' must be the same lenght as 'condition'"
 
+    base = np.e if base is None else base
+
     if len(vector) == 1:
         "Entropy for one number is zero"
         return 0.0
 
-    # # sort values to use np.split later
-    # vector_sorted = vector[condition.argsort()]
-    # condition_sorted = condition[condition.argsort()]
+    # sort values to use np.split later
+    vector_sorted = vector[condition.argsort()]
+    condition_sorted = condition[condition.argsort()]
 
-    # binvalues = np.split(vector_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
-    # _, counts = np.unique(condition_sorted, return_counts=True)
-    # binprobas = counts / counts.sum()
-    # cond_entropy = 0
+    binvalues = np.split(vector_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
+    _, counts = np.unique(condition_sorted, return_counts=True)
+    binprobas = counts / counts.sum()
+    cond_entropy = 0
 
-    # for values, proba in zip(binvalues, binprobas):
-    #     cond_entropy += entropy(values, base=base) * proba
-    # return cond_entropy
+    for values, proba in zip(binvalues, binprobas):
+        cond_entropy += entropy(values, base=base) * proba
+    return cond_entropy
 
-    base = np.e if base is None else base
-    return float(drv.entropy_conditional(vector, condition, base=base))
+    # return float(drv.entropy_conditional(vector, condition, base=base))
 
 
 def mutual_information(vector_1, vector_2, base=None):
@@ -159,18 +162,20 @@ def conditional_mutual_information(vector_1, vector_2, condition, base=None):
         "Entropy for one number is zero"
         return 0.0
 
-    # vector_1_sorted = vector_1[condition.argsort()]
-    # vector_2_sorted = vector_2[condition.argsort()]
-    # condition_sorted = condition[condition.argsort()]
-
-    # binvalues_1 = np.split(vector_1_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
-    # binvalues_2 = np.split(vector_2_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
-    # _, counts = np.unique(condition_sorted, return_counts=True)
-    # binprobas = counts / counts.sum()
-    # cond_mutual_info = 0
-
-    # for value_1, value_2, proba in zip(binvalues_1, binvalues_2, binprobas):
-    #     cond_mutual_info += mutual_information(value_1, value_2, base=base) * proba
-    # return cond_mutual_info
     base = np.e if base is None else base
-    return float(drv.information_mutual_conditional(vector_1, vector_2, condition, base))
+
+    vector_1_sorted = vector_1[condition.argsort()]
+    vector_2_sorted = vector_2[condition.argsort()]
+    condition_sorted = condition[condition.argsort()]
+
+    binvalues_1 = np.split(vector_1_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
+    binvalues_2 = np.split(vector_2_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
+    _, counts = np.unique(condition_sorted, return_counts=True)
+    binprobas = counts / counts.sum()
+    cond_mutual_info = 0
+
+    for value_1, value_2, proba in zip(binvalues_1, binvalues_2, binprobas):
+        cond_mutual_info += mutual_information(value_1, value_2, base=base) * proba
+    return cond_mutual_info
+
+    # return float(drv.information_mutual_conditional(vector_1, vector_2, condition, base))
