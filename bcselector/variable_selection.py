@@ -169,7 +169,7 @@ class _VariableSelector():
         >>> from sklearn.metrics import roc_auc_score
         >>> from sklearn.linear_model import LogisticRegression
         >>> fvs = FractionVariableSelector()
-        >>> fvs.fit(X, y, costs, lamb=1, j_criterion_func='mim')
+        >>> fvs.fit(x, y, costs, lamb=1, j_criterion_func='mim')
         >>> model = LogisticRegression()
         >>> fvs.score(roc_auc_score, model)
         """
@@ -209,7 +209,7 @@ class _VariableSelector():
         --------
         >>> from bcselector.variable_selection import FractionVariableSelector
         >>> fvs = FractionVariableSelector()
-        >>> fvs.fit(X, y, costs, lamb=1, j_criterion_func='mim')
+        >>> fvs.fit(x, y, costs, lamb=1, j_criterion_func='mim')
         >>> fvs.fit_no_cost()
         """
         assert self.j_criterion_func, "Must run `fit` method first."
@@ -413,7 +413,7 @@ class DiffVariableSelector(_VariableSelector):
         --------
         >>> from bcselector.variable_selection import DiffVariableSelector
         >>> dvs = DiffVariableSelector()
-        >>> dvs.fit(X, y, costs, lamb=1, j_criterion_func='mim')
+        >>> dvs.fit(x, y, costs, lamb=1, j_criterion_func='mim')
         """
         # lamb
         assert isinstance(lamb, int) or isinstance(lamb, float), "Argument `lamb` must be integer or float"
@@ -499,7 +499,7 @@ class FractionVariableSelector(_VariableSelector):
         --------
         >>> from bcselector.variable_selection import FractionVariableSelector
         >>> fvs = FractionVariableSelector()
-        >>> fvs.fit(X, y, costs, lamb=1, j_criterion_func='mim')
+        >>> fvs.fit(x, y, costs, lamb=1, j_criterion_func='mim')
         """
         # r
         assert isinstance(r, int) or isinstance(r, float), "Argument `r` must be integer or float"

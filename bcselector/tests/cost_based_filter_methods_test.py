@@ -14,9 +14,9 @@ class TestFractionMethod(unittest.TestCase):
         normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         r = 1
         selected_feature, filter_value, criterion_value, cost = fraction_find_best_feature(
-            j_criterion_func=mim, 
+            j_criterion_func=mim,
             r=r,
-            data=integer_matrix, 
+            data=integer_matrix,
             target_variable=diverse_target,
             possible_variables_index=candidates_index,
             costs=costs,
@@ -36,9 +36,9 @@ class TestFractionMethod(unittest.TestCase):
         r = 1
         beta = 1
         selected_feature, filter_value, criterion_value, cost = fraction_find_best_feature(
-                                    j_criterion_func=mifs, 
+                                    j_criterion_func=mifs,
                                     r=r,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
@@ -48,7 +48,7 @@ class TestFractionMethod(unittest.TestCase):
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(filter_value, float)
         self.assertIsInstance(criterion_value, float)
-        self.assertIsInstance(cost, float)                                    
+        self.assertIsInstance(cost, float)
 
     def test_simple_input_mrmr(self):
         integer_matrix = np.random.randint(0,10,(100,10))
@@ -59,18 +59,18 @@ class TestFractionMethod(unittest.TestCase):
         normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         r = 1
         selected_feature, filter_value, criterion_value, cost = fraction_find_best_feature(
-                                    j_criterion_func=mrmr, 
+                                    j_criterion_func=mrmr,
                                     r=r,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
-                                    costs=costs, 
+                                    costs=costs,
                                     normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variable_index)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(filter_value, float)
         self.assertIsInstance(criterion_value, float)
-        self.assertIsInstance(cost, float) 
+        self.assertIsInstance(cost, float)
 
     def test_simple_input_jmi(self):
         integer_matrix = np.random.randint(0,10,(100,10))
@@ -81,18 +81,18 @@ class TestFractionMethod(unittest.TestCase):
         normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         r = 1
         selected_feature, filter_value, criterion_value, cost = fraction_find_best_feature(
-                                    j_criterion_func=jmi, 
+                                    j_criterion_func=jmi,
                                     r=r,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
-                                    costs=costs, 
+                                    costs=costs,
                                     normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variable_index)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(filter_value, float)
         self.assertIsInstance(criterion_value, float)
-        self.assertIsInstance(cost, float) 
+        self.assertIsInstance(cost, float)
 
     def test_simple_input_cife(self):
         integer_matrix = np.random.randint(0,10,(100,10))
@@ -104,19 +104,19 @@ class TestFractionMethod(unittest.TestCase):
         r = 1
         beta=1
         selected_feature, filter_value, criterion_value, cost = fraction_find_best_feature(
-                                    j_criterion_func=cife, 
+                                    j_criterion_func=cife,
                                     r=r,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
-                                    costs=costs, 
+                                    costs=costs,
                                     normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variable_index,
                                     beta=beta)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(filter_value, float)
         self.assertIsInstance(criterion_value, float)
-        self.assertIsInstance(cost, float) 
+        self.assertIsInstance(cost, float)
 
     def test_different_beta_parameter_mifs(self):
         integer_matrix = np.random.randint(0,10,(10,10))
@@ -129,9 +129,9 @@ class TestFractionMethod(unittest.TestCase):
         beta_1 = 1
         beta_2 = 10000
         _, filter_value_1, criterion_value_1, _ = fraction_find_best_feature(
-                                    j_criterion_func=mifs, 
+                                    j_criterion_func=mifs,
                                     r=r,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
@@ -139,9 +139,9 @@ class TestFractionMethod(unittest.TestCase):
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_1)
         _, filter_value_2, criterion_value_2, _ = fraction_find_best_feature(
-                                    j_criterion_func=mifs, 
+                                    j_criterion_func=mifs,
                                     r=r,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
@@ -150,7 +150,7 @@ class TestFractionMethod(unittest.TestCase):
                                     beta=beta_2)
         self.assertNotEqual(filter_value_1,filter_value_2)
         self.assertNotEqual(criterion_value_1,criterion_value_2)
-                 
+
     def test_different_beta_parameter_cife(self):
         integer_matrix = np.random.randint(0,10,(10,10))
         diverse_target = np.random.randint(0,10,(10))
@@ -162,9 +162,9 @@ class TestFractionMethod(unittest.TestCase):
         beta_1 = 1
         beta_2 = 10000
         _, filter_value_1, criterion_value_1, _ = fraction_find_best_feature(
-                                    j_criterion_func=cife, 
+                                    j_criterion_func=cife,
                                     r=r,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
@@ -172,16 +172,16 @@ class TestFractionMethod(unittest.TestCase):
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_1)
         _, filter_value_2, criterion_value_2, _ = fraction_find_best_feature(
-                                    j_criterion_func=cife, 
+                                    j_criterion_func=cife,
                                     r=r,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
                                     normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_2)
-        self.assertNotEqual(filter_value_1,filter_value_2)                                    
+        self.assertNotEqual(filter_value_1,filter_value_2)
         self.assertNotEqual(criterion_value_1,criterion_value_2)
 
     def test_filter_criterion_values(self):
@@ -195,18 +195,18 @@ class TestFractionMethod(unittest.TestCase):
         r_1 = 0
         r_2 = 10
         _, filter_value_1, criterion_value_1, _ = fraction_find_best_feature(
-                                    j_criterion_func=jmi, 
+                                    j_criterion_func=jmi,
                                     r=r_1,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
                                     normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index)
         _, filter_value_2, criterion_value_2, _ = fraction_find_best_feature(
-                                    j_criterion_func=jmi, 
+                                    j_criterion_func=jmi,
                                     r=r_2,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
@@ -224,9 +224,9 @@ class TestDifferenceMethod(unittest.TestCase):
         normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         lamb = 1
         selected_feature, filter_value, criterion_value, cost = difference_find_best_feature(
-            j_criterion_func=mim, 
+            j_criterion_func=mim,
             lamb = lamb,
-            data=integer_matrix, 
+            data=integer_matrix,
             target_variable=diverse_target,
             possible_variables_index=candidates_index,
             costs=costs,
@@ -246,9 +246,9 @@ class TestDifferenceMethod(unittest.TestCase):
         lamb = 1
         beta = 1
         selected_feature, filter_value, criterion_value, cost = difference_find_best_feature(
-                                    j_criterion_func=mifs, 
+                                    j_criterion_func=mifs,
                                     lamb = lamb,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
@@ -258,7 +258,7 @@ class TestDifferenceMethod(unittest.TestCase):
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(filter_value, float)
         self.assertIsInstance(criterion_value, float)
-        self.assertIsInstance(cost, float)                                    
+        self.assertIsInstance(cost, float)
 
     def test_simple_input_mrmr(self):
         integer_matrix = np.random.randint(0,10,(100,10))
@@ -269,18 +269,18 @@ class TestDifferenceMethod(unittest.TestCase):
         normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         lamb = 1
         selected_feature, filter_value, criterion_value, cost = difference_find_best_feature(
-                                    j_criterion_func=mrmr, 
+                                    j_criterion_func=mrmr,
                                     lamb = lamb,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
-                                    costs=costs, 
+                                    costs=costs,
                                     normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variable_index)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(filter_value, float)
         self.assertIsInstance(criterion_value, float)
-        self.assertIsInstance(cost, float) 
+        self.assertIsInstance(cost, float)
 
     def test_simple_input_jmi(self):
         integer_matrix = np.random.randint(0,10,(100,10))
@@ -291,18 +291,18 @@ class TestDifferenceMethod(unittest.TestCase):
         normalized_costs = list((np.array(costs) - min(costs) + 0.0001)/(max(costs)-min(costs)+0.0001))
         lamb = 1
         selected_feature, filter_value, criterion_value, cost = difference_find_best_feature(
-                                    j_criterion_func=jmi, 
+                                    j_criterion_func=jmi,
                                     lamb = lamb,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
-                                    costs=costs, 
+                                    costs=costs,
                                     normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variable_index)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(filter_value, float)
         self.assertIsInstance(criterion_value, float)
-        self.assertIsInstance(cost, float) 
+        self.assertIsInstance(cost, float)
 
     def test_simple_input_cife(self):
         integer_matrix = np.random.randint(0,10,(100,10))
@@ -314,19 +314,19 @@ class TestDifferenceMethod(unittest.TestCase):
         lamb = 1
         beta=1
         selected_feature, filter_value, criterion_value, cost = difference_find_best_feature(
-                                    j_criterion_func=cife, 
+                                    j_criterion_func=cife,
                                     lamb = lamb,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
-                                    costs=costs, 
+                                    costs=costs,
                                     normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variable_index,
                                     beta=beta)
         self.assertIsInstance(selected_feature,int)
         self.assertIsInstance(filter_value, float)
         self.assertIsInstance(criterion_value, float)
-        self.assertIsInstance(cost, float) 
+        self.assertIsInstance(cost, float)
 
     def test_different_beta_parameter_mifs(self):
         integer_matrix = np.random.randint(0,10,(10,10))
@@ -339,9 +339,9 @@ class TestDifferenceMethod(unittest.TestCase):
         beta_1 = 1
         beta_2 = 10000
         _, filter_value_1, criterion_value_1, _ = difference_find_best_feature(
-                                    j_criterion_func=mifs, 
+                                    j_criterion_func=mifs,
                                     lamb=lamb,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
@@ -349,18 +349,18 @@ class TestDifferenceMethod(unittest.TestCase):
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_1)
         _, filter_value_2, criterion_value_2, _ = difference_find_best_feature(
-                                    j_criterion_func=mifs, 
+                                    j_criterion_func=mifs,
                                     lamb=lamb,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
                                     normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_2)
-        self.assertNotEqual(filter_value_1,filter_value_2)                                          
+        self.assertNotEqual(filter_value_1,filter_value_2)
         self.assertNotEqual(criterion_value_1,criterion_value_2)
-                 
+
     def test_different_beta_parameter_cife(self):
         integer_matrix = np.random.randint(0,10,(10,10))
         diverse_target = np.random.randint(0,10,(10))
@@ -372,9 +372,9 @@ class TestDifferenceMethod(unittest.TestCase):
         beta_1 = 1
         beta_2 = 10000
         _, filter_value_1, criterion_value_1, _ = difference_find_best_feature(
-                                    j_criterion_func=cife, 
+                                    j_criterion_func=cife,
                                     lamb=lamb,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
@@ -382,16 +382,16 @@ class TestDifferenceMethod(unittest.TestCase):
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_1)
         _, filter_value_2, criterion_value_2, _ = difference_find_best_feature(
-                                    j_criterion_func=cife, 
+                                    j_criterion_func=cife,
                                     lamb=lamb,
-                                    data=integer_matrix, 
+                                    data=integer_matrix,
                                     target_variable=diverse_target,
                                     possible_variables_index=candidates_index,
                                     costs=costs,
                                     normalized_costs=normalized_costs,
                                     prev_variables_index=prev_variables_index,
                                     beta=beta_2)
-        self.assertNotEqual(filter_value_1,filter_value_2)                            
+        self.assertNotEqual(filter_value_1,filter_value_2)
         self.assertNotEqual(criterion_value_1,criterion_value_2)
 
 if __name__ == '__main__':

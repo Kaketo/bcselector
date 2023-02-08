@@ -3,18 +3,18 @@ from pyitlib import discrete_random_variable as drv
 
 __all__ = [
     'entropy',
-    'conditional_entropy',
+    'entropy_conditional',
     'mutual_information',
-    'conditional_mutual_information'
+    'mutual_information_conditional'
 ]
 
 
-def entropy(vector, base=None):
+def entropy(x, base=np.e):
     """This estimator computes the entropy of the empirical probability distribution.
 
     Parameters
     ----------
-    vector: list or np.array
+    x: list or np.array
         Vector of which entropy is calculated.
     base: int or float (default=np.e)
         Base of the logarithm in entropy approximation
@@ -32,36 +32,34 @@ def entropy(vector, base=None):
 
     """
 
-    assert isinstance(vector, (list)) or (isinstance(vector, np.ndarray) and len(vector.shape) == 1), "Argument 'vector' not in the right shape. Use list or numpy (n,) shape instead"
-    assert len(vector) > 0, "Argument 'vector' can't be empty"
+    assert isinstance(x, list) or (isinstance(x, np.ndarray) and len(x.shape) == 1), \
+        "Argument 'x' not in the right shape. Use list or numpy (n,) shape instead "
+    assert len(x) > 0, "Argument 'x' can't be empty"
 
-    vector = np.array(vector)
+    x = np.array(x)
 
-    base = np.e if base is None else base
-
-    if len(vector) == 1:
+    if len(x) == 1:
         "Entropy for one number is zero"
         return 0.0
 
-    _, counts = np.unique(vector, return_counts=True)
+    _, counts = np.unique(x, return_counts=True)
     norm_counts = counts / counts.sum()
-    base = np.e if base is None else base
     return -(norm_counts * np.log(norm_counts)/np.log(base)).sum()
 
-    # return float(drv.entropy(vector, base=base))
+    # return float(drv.entropy(x, base=base))
 
 
-def conditional_entropy(vector, condition, base=None):
+def entropy_conditional(x, y, base=np.e):
     """This estimator computes the conditional entropy of the empirical probability distribution.
 
     Parameters
     ----------
-    vector: list or np.array
+    x: list or np.array
         Vector of which entropy is calculated.
-    condition: list or np.array
-        Vector of condition for entropy.
-    base: int or float
-        Base of the logarithm in entropy approximation. If None, np.e is selected and entropy is returned in nats.
+    y: list or np.array
+        Vector of y for entropy.
+    base: int or float (default=np.e)
+        Base of the logarithm in entropy approximation.
 
     Returns
     --------
@@ -69,25 +67,25 @@ def conditional_entropy(vector, condition, base=None):
         Approximated entropy.
 
     """
-    assert isinstance(vector, (list)) or (isinstance(vector, np.ndarray) and len(vector.shape) == 1), "Argument 'vector' not in the right shape. Use list or numpy (n,) shape instead."
-    assert isinstance(condition, (list)) or (isinstance(condition, np.ndarray) and len(condition.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
-    assert len(vector) > 0, "Argument 'vector' can't be empty"
-    assert len(condition) > 0, "Argument 'condition' can't be empty"
+    assert isinstance(x, list) or (isinstance(x, np.ndarray) and len(x.shape) == 1), \
+        "Argument 'x' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(y, list) or (isinstance(y, np.ndarray) and len(y.shape) == 1), \
+        "Argument 'y' not in the right shape. Use list or numpy (n,) shape instead."
+    assert len(x) > 0, "Argument 'x' can't be empty"
+    assert len(y) > 0, "Argument 'y' can't be empty"
 
-    vector = np.array(vector)
-    condition = np.array(condition)
+    x = np.array(x)
+    y = np.array(y)
 
-    assert vector.shape == condition.shape, "Argument 'vector' must be the same lenght as 'condition'"
+    assert x.shape == y.shape, "Argument 'x' must be the same lenght as 'y'"
 
-    base = np.e if base is None else base
-
-    if len(vector) == 1:
+    if len(x) == 1:
         "Entropy for one number is zero"
         return 0.0
 
     # sort values to use np.split later
-    vector_sorted = vector[condition.argsort()]
-    condition_sorted = condition[condition.argsort()]
+    vector_sorted = x[y.argsort()]
+    condition_sorted = y[y.argsort()]
 
     binvalues = np.split(vector_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
     _, counts = np.unique(condition_sorted, return_counts=True)
@@ -98,20 +96,20 @@ def conditional_entropy(vector, condition, base=None):
         cond_entropy += entropy(values, base=base) * proba
     return cond_entropy
 
-    # return float(drv.entropy_conditional(vector, condition, base=base))
+    # return float(drv.entropy_conditional(x, y, base=base))
 
 
-def mutual_information(vector_1, vector_2, base=None):
+def mutual_information(x, y, base=np.e):
     """This estimator computes the mutual information of two vectors with method of the empirical probability distribution.
 
     Parameters
     -----------
-    vector_1 : list or np.array
+    x : list or np.array
         Vector of one variable.
-    vector_2 : list or np.array
+    y : list or np.array
         Vector of one variable.
-    base : int or float
-        Base of the logarithm in entropy approximation. If None, np.e is selected and entropy is returned in nats.
+    base : int or float (default=np.e)
+        Base of the logarithm in entropy approximation.
 
     Returns
     --------
@@ -119,23 +117,22 @@ def mutual_information(vector_1, vector_2, base=None):
         Approximated mutual information between variables.
 
     """
-    base = np.e if base is None else base
-    vector_1_entropy = entropy(vector=vector_1, base=base)
-    cond_entropy = conditional_entropy(vector=vector_1, condition=vector_2, base=base)
+    vector_1_entropy = entropy(x=x, base=base)
+    cond_entropy = entropy_conditional(x=x, y=y, base=base)
     return float(vector_1_entropy - cond_entropy)
 
 
-def conditional_mutual_information(vector_1, vector_2, condition, base=None):
-    """This estimator computes the conditional mutual information of two vectors and condition vector with method of the empirical probability distribution.
+def mutual_information_conditional(x, y, z, base=np.e):
+    """This estimator computes the conditional mutual information of two vectors and y x with method of the empirical probability distribution.
 
     Parameters
     -----------
-    vector_1 : list or np.array
+    x : list or np.array
         Vector of one variable.
-    vector_2: list or np.array
+    y: list or np.array
         Vector of one variable.
-    condition: list or np.array
-        Vector of condition for mutual information.
+    z: list or np.array
+        Vector of y for mutual information.
     base : int or float
         Base of the logarithm in entropy approximation. If None, np.e is selected and entropy is returned in nats.
 
@@ -145,28 +142,29 @@ def conditional_mutual_information(vector_1, vector_2, condition, base=None):
         Approximated conditional mutual information between variables.
 
     """
-    assert isinstance(vector_1, (list)) or (isinstance(vector_1, np.ndarray) and len(vector_1.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
-    assert isinstance(vector_2, (list)) or (isinstance(vector_2, np.ndarray) and len(vector_2.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
-    assert isinstance(condition, (list)) or (isinstance(condition, np.ndarray) and len(condition.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
-    assert len(vector_1) > 0, "Argument 'vector_1' can't be empty"
-    assert len(vector_2) > 0, "Argument 'vector_2' can't be empty"
-    assert len(condition) > 0, "Argument 'condition' can't be empty"
+    assert isinstance(x, list) or (isinstance(x, np.ndarray) and len(x.shape) == 1), \
+        "Argument 'y' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(y, list) or (isinstance(y, np.ndarray) and len(y.shape) == 1), \
+        "Argument 'y' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(z, list) or (isinstance(z, np.ndarray) and len(z.shape) == 1), \
+        "Argument 'y' not in the right shape. Use list or numpy (n,) shape instead."
+    assert len(x) > 0, "Argument 'x' can't be empty"
+    assert len(y) > 0, "Argument 'y' can't be empty"
+    assert len(z) > 0, "Argument 'y' can't be empty"
 
-    vector_1 = np.array(vector_1)
-    vector_2 = np.array(vector_2)
-    condition = np.array(condition)
+    x = np.array(x)
+    y = np.array(y)
+    z = np.array(z)
 
-    assert vector_1.shape == vector_2.shape == condition.shape, "Argument 'vector_1' and 'vector_2' must be the same lenght as 'condition'"
+    assert x.shape == y.shape == z.shape, "Argument 'x' and 'y' must be the same lenght as 'y'"
 
-    if len(condition) == 1:
+    if len(x) == 1:
         "Entropy for one number is zero"
         return 0.0
 
-    base = np.e if base is None else base
-
-    vector_1_sorted = vector_1[condition.argsort()]
-    vector_2_sorted = vector_2[condition.argsort()]
-    condition_sorted = condition[condition.argsort()]
+    vector_1_sorted = x[z.argsort()]
+    vector_2_sorted = y[z.argsort()]
+    condition_sorted = z[z.argsort()]
 
     binvalues_1 = np.split(vector_1_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
     binvalues_2 = np.split(vector_2_sorted, np.unique(condition_sorted, return_index=True)[1][1:])
@@ -178,4 +176,48 @@ def conditional_mutual_information(vector_1, vector_2, condition, base=None):
         cond_mutual_info += mutual_information(value_1, value_2, base=base) * proba
     return cond_mutual_info
 
-    # return float(drv.information_mutual_conditional(vector_1, vector_2, condition, base))
+    # return float(drv.information_mutual_conditional(x, y, y, base))
+
+
+def mutual_information_combined(x, y, z, base=np.e):
+    """This estimator computes the conditional mutual information of two vectors and y x with method of the empirical probability distribution.
+
+    Parameters
+    -----------
+    x : list or np.array
+        Vector of one variable.
+    y: list or np.array
+        Vector of one variable.
+    z: list or np.array
+        Vector of y for mutual information.
+    base : int or float
+        Base of the logarithm in entropy approximation. If None, np.e is selected and entropy is returned in nats.
+
+    Returns
+    --------
+    variables_conditional_mutual_information : float
+        Approximated conditional mutual information between variables.
+
+    """
+    assert isinstance(x, list) or (isinstance(x, np.ndarray) and len(x.shape) == 1), \
+        "Argument 'y' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(y, list) or (isinstance(y, np.ndarray) and len(y.shape) == 1), \
+        "Argument 'y' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(z, list) or (isinstance(z, np.ndarray) and len(z.shape) == 1), \
+        "Argument 'y' not in the right shape. Use list or numpy (n,) shape instead."
+    assert len(x) > 0, "Argument 'x' can't be empty"
+    assert len(y) > 0, "Argument 'y' can't be empty"
+    assert len(z) > 0, "Argument 'y' can't be empty"
+
+    x = np.array(x)
+    y = np.array(y)
+    z = np.array(z)
+
+    assert x.shape == y.shape == z.shape, "Argument 'x' and 'y' must be the same lenght as 'y'"
+
+    a = mutual_information(x=z, y=y, base=base)
+    b = mutual_information_conditional(x=z, y=x, z=y, base=base)
+
+    # a = drv.information_mutual(z, y, base=base)
+    # b = drv.information_mutual_conditional(X=z, Y=x, Z=y, base=base)
+    return a + b

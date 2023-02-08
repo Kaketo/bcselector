@@ -56,7 +56,7 @@ Lets say that that we have dataset loaded to Python, we need to create `Selector
    from bcselector.datasets import load_sample
 
    # Arguments for feature selection
-   # r - cost scaling parameter, 
+   # r - cost scaling parameter,
    # beta - kwarg for j_criterion_func,
    # model - model that is fitted on data.
    r = 1

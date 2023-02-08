@@ -5,7 +5,7 @@ Simple illustrative examples on how you can quickly start using the **bcselector
 
 Data Generation
 ---------------
-First of all lets generate some artificial data, that we are going to use in feature selection. 
+First of all lets generate some artificial data, that we are going to use in feature selection.
 Bcselector provides two classes that let us generate data with costs:
 
 - **MatrixGenerator** - generates data in *np.ndarray* and costs as *list*.
@@ -19,8 +19,8 @@ Higher the cost, lower the noise.
 3. We generate target variable :math:`Y = \{y_1, \ldots, y_n\}`, where :math:`y_i` is generated from Bernoulli distribution with success probability :math:`\sigma_i`.
 4. We generate :math:`p` noise random variables :math:`e_1,\ldots,e_p`, where :math:`e_i\sim N(0,\sigma)`.
 5. We create new :math:`p` perturbed variables, each is generated as: :math:`X_i' := X_i + e_i`. Each variable :math:`X_i'` is assigned with cost equal to :math:`c_i' = \frac{1}{\sigma_i +1}`.
-6. Steps :math:`4-5` are repeated for all values from list of standard deviations: :math:`noise\_sigmas = [\sigma_1, \ldots, \sigma_k]` 
-7. At the end we obtain :math:`k*p` features. 
+6. Steps :math:`4-5` are repeated for all values from list of standard deviations: :math:`noise\_sigmas = [\sigma_1, \ldots, \sigma_k]`
+7. At the end we obtain :math:`k*p` features.
 
 MatrixGenerator
 ~~~~~~~~~~~~~~~
@@ -32,8 +32,8 @@ MatrixGenerator
    SEED = 42
 
    # Data generation arguments:
-   # - data size, 
-   # - cost of non-noised feature 
+   # - data size,
+   # - cost of non-noised feature
    # - sigma of noise for noised features.
    n_rows = 1000
    n_cols = 10
@@ -41,11 +41,11 @@ MatrixGenerator
 
    mg = MatrixGenerator()
    X, y, costs = mg.generate(
-       n_rows=n_rows, 
+       n_rows=n_rows,
        n_basic_cols=n_cols,
-       noise_sigmas=noise_sigmas, 
+       noise_sigmas=noise_sigmas,
        seed=SEED,
-       discretize_method='uniform', 
+       discretize_method='uniform',
        discretize_bins=10)
 
 DataFrameGenerator
@@ -58,7 +58,7 @@ DataFrameGenerator
    SEED = 42
 
    # Data generation arguments:
-   # - data size, 
+   # - data size,
    # - cost of non-noised feature,
    # - sigma of noise for noised features.
    n_rows = 1000
@@ -67,11 +67,11 @@ DataFrameGenerator
 
    dfg = DataFrameGenerator()
    X, y, costs = dfg.generate(
-       n_rows=n_rows, 
+       n_rows=n_rows,
        n_basic_cols=n_cols,
-       noise_sigmas=noise_sigmas, 
+       noise_sigmas=noise_sigmas,
        seed=SEED,
-       discretize_method='uniform', 
+       discretize_method='uniform',
        discretize_bins=10)
 
 Feature Selection
@@ -95,7 +95,7 @@ FractionVariableSelector
    SEED = 42
 
    # Data generation arguments:
-   # - data size, 
+   # - data size,
    # - cost of non-noised feature,
    # - sigma of noise for noised features.
    n_rows = 1000
@@ -105,15 +105,15 @@ FractionVariableSelector
    # Generate data
    mg = MatrixGenerator()
    X, y, costs = mg.generate(
-       n_rows=n_rows, 
+       n_rows=n_rows,
        n_basic_cols=n_cols,
-       noise_sigmas=noise_sigmas, 
+       noise_sigmas=noise_sigmas,
        seed=SEED,
-       discretize_method='uniform', 
+       discretize_method='uniform',
        discretize_bins=10)
 
    # Arguments for feature selection
-   # - cost scaling parameter, 
+   # - cost scaling parameter,
    # - kwarg for j_criterion_func,
    # - model that is fitted on data.
    r = 1
@@ -130,11 +130,11 @@ FractionVariableSelector
         j_criterion_func='cife',
         beta=beta)
    fvs.score(
-        model=model, 
+        model=model,
         scoring_function=roc_auc_score)
    fvs.plot_scores(
-        compare_no_cost_method=True, 
-        model=model, 
+        compare_no_cost_method=True,
+        model=model,
         annotate=True)
 
 DiffVariableSelector
@@ -146,13 +146,13 @@ DiffVariableSelector
 
    from bcselector.variable_selection import DiffVariableSelector
    from bcselector.data_generation import MatrixGenerator
-   
+
 
    # Fix the seed for reproducibility.
    SEED = 42
 
    # Data generation arguments:
-   # - data size, 
+   # - data size,
    # - cost of non-noised feature,
    # - sigma of noise for noised features.
    n_rows = 1000
@@ -162,15 +162,15 @@ DiffVariableSelector
    # Generate data
    mg = MatrixGenerator()
    X, y, costs = mg.generate(
-       n_rows=n_rows, 
+       n_rows=n_rows,
        n_basic_cols=n_cols,
-       noise_sigmas=noise_sigmas, 
+       noise_sigmas=noise_sigmas,
        seed=SEED,
-       discretize_method='uniform', 
+       discretize_method='uniform',
        discretize_bins=10)
 
    # Arguments for feature selection
-   # - cost scaling parameter, 
+   # - cost scaling parameter,
    # - model that is fitted on data.
    lamb = 1
    beta = 0.5
@@ -185,9 +185,9 @@ DiffVariableSelector
         lamb=lamb,
         j_criterion_func='jmi')
    dvs.score(
-        model=model, 
+        model=model,
         scoring_function=roc_auc_score)
    dvs.plot_scores(
-        compare_no_cost_method=True, 
-        model=model, 
+        compare_no_cost_method=True,
+        model=model,
         annotate=True)

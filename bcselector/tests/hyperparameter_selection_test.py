@@ -34,27 +34,27 @@ class TestFVS_r_paramter(unittest.TestCase):
 
         # MIFS
         r = 0
-        feature_index, filter_value, criterion_value, cost = fraction_find_best_feature(j_criterion_func=mifs, 
-                                                                                        r=r, 
-                                                                                        data=X, 
-                                                                                        target_variable=y, 
+        feature_index, filter_value, criterion_value, cost = fraction_find_best_feature(j_criterion_func=mifs,
+                                                                                        r=r,
+                                                                                        data=X,
+                                                                                        target_variable=y,
                                                                                         possible_variables_index = [1,2],
                                                                                         costs=costs,
                                                                                         normalized_costs=normalized_costs,
                                                                                         prev_variables_index = [0,3])
-        mifs_value = mutual_information(y, X[:,feature_index]) - mutual_information(X[:,feature_index],X[:,0])-mutual_information(X[:,feature_index],X[:,3])                                                        
+        mifs_value = mutual_information(y, X[:,feature_index]) - mutual_information(X[:,feature_index],X[:,0])-mutual_information(X[:,feature_index],X[:,3])
         self.assertAlmostEqual(mifs_value, criterion_value)
 
         r = 1
-        feature_index, filter_value, criterion_value, cost = fraction_find_best_feature(j_criterion_func=mifs, 
-                                                                                        r=r, 
-                                                                                        data=X, 
-                                                                                        target_variable=y, 
+        feature_index, filter_value, criterion_value, cost = fraction_find_best_feature(j_criterion_func=mifs,
+                                                                                        r=r,
+                                                                                        data=X,
+                                                                                        target_variable=y,
                                                                                         possible_variables_index = [1,2],
                                                                                         costs=costs,
                                                                                         normalized_costs=normalized_costs,
                                                                                         prev_variables_index = [0,3])
-        mifs_value = mutual_information(y, X[:,feature_index]) - mutual_information(X[:,feature_index], X[:,0])-mutual_information(X[:,feature_index], X[:,3])                                                        
+        mifs_value = mutual_information(y, X[:,feature_index]) - mutual_information(X[:,feature_index], X[:,0])-mutual_information(X[:,feature_index], X[:,3])
         m = abs(min([
             mutual_information(y, X[:,1]) - mutual_information(X[:,1], X[:,0])-mutual_information(X[:,1], X[:,3]),
             mutual_information(y, X[:,2]) - mutual_information(X[:,2], X[:,0])-mutual_information(X[:,2], X[:,3])]))

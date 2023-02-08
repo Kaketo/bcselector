@@ -5,12 +5,12 @@ entropy
 
 .. autofunction:: entropy
 
-conditional_entropy
+entropy_conditional
 ===================
 
 .. currentmodule:: bcselector.information_theory.basic_approximations
 
-.. autofunction:: conditional_entropy
+.. autofunction:: entropy_conditional
 
 mutual_information
 ==================
@@ -19,9 +19,9 @@ mutual_information
 
 .. autofunction:: mutual_information
 
-conditional_mutual_information
+mutual_information_conditional
 ==============================
 
 .. currentmodule:: bcselector.information_theory.basic_approximations
 
-.. autofunction:: conditional_mutual_information
+.. autofunction:: mutual_information_conditional

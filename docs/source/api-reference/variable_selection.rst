@@ -50,4 +50,3 @@ DiffVariableSelector
    .. automethod:: plot_scores
    .. automethod:: get_cost_results
    .. automethod:: get_no_cost_results
-

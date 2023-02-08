@@ -25,7 +25,7 @@ class TestMatrixGenerator(unittest.TestCase):
                 costs=costs,
                 lamb=lamb,
                 j_criterion_func='cife',
-                budget = 5, 
+                budget = 5,
                 stop_budget=True,
                 beta=beta)
 
@@ -34,4 +34,4 @@ class TestMatrixGenerator(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()   
+    unittest.main()

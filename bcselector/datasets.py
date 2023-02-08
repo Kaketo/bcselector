@@ -7,7 +7,7 @@ from sklearn.preprocessing import KBinsDiscretizer
 
 
 def _discretize(vector, **kwargs):
-    """Discretizes vector with sklearn.preprocessing.KBinsDiscretizer.
+    """Discretizes x with sklearn.preprocessing.KBinsDiscretizer.
 
     Parameters
     ----------
@@ -18,7 +18,7 @@ def _discretize(vector, **kwargs):
     Returns
     -------
     discretized_vector: np.array
-        Discretized by **kwargs arguments method vector.
+        Discretized by **kwargs arguments method x.
     """
     discretizer = KBinsDiscretizer(encode='ordinal', **kwargs)
     discretized_vector = discretizer.fit_transform(vector.reshape(-1, 1)).reshape(-1)

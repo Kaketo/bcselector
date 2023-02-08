@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 
 from bcselector.information_theory.j_criterion_approximations import mim, mifs, mrmr, jmi, cife
-from bcselector.information_theory.basic_approximations import mutual_information, conditional_mutual_information
+from bcselector.information_theory.basic_approximations import mutual_information, mutual_information_conditional
 
 
 class TestMIM(unittest.TestCase):
@@ -15,7 +15,7 @@ class TestMIM(unittest.TestCase):
         zeros_matrix = np.zeros((100,50))
         diverse_target = np.random.randint(0,10,(100))
         too_high_index = 51
-        with self.assertRaises(AssertionError): mim(zeros_matrix, diverse_target, too_high_index)        
+        with self.assertRaises(AssertionError): mim(zeros_matrix, diverse_target, too_high_index)
 
     def test_theoretical_value(self):
         integer_matrix = np.random.randint(0,10,(100,50))
@@ -50,7 +50,7 @@ class TestMIFS(unittest.TestCase):
         prev_variable_index = [3,4,5]
         too_high_index = 51
         beta = 2
-        with self.assertRaises(AssertionError): mifs(zeros_matrix, diverse_target, prev_variable_index, too_high_index, beta=beta)    
+        with self.assertRaises(AssertionError): mifs(zeros_matrix, diverse_target, prev_variable_index, too_high_index, beta=beta)
 
     def test_theoretical_value(self):
         integer_matrix = np.random.randint(0,10,(100,50))
@@ -59,7 +59,7 @@ class TestMIFS(unittest.TestCase):
         candidate_index = 1
         beta_1 = 1
         beta_2 = 10
-        self.assertGreater(mifs(integer_matrix,diverse_target,prev_variable_index,candidate_index,beta = beta_1), 
+        self.assertGreater(mifs(integer_matrix,diverse_target,prev_variable_index,candidate_index,beta = beta_1),
                             mifs(integer_matrix,diverse_target,prev_variable_index,candidate_index,beta = beta_2))
 
 if __name__ == '__main__':

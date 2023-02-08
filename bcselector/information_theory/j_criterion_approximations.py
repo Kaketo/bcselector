@@ -1,6 +1,6 @@
 import numpy as np
 import warnings
-from bcselector.information_theory.basic_approximations import mutual_information, conditional_mutual_information
+from bcselector.information_theory.basic_approximations import mutual_information, mutual_information_conditional
 
 __all__ = [
     'mim',
@@ -173,7 +173,7 @@ def jmi(data, target_variable, prev_variables_index, candidate_variable_index, *
         redundancy_sum = 0
     else:
         a = np.apply_along_axis(mutual_information, axis=0, arr=data[:, prev_variables_index], vector_2=candidate_variable).sum()
-        b = np.apply_along_axis(conditional_mutual_information, axis=0, arr=data[:, prev_variables_index], vector_2=candidate_variable, condition=target_variable).sum()
+        b = np.apply_along_axis(mutual_information_conditional, axis=0, arr=data[:, prev_variables_index], vector_2=candidate_variable, condition=target_variable).sum()
         redundancy_sum = a - b
 
     return mutual_information(candidate_variable, target_variable) - 1/prev_variables_len*redundancy_sum
@@ -226,7 +226,7 @@ def cife(data, target_variable, prev_variables_index, candidate_variable_index, 
         redundancy_sum = 0
     else:
         a = np.apply_along_axis(mutual_information, axis=0, arr=data[:, prev_variables_index], vector_2=candidate_variable).sum()
-        b = np.apply_along_axis(conditional_mutual_information, axis=0, arr=data[:, prev_variables_index], vector_2=candidate_variable, condition=target_variable).sum()
+        b = np.apply_along_axis(mutual_information_conditional, axis=0, arr=data[:, prev_variables_index], vector_2=candidate_variable, condition=target_variable).sum()
         redundancy_sum = a - b
 
     return mutual_information(candidate_variable, target_variable) - beta * redundancy_sum
