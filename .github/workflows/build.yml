@@ -27,7 +27,7 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run Python unit tests with coverage
-      run: python bcselector/run_tests.py
+      run: python -m coverage run bcselector/run_tests.py
 
-    - name: Upload codecov results
-      run: bash <(curl -s https://codecov.io/bash) -v
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
