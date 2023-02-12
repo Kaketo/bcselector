@@ -5,7 +5,8 @@ __all__ = [
     'entropy',
     'conditional_entropy',
     'mutual_information',
-    'conditional_mutual_information'
+    'conditional_mutual_information',
+    'mutual_information_combined'
 ]
 
 
@@ -32,7 +33,8 @@ def entropy(vector, base=None):
 
     """
 
-    assert isinstance(vector, (list)) or (isinstance(vector, np.ndarray) and len(vector.shape) == 1), "Argument 'vector' not in the right shape. Use list or numpy (n,) shape instead"
+    assert isinstance(vector, (list)) or (isinstance(vector, np.ndarray) and len(vector.shape) == 1), \
+        "Argument 'vector' not in the right shape. Use list or numpy (n,) shape instead"
     assert len(vector) > 0, "Argument 'vector' can't be empty"
 
     vector = np.array(vector)
@@ -69,8 +71,10 @@ def conditional_entropy(vector, condition, base=None):
         Approximated entropy.
 
     """
-    assert isinstance(vector, (list)) or (isinstance(vector, np.ndarray) and len(vector.shape) == 1), "Argument 'vector' not in the right shape. Use list or numpy (n,) shape instead."
-    assert isinstance(condition, (list)) or (isinstance(condition, np.ndarray) and len(condition.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(vector, (list)) or (isinstance(vector, np.ndarray) and len(vector.shape) == 1), \
+        "Argument 'vector' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(condition, (list)) or (isinstance(condition, np.ndarray) and len(condition.shape) == 1), \
+        "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
     assert len(vector) > 0, "Argument 'vector' can't be empty"
     assert len(condition) > 0, "Argument 'condition' can't be empty"
 
@@ -102,7 +106,8 @@ def conditional_entropy(vector, condition, base=None):
 
 
 def mutual_information(vector_1, vector_2, base=None):
-    """This estimator computes the mutual information of two vectors with method of the empirical probability distribution.
+    """
+    This estimator computes the mutual information of two vectors with method of the empirical probability distribution.
 
     Parameters
     -----------
@@ -126,7 +131,8 @@ def mutual_information(vector_1, vector_2, base=None):
 
 
 def conditional_mutual_information(vector_1, vector_2, condition, base=None):
-    """This estimator computes the conditional mutual information of two vectors and condition vector with method of the empirical probability distribution.
+    """This estimator computes the conditional mutual information of two vectors and condition vector with method of
+    the empirical probability distribution.
 
     Parameters
     -----------
@@ -145,9 +151,12 @@ def conditional_mutual_information(vector_1, vector_2, condition, base=None):
         Approximated conditional mutual information between variables.
 
     """
-    assert isinstance(vector_1, (list)) or (isinstance(vector_1, np.ndarray) and len(vector_1.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
-    assert isinstance(vector_2, (list)) or (isinstance(vector_2, np.ndarray) and len(vector_2.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
-    assert isinstance(condition, (list)) or (isinstance(condition, np.ndarray) and len(condition.shape) == 1), "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(vector_1, list) or (isinstance(vector_1, np.ndarray) and len(vector_1.shape) == 1), \
+        "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(vector_2, list) or (isinstance(vector_2, np.ndarray) and len(vector_2.shape) == 1), \
+        "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(condition, list) or (isinstance(condition, np.ndarray) and len(condition.shape) == 1), \
+        "Argument 'condition' not in the right shape. Use list or numpy (n,) shape instead."
     assert len(vector_1) > 0, "Argument 'vector_1' can't be empty"
     assert len(vector_2) > 0, "Argument 'vector_2' can't be empty"
     assert len(condition) > 0, "Argument 'condition' can't be empty"
@@ -156,7 +165,8 @@ def conditional_mutual_information(vector_1, vector_2, condition, base=None):
     vector_2 = np.array(vector_2)
     condition = np.array(condition)
 
-    assert vector_1.shape == vector_2.shape == condition.shape, "Argument 'vector_1' and 'vector_2' must be the same lenght as 'condition'"
+    assert vector_1.shape == vector_2.shape == condition.shape, \
+        "Argument 'vector_1' and 'vector_2' must be the same length as 'condition'"
 
     if len(condition) == 1:
         "Entropy for one number is zero"
@@ -179,3 +189,51 @@ def conditional_mutual_information(vector_1, vector_2, condition, base=None):
     return cond_mutual_info
 
     # return float(drv.information_mutual_conditional(vector_1, vector_2, condition, base))
+
+
+def mutual_information_combined(X1, X2, Y, base=np.e):
+    """This estimator computes the mutual information of two vectors combined (X1, X2) and another one vector Y
+    with method of the empirical probability distribution.
+
+    # I((X1, X2), Y) =
+    # I(Y, X1) + I(Y, X1) + II(Y,X1,X2) =
+    # I(Y, X1) + I(Y, X1) + I(Y,X1|X2) - I(Y,X1) =
+    # I(Y, X1) + I(Y,X1|X2)
+
+    Parameters
+    -----------
+    X1 : list or np.array
+        Vector of one variable.
+    X2: list or np.array
+        Vector of one variable.
+    Y: list or np.array
+        Vector of y for mutual information.
+    base : int or float
+        Base of the logarithm in entropy approximation. If None, np.e is selected and entropy is returned in nats.
+    Returns
+    --------
+    mutual_information_combined : float
+        Approximated mutual information between variables.
+    """
+    assert isinstance(X1, list) or (isinstance(X1, np.ndarray) and len(X1.shape) == 1), \
+        "Argument 'X1' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(X2, list) or (isinstance(X2, np.ndarray) and len(X2.shape) == 1), \
+        "Argument 'Y' not in the right shape. Use list or numpy (n,) shape instead."
+    assert isinstance(Y, list) or (isinstance(Y, np.ndarray) and len(Y.shape) == 1), \
+        "Argument 'Z' not in the right shape. Use list or numpy (n,) shape instead."
+    assert len(X1) > 0, "Argument 'X1' can't be empty"
+    assert len(X2) > 0, "Argument 'X2' can't be empty"
+    assert len(Y) > 0, "Argument 'Y' can't be empty"
+
+    X1 = np.array(X1)
+    X2 = np.array(X2)
+    Y = np.array(Y)
+
+    assert X1.shape == X2.shape == Y.shape, "Argument 'X1' and 'X2' must be the same length as 'Y'"
+
+    a = mutual_information(vector_1=Y, vector_2=X2, base=base)
+    b = conditional_mutual_information(vector_1=Y, vector_2=X1, condition=X2, base=base)
+
+    # a = drv.information_mutual(Y, X2, base=base)
+    # b = drv.information_mutual_conditional(X=Y, Y=X1, Z=X2, base=base)
+    return a + b
