@@ -20,7 +20,7 @@ def _discretize(vector, **kwargs):
     discretized_vector: np.array
         Discretized by **kwargs arguments method vector.
     """
-    discretizer = KBinsDiscretizer(encode='ordinal', **kwargs)
+    discretizer = KBinsDiscretizer(encode="ordinal", **kwargs)
     discretized_vector = discretizer.fit_transform(vector.reshape(-1, 1)).reshape(-1)
     return discretized_vector
 
@@ -57,14 +57,14 @@ def load_sample(as_frame=True):
 
     module_path = dirname(__file__)
     # Load data
-    data = pd.read_csv(join(module_path, 'data', 'sample_data', 'sample_data.csv'))
-    targets = pd.read_csv(join(module_path, 'data', 'sample_data', 'sample_target.csv'))
+    data = pd.read_csv(join(module_path, "data", "sample_data", "sample_data.csv"))
+    targets = pd.read_csv(join(module_path, "data", "sample_data", "sample_target.csv"))
 
-    with open(join(module_path, 'data', 'sample_data', 'sample_costs.json'), 'r') as j:
+    with open(join(module_path, "data", "sample_data", "sample_costs.json"), "r") as j:
         costs = json.load(j)
 
     if as_frame:
-        return data, targets['Class'], costs
+        return data, targets["Class"], costs
     else:
         return data.values, targets.values, list(costs.values())
 
@@ -111,23 +111,33 @@ def load_hepatitis(as_frame=True, discretize_data=True, **kwargs):
     module_path = dirname(__file__)
 
     # Load data
-    data = pd.read_csv(join(module_path, 'data', 'hepatitis', 'hepatitis.csv'))
-    targets = pd.read_csv(join(module_path, 'data', 'hepatitis', 'hepatitis_target.csv'))
+    data = pd.read_csv(join(module_path, "data", "hepatitis", "hepatitis.csv"))
+    targets = pd.read_csv(
+        join(module_path, "data", "hepatitis", "hepatitis_target.csv")
+    )
 
-    with open(join(module_path, 'data', 'hepatitis', 'hepatitis_costs.json'), 'r') as j:
+    with open(join(module_path, "data", "hepatitis", "hepatitis_costs.json"), "r") as j:
         costs = json.load(j)
 
     if discretize_data:
         data_colnames = data.columns
-        n_bins = kwargs.get('n_bins', 10)
+        n_bins = kwargs.get("n_bins", 10)
         col_to_discretize = data.nunique()[data.nunique() > n_bins].index
         col_not_changing = data.nunique()[data.nunique() <= n_bins].index
 
-        data_discretized = np.apply_along_axis(func1d=_discretize, axis=0, arr=data[col_to_discretize].values, **kwargs)
-        data = pd.concat([pd.DataFrame(data_discretized, columns=col_to_discretize), data[col_not_changing]], axis=1)
+        data_discretized = np.apply_along_axis(
+            func1d=_discretize, axis=0, arr=data[col_to_discretize].values, **kwargs
+        )
+        data = pd.concat(
+            [
+                pd.DataFrame(data_discretized, columns=col_to_discretize),
+                data[col_not_changing],
+            ],
+            axis=1,
+        )
         data = data[data_colnames]
 
     if as_frame:
-        return data, targets['Class'], costs
+        return data, targets["Class"], costs
     else:
         return data.values, targets.values, list(costs.values())

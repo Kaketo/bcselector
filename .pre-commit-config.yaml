@@ -18,13 +18,6 @@ repos:
   hooks:
     -   id: flake8
 
--   repo: https://github.com/asottile/reorder_python_imports
-    rev: v3.9.0
-    hooks:
-    -   id: reorder-python-imports
-        exclude: ^(pre_commit/resources/|testing/resources/python3_hooks_repo/)
-        args: [--py38-plus, --add-import, 'from __future__ import annotations']
-
 -   repo: https://github.com/ambv/black
     rev: stable
     hooks:

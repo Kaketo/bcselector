@@ -10,22 +10,30 @@ from sklearn.metrics import roc_auc_score
 
 from adjustText import adjust_text
 
-from bcselector.filter_methods.cost_based_filter_methods import difference_find_best_feature, fraction_find_best_feature
-from bcselector.filter_methods.no_cost_based_filter_methods import no_cost_find_best_feature
-from bcselector.information_theory.j_criterion_approximations import mim, mifs, mrmr, jmi, cife
+from bcselector.filter_methods.cost_based_filter_methods import (
+    difference_find_best_feature,
+    fraction_find_best_feature,
+)
+from bcselector.filter_methods.no_cost_based_filter_methods import (
+    no_cost_find_best_feature,
+)
+from bcselector.information_theory.j_criterion_approximations import (
+    mim,
+    mifs,
+    mrmr,
+    jmi,
+    cife,
+)
 
-__all__ = [
-    '_VariableSelector',
-    'DiffVariableSelector',
-    'FractionVariableSelector'
-]
+__all__ = ["_VariableSelector", "DiffVariableSelector", "FractionVariableSelector"]
 
 
-class _VariableSelector():
+class _VariableSelector:
     """
     Partent class to provide all basic and common functions and attibutes for other selectors.
     This class does not implement proper `fit` method.
     """
+
     def __init__(self):
         self.data = None
         self.target_variable = None
@@ -59,19 +67,35 @@ class _VariableSelector():
         self.fig = None
         self.ax = None
 
-    def fit(self, data, target_variable, costs, j_criterion_func='cife', seed=42, budget=None, test_size=0.2, **kwargs):
+    def fit(
+        self,
+        data,
+        target_variable,
+        costs,
+        j_criterion_func="cife",
+        seed=42,
+        budget=None,
+        test_size=0.2,
+        **kwargs,
+    ):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        if 'beta' in kwargs.keys():
-            self.beta = kwargs['beta']
+        if "beta" in kwargs.keys():
+            self.beta = kwargs["beta"]
 
         # data & costs
-        assert isinstance(data, np.ndarray) or isinstance(data, pd.DataFrame), "Argument `data` must be numpy.ndarray or pandas.DataFrame"
+        assert isinstance(data, np.ndarray) or isinstance(
+            data, pd.DataFrame
+        ), "Argument `data` must be numpy.ndarray or pandas.DataFrame"
         if isinstance(data, np.ndarray):
-            assert isinstance(costs, list), "When using `data` as np.array, provide `costs` as list of floats or integers"
+            assert isinstance(
+                costs, list
+            ), "When using `data` as np.array, provide `costs` as list of floats or integers"
         else:
-            assert isinstance(costs, (list, dict)), "When using `data` as pd.DataFrame, provide `costs` as list of floats or integers or dict {'col_1':cost_1,...}"
+            assert isinstance(
+                costs, (list, dict)
+            ), "When using `data` as pd.DataFrame, provide `costs` as list of floats or integers or dict {'col_1':cost_1,...}"
 
         if isinstance(data, pd.DataFrame):
             self.data = data.values
@@ -82,7 +106,9 @@ class _VariableSelector():
                 self.costs = costs
         else:
             self.data = data
-            self.colnames = ['var_' + str(i) for i in np.arange(1, self.data.shape[1]+1)]
+            self.colnames = [
+                "var_" + str(i) for i in np.arange(1, self.data.shape[1] + 1)
+            ]
             self.costs = costs
 
         # normalized costs
@@ -90,32 +116,59 @@ class _VariableSelector():
             self.normalized_costs = self.costs
         else:
             # I add 0.0001 to avoid 0 cost feature
-            self.normalized_costs = list((np.array(self.costs) - min(self.costs) + 0.0001)/(max(self.costs)-min(self.costs)+0.0001))
+            self.normalized_costs = list(
+                (np.array(self.costs) - min(self.costs) + 0.0001)
+                / (max(self.costs) - min(self.costs) + 0.0001)
+            )
 
-        assert len(self.data.shape) == 2, "For `data` argument use numpy array of shape (n,p) or pandas DataFrame"
-        assert data.shape[1] == len(costs), "Length od cost must equal number of columns in `data`"
+        assert (
+            len(self.data.shape) == 2
+        ), "For `data` argument use numpy array of shape (n,p) or pandas DataFrame"
+        assert data.shape[1] == len(
+            costs
+        ), "Length od cost must equal number of columns in `data`"
 
         # target_variable
-        assert isinstance(target_variable, np.ndarray) or isinstance(target_variable, pd.core.series.Series), "Use np.array or pd.Series for argument `target_variable`"
+        assert isinstance(target_variable, np.ndarray) or isinstance(
+            target_variable, pd.core.series.Series
+        ), "Use np.array or pd.Series for argument `target_variable`"
 
         if isinstance(target_variable, pd.core.series.Series):
             self.target_variable = target_variable.values
         else:
             self.target_variable = target_variable
-        assert self.data.shape[0] == len(self.target_variable), "Number of rows in 'data' must equal target_variable length"
+        assert self.data.shape[0] == len(
+            self.target_variable
+        ), "Number of rows in 'data' must equal target_variable length"
 
         # j_criterion_func
-        j_criterion_dict = {'mim': mim, 'mifs': mifs, 'mrmr': mrmr, 'jmi': jmi, 'cife': cife}
-        assert j_criterion_func in ['mim', 'mifs', 'mrmr', 'jmi', 'cife'], "Argument `j_criterion_func` must be one of ['mim','mifs','mrmr','jmi','cife']"
+        j_criterion_dict = {
+            "mim": mim,
+            "mifs": mifs,
+            "mrmr": mrmr,
+            "jmi": jmi,
+            "cife": cife,
+        }
+        assert j_criterion_func in [
+            "mim",
+            "mifs",
+            "mrmr",
+            "jmi",
+            "cife",
+        ], "Argument `j_criterion_func` must be one of ['mim','mifs','mrmr','jmi','cife']"
         self.j_criterion_func = j_criterion_dict[j_criterion_func]
 
         if budget is not None:
-            assert isinstance(budget, (int, float)), "Argument `budget` must be float or int."
+            assert isinstance(
+                budget, (int, float)
+            ), "Argument `budget` must be float or int."
             assert budget >= 0, "Budget must be greater or equal 0."
             self.budget = budget
 
         # Train test split
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(self.data, self.target_variable, test_size=test_size, random_state=seed)
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
+            self.data, self.target_variable, test_size=test_size, random_state=seed
+        )
 
     def get_cost_results(self):
         """Getter to obtain cost-sensitive results.
@@ -141,9 +194,14 @@ class _VariableSelector():
         cost_variables_selected_order: list
             Costs of features selected. In the same order as `variables_selected_order`
         """
-        assert len(self.no_cost_variables_selected_order) > 0, "Run fit_no_cost or plot_scores method first."
+        assert (
+            len(self.no_cost_variables_selected_order) > 0
+        ), "Run fit_no_cost or plot_scores method first."
 
-        return self.no_cost_variables_selected_order, self.no_cost_cost_variables_selected_order
+        return (
+            self.no_cost_variables_selected_order,
+            self.no_cost_cost_variables_selected_order,
+        )
 
     def score(self, model, scoring_function):
         """Method scores selected features step by step by `scoring_function`. In each step one more feature is added.
@@ -174,7 +232,9 @@ class _VariableSelector():
         >>> fvs.score(roc_auc_score, model)
         """
 
-        assert isinstance(model, sklearn.base.ClassifierMixin), "Model must be sklearn.base.ClassifierMixin."
+        assert isinstance(
+            model, sklearn.base.ClassifierMixin
+        ), "Model must be sklearn.base.ClassifierMixin."
 
         self.total_scores = []
         self.total_costs = []
@@ -184,8 +244,8 @@ class _VariableSelector():
         assert len(self.variables_selected_order) > 0, "Run fit method first."
         current_cost = 0
 
-        for i, var_id in enumerate(tqdm(self.variables_selected_order, desc='Scoring')):
-            cur_vars = self.variables_selected_order[0:i+1]
+        for i, var_id in enumerate(tqdm(self.variables_selected_order, desc="Scoring")):
+            cur_vars = self.variables_selected_order[0 : i + 1]
             self.model = self.model.fit(X=self.X_train[:, cur_vars], y=self.y_train)
             y_hat = self.model.predict_proba(self.X_test[:, cur_vars])[:, 1]
             score = self.scoring_function(self.y_test, y_hat)
@@ -214,12 +274,25 @@ class _VariableSelector():
         """
         assert self.j_criterion_func, "Must run `fit` method first."
         self._fit_no_cost(stop_budget=self.stop_budget)
-        return self.no_cost_variables_selected_order, self.no_cost_cost_variables_selected_order
+        return (
+            self.no_cost_variables_selected_order,
+            self.no_cost_cost_variables_selected_order,
+        )
 
-    def plot_scores(self, budget=None, compare_no_cost_method=False, savefig=False, annotate=False, annotate_box=False,
-                    figsize=(12, 8),
-                    bbox_pos=(0.72, 0.60),
-                    plot_title=None, x_axis_title=None, y_axis_title=None, **kwargs):
+    def plot_scores(
+        self,
+        budget=None,
+        compare_no_cost_method=False,
+        savefig=False,
+        annotate=False,
+        annotate_box=False,
+        figsize=(12, 8),
+        bbox_pos=(0.72, 0.60),
+        plot_title=None,
+        x_axis_title=None,
+        y_axis_title=None,
+        **kwargs,
+    ):
         """Plots scores of each iteration of the algorithm.
 
         Parameters
@@ -248,10 +321,14 @@ class _VariableSelector():
 
         self.fig, self.ax = plt.subplots(figsize=figsize)
         if budget is not None:
-            assert isinstance(budget, (int, float)), "Argument `budget` must be float or int."
-            self.ax.axvline(x=budget, linewidth=3, label=f'budget={budget:.2f}')
+            assert isinstance(
+                budget, (int, float)
+            ), "Argument `budget` must be float or int."
+            self.ax.axvline(x=budget, linewidth=3, label=f"budget={budget:.2f}")
         elif self.budget is not None:
-            self.ax.axvline(x=self.budget, linewidth=3, label=f'budget={self.budget:.2f}')
+            self.ax.axvline(
+                x=self.budget, linewidth=3, label=f"budget={self.budget:.2f}"
+            )
         else:
             pass
 
@@ -259,53 +336,101 @@ class _VariableSelector():
         if compare_no_cost_method is True:
             self._fit_no_cost(stop_budget=self.stop_budget)
             self._score_no_cost()
-            self.ax.plot(self.no_cost_total_costs, self.no_cost_total_scores, linestyle='--', marker='o', color='r', label='Traditional feature selection')
-            self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b', label='Cost sensitive selection')
-            self.ax.legend(prop={"size": 16}, loc='lower right')
+            self.ax.plot(
+                self.no_cost_total_costs,
+                self.no_cost_total_scores,
+                linestyle="--",
+                marker="o",
+                color="r",
+                label="Traditional feature selection",
+            )
+            self.ax.plot(
+                self.total_costs,
+                self.total_scores,
+                linestyle="--",
+                marker="o",
+                color="b",
+                label="Cost sensitive selection",
+            )
+            self.ax.legend(prop={"size": 16}, loc="lower right")
 
             if annotate:
                 costs_normalized_to_alpha = list(
-                    (np.array(self.no_cost_cost_variables_selected_order) - min(self.no_cost_cost_variables_selected_order))*(1-0.5) /
-                    (max(self.no_cost_cost_variables_selected_order) - min(self.no_cost_cost_variables_selected_order)) + 0.5
+                    (
+                        np.array(self.no_cost_cost_variables_selected_order)
+                        - min(self.no_cost_cost_variables_selected_order)
                     )
-                for x, y, txt, alpha in zip(self.no_cost_total_costs, self.no_cost_total_scores, self.no_cost_variables_selected_order, costs_normalized_to_alpha):
+                    * (1 - 0.5)
+                    / (
+                        max(self.no_cost_cost_variables_selected_order)
+                        - min(self.no_cost_cost_variables_selected_order)
+                    )
+                    + 0.5
+                )
+                for x, y, txt, alpha in zip(
+                    self.no_cost_total_costs,
+                    self.no_cost_total_scores,
+                    self.no_cost_variables_selected_order,
+                    costs_normalized_to_alpha,
+                ):
                     annotations.append(
                         plt.text(
                             x,
                             y,
                             txt,
-                            bbox=dict(boxstyle="round", alpha=alpha, color='red'),
+                            bbox=dict(boxstyle="round", alpha=alpha, color="red"),
                             size=16,
-                            color='white'
-                            )
+                            color="white",
+                        )
                     )
         else:
-            self.ax.plot(self.total_costs, self.total_scores, linestyle='--', marker='o', color='b')
+            self.ax.plot(
+                self.total_costs,
+                self.total_scores,
+                linestyle="--",
+                marker="o",
+                color="b",
+            )
 
         if annotate:
             costs_normalized_to_alpha = self.normalized_costs = list(
-                (np.array(self.cost_variables_selected_order) - min(self.cost_variables_selected_order))*(1-0.5) /
-                (max(self.cost_variables_selected_order) - min(self.cost_variables_selected_order)) + 0.5
+                (
+                    np.array(self.cost_variables_selected_order)
+                    - min(self.cost_variables_selected_order)
+                )
+                * (1 - 0.5)
+                / (
+                    max(self.cost_variables_selected_order)
+                    - min(self.cost_variables_selected_order)
+                )
+                + 0.5
             )
-            for x, y, txt, alpha in zip(self.total_costs, self.total_scores, self.variables_selected_order, costs_normalized_to_alpha):
+            for x, y, txt, alpha in zip(
+                self.total_costs,
+                self.total_scores,
+                self.variables_selected_order,
+                costs_normalized_to_alpha,
+            ):
                 annotations.append(
                     plt.text(
                         x,
                         y,
                         txt,
-                        bbox=dict(boxstyle="round", alpha=alpha, color='blue'),
+                        bbox=dict(boxstyle="round", alpha=alpha, color="blue"),
                         size=16,
-                        color='white'
-                        )
+                        color="white",
+                    )
                 )
 
-        self.ax.tick_params(axis='both', which='major', labelsize=16)
+        self.ax.tick_params(axis="both", which="major", labelsize=16)
         if plot_title is None:
-            self.ax.set_title('Model ' + self.scoring_function.__name__ + ' vs cost', fontsize=18)
+            self.ax.set_title(
+                "Model " + self.scoring_function.__name__ + " vs cost", fontsize=18
+            )
         else:
             self.ax.set_title(plot_title, fontsize=35)
         if x_axis_title is None:
-            self.ax.set_xlabel('Cost', fontsize=28)
+            self.ax.set_xlabel("Cost", fontsize=28)
         else:
             self.ax.set_xlabel(x_axis_title, fontsize=28)
         if y_axis_title is None:
@@ -315,20 +440,41 @@ class _VariableSelector():
 
         # BBox with feature names
         if annotate_box:
-            variables_idx = set(self.variables_selected_order).union(set(self.no_cost_variables_selected_order))
+            variables_idx = set(self.variables_selected_order).union(
+                set(self.no_cost_variables_selected_order)
+            )
             variables_names = [self.colnames[i] for i in variables_idx]
             variables_costs = [self.costs[i] for i in variables_idx]
-            textstr = '\n'.join([str(idx) + ': ' + name + f' C={cost:.2f}' for idx, name, cost in zip(variables_idx, variables_names, variables_costs)])
-            props = dict(boxstyle='round', facecolor='gray', alpha=0.1)
-            self.ax.text(bbox_pos[0], bbox_pos[1], textstr, transform=self.ax.transAxes, fontsize=14, verticalalignment='top', bbox=props, size=12, color='gray')
+            textstr = "\n".join(
+                [
+                    str(idx) + ": " + name + f" C={cost:.2f}"
+                    for idx, name, cost in zip(
+                        variables_idx, variables_names, variables_costs
+                    )
+                ]
+            )
+            props = dict(boxstyle="round", facecolor="gray", alpha=0.1)
+            self.ax.text(
+                bbox_pos[0],
+                bbox_pos[1],
+                textstr,
+                transform=self.ax.transAxes,
+                fontsize=14,
+                verticalalignment="top",
+                bbox=props,
+                size=12,
+                color="gray",
+            )
 
-        adjust_text(annotations,  arrowprops=dict(arrowstyle="->", lw=0))
-        plt.grid(color='gray', linestyle='dotted', linewidth=1, alpha=0.4)
+        adjust_text(annotations, arrowprops=dict(arrowstyle="->", lw=0))
+        plt.grid(color="gray", linestyle="dotted", linewidth=1, alpha=0.4)
         plt.xlim(left=0)
 
         if savefig:
-            assert kwargs.get('fig_name'), "Must specify `fig_name` as key word argument"
-            name = kwargs.pop('fig_name')
+            assert kwargs.get(
+                "fig_name"
+            ), "Must specify `fig_name` as key word argument"
+            name = kwargs.pop("fig_name")
             plt.savefig(name, **kwargs)
         plt.tight_layout()
         plt.show()
@@ -340,7 +486,9 @@ class _VariableSelector():
         self.no_cost_variables_selected_order = []
         self.no_cost_cost_variables_selected_order = []
 
-        for _ in tqdm(range(self.number_of_features), desc='Selecting No-cost Features'):
+        for _ in tqdm(
+            range(self.number_of_features), desc="Selecting No-cost Features"
+        ):
             k, _, cost = no_cost_find_best_feature(
                 j_criterion_func=self.j_criterion_func,
                 data=self.data,
@@ -348,9 +496,12 @@ class _VariableSelector():
                 prev_variables_index=list(S),
                 possible_variables_index=list(U),
                 costs=self.costs,
-                beta=self.beta)
+                beta=self.beta,
+            )
             S.add(k)
-            if stop_budget is True and (sum(self.no_cost_cost_variables_selected_order) + cost) >= (self.budget or np.inf):
+            if stop_budget is True and (
+                sum(self.no_cost_cost_variables_selected_order) + cost
+            ) >= (self.budget or np.inf):
                 break
             self.no_cost_variables_selected_order.append(k)
             self.no_cost_cost_variables_selected_order.append(cost)
@@ -364,7 +515,7 @@ class _VariableSelector():
         self.no_cost_total_costs = []
 
         for i, var_id in enumerate(self.no_cost_variables_selected_order):
-            cur_vars = self.no_cost_variables_selected_order[0:i+1]
+            cur_vars = self.no_cost_variables_selected_order[0 : i + 1]
             self.model = self.model.fit(X=self.X_train[:, cur_vars], y=self.y_train)
             y_hat = self.model.predict_proba(self.X_test[:, cur_vars])[:, 1]
             score = roc_auc_score(self.y_test, y_hat)
@@ -377,7 +528,19 @@ class DiffVariableSelector(_VariableSelector):
     """
     Ranks all features in dataset with difference cost filter method.
     """
-    def fit(self, data, target_variable, costs, lamb, j_criterion_func='cife', number_of_features=None, budget=None, stop_budget=False, **kwargs):
+
+    def fit(
+        self,
+        data,
+        target_variable,
+        costs,
+        lamb,
+        j_criterion_func="cife",
+        number_of_features=None,
+        budget=None,
+        stop_budget=False,
+        **kwargs,
+    ):
         """Ranks all features in dataset with difference cost filter method.
 
         Parameters
@@ -416,17 +579,28 @@ class DiffVariableSelector(_VariableSelector):
         >>> dvs.fit(X, y, costs, lamb=1, j_criterion_func='mim')
         """
         # lamb
-        assert isinstance(lamb, int) or isinstance(lamb, float), "Argument `lamb` must be integer or float"
+        assert isinstance(lamb, int) or isinstance(
+            lamb, float
+        ), "Argument `lamb` must be integer or float"
         self.lamb = lamb
         self.stop_budget = stop_budget
-        super().fit(data=data, target_variable=target_variable, costs=costs, j_criterion_func=j_criterion_func, budget=budget, **kwargs)
+        super().fit(
+            data=data,
+            target_variable=target_variable,
+            costs=costs,
+            j_criterion_func=j_criterion_func,
+            budget=budget,
+            **kwargs,
+        )
 
         if number_of_features is None:
             self.number_of_features = self.data.shape[1]
         else:
             self.number_of_features = number_of_features
         if self.budget is None and stop_budget:
-            warnings.warn("Unused argument `stop_budget`. Works only with `budget` argument.")
+            warnings.warn(
+                "Unused argument `stop_budget`. Works only with `budget` argument."
+            )
         S = set()
         U = set([i for i in range(self.data.shape[1])])
 
@@ -443,10 +617,13 @@ class DiffVariableSelector(_VariableSelector):
                 costs=self.costs,
                 normalized_costs=self.normalized_costs,
                 lamb=self.lamb,
-                **kwargs)
+                **kwargs,
+            )
             S.add(k)
 
-            if stop_budget is True and (sum(self.cost_variables_selected_order) + cost) >= (self.budget or np.inf):
+            if stop_budget is True and (
+                sum(self.cost_variables_selected_order) + cost
+            ) >= (self.budget or np.inf):
                 break
 
             self.variables_selected_order.append(k)
@@ -466,7 +643,19 @@ class FractionVariableSelector(_VariableSelector):
     ----------
 
     """
-    def fit(self, data, target_variable, costs, r, j_criterion_func='cife', number_of_features=None, budget=None, stop_budget=False, **kwargs):
+
+    def fit(
+        self,
+        data,
+        target_variable,
+        costs,
+        r,
+        j_criterion_func="cife",
+        number_of_features=None,
+        budget=None,
+        stop_budget=False,
+        **kwargs,
+    ):
         """Ranks all features in dataset with fraction cost filter method.
 
         Parameters
@@ -502,17 +691,28 @@ class FractionVariableSelector(_VariableSelector):
         >>> fvs.fit(X, y, costs, lamb=1, j_criterion_func='mim')
         """
         # r
-        assert isinstance(r, int) or isinstance(r, float), "Argument `r` must be integer or float"
+        assert isinstance(r, int) or isinstance(
+            r, float
+        ), "Argument `r` must be integer or float"
         self.r = r
         self.stop_budget = stop_budget
 
-        super().fit(data=data, target_variable=target_variable, costs=costs, j_criterion_func=j_criterion_func, budget=budget, **kwargs)
+        super().fit(
+            data=data,
+            target_variable=target_variable,
+            costs=costs,
+            j_criterion_func=j_criterion_func,
+            budget=budget,
+            **kwargs,
+        )
         if number_of_features is None:
             self.number_of_features = self.data.shape[1]
         else:
             self.number_of_features = number_of_features
         if self.budget is None and stop_budget:
-            warnings.warn("Unused argument `stop_budget`. Works only with `budget` argument.")
+            warnings.warn(
+                "Unused argument `stop_budget`. Works only with `budget` argument."
+            )
 
         S = set()
         U = set([i for i in range(self.data.shape[1])])
@@ -531,10 +731,13 @@ class FractionVariableSelector(_VariableSelector):
                 costs=self.costs,
                 normalized_costs=self.normalized_costs,
                 r=self.r,
-                **kwargs)
+                **kwargs,
+            )
             S.add(k)
 
-            if stop_budget is True and (sum(self.cost_variables_selected_order) + cost) >= (self.budget or np.inf):
+            if stop_budget is True and (
+                sum(self.cost_variables_selected_order) + cost
+            ) >= (self.budget or np.inf):
                 break
 
             self.variables_selected_order.append(k)
@@ -547,8 +750,7 @@ class FractionVariableSelector(_VariableSelector):
 
 
 class NoCostVariableSelector(_VariableSelector):
-    def fit(self, data, target_variable, costs, j_criterion_func='cife', **kwargs):
-
+    def fit(self, data, target_variable, costs, j_criterion_func="cife", **kwargs):
         super().fit(data, target_variable, costs, j_criterion_func, **kwargs)
         S = set()
         U = set([i for i in range(self.data.shape[1])])
@@ -556,14 +758,15 @@ class NoCostVariableSelector(_VariableSelector):
         self.variables_selected_order = []
         self.cost_variables_selected_order = []
 
-        for _ in tqdm(range(len(U)), desc='Scoring No-cost Features'):
+        for _ in tqdm(range(len(U)), desc="Scoring No-cost Features"):
             k, _, cost = no_cost_find_best_feature(
                 j_criterion_func=self.j_criterion_func,
                 data=self.data,
                 target_variable=self.target_variable,
                 prev_variables_index=list(S),
                 possible_variables_index=list(U),
-                costs=self.costs)
+                costs=self.costs,
+            )
             S.add(k)
             self.variables_selected_order.append(k)
             self.cost_variables_selected_order.append(cost)
