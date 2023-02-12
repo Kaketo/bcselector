@@ -7,13 +7,12 @@ Bcselector
     :target: http://badge.fury.io/py/bcselector
 .. image:: https://badge.fury.io/py/bcselector.svg
     :target: https://badge.fury.io/py/bcselector
-.. image:: https://travis-ci.com/Kaketo/bcselector.svg?branch=master
-    :target: https://travis-ci.com/Kaketo/bcselector
+.. image:: https://github.com/Kaketo/bcselector/actions/workflows/build.yml/badge.svg
+    :target: https://github.com/Kaketo/bcselector/actions/workflows/build.yml
 .. image:: https://codecov.io/gh/Kaketo/bcselector/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/Kaketo/bcselector
 .. image:: https://img.shields.io/badge/License-MIT-yellow.svg
   :target: https://opensource.org/licenses/MIT
-
 * Documentation: https://kaketo.github.io/bcselector.
 * Repository: https://github.com/kaketo/bcselector.
 
