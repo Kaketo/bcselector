@@ -29,5 +29,5 @@ jobs:
     - name: Run Python unit tests with coverage
       run: python bcselector/run_tests.py
 
-    - name:
-      run: coverage run bcselector/run_tests.py
+    - name: Upload codecov results
+      run: bash <(curl -s https://codecov.io/bash) -v
