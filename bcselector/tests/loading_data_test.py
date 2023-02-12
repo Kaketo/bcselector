@@ -21,6 +21,7 @@ class TestSampleData(unittest.TestCase):
         load_sample()
 
         # Then
+
     def test_data_shape(self):
         # Given
         # When
@@ -28,7 +29,7 @@ class TestSampleData(unittest.TestCase):
 
         # Then
         assert X.shape == (2000, 28)
-        assert y.shape == (2000, )
+        assert y.shape == (2000,)
         assert len(costs) == 28
 
     def test_data_type_frame(self):
@@ -59,6 +60,7 @@ class TestHepatitis(unittest.TestCase):
         load_hepatitis()
 
         # Then
+
     def test_data_shape(self):
         # Given
         # When
@@ -66,7 +68,7 @@ class TestHepatitis(unittest.TestCase):
 
         # Then
         assert X.shape == (155, 19)
-        assert y.shape == (155, )
+        assert y.shape == (155,)
         assert len(costs) == 19
 
     def test_data_type_frame(self):
@@ -100,13 +102,15 @@ class TestHepatitis(unittest.TestCase):
         assert np.array_equal(y1, y2)
         assert costs1 == costs2
         assert len(np.unique(X1.iloc[:, 0])) > len(np.unique(X2.iloc[:, 0]))
-        assert [True if x != 1 else False for x in X1.nunique().values].count(True) / len(X1.nunique().values) == 1
+        assert [True if x != 1 else False for x in X1.nunique().values].count(
+            True
+        ) / len(X1.nunique().values) == 1
 
     def test_data_colnames(self):
         # Given
-        first_colname = 'age'
-        middle_colname = 'spiders'
-        last_colname = 'histology'
+        first_colname = "age"
+        middle_colname = "spiders"
+        last_colname = "histology"
         # When
         X1, y1, costs1 = load_hepatitis(as_frame=True, discretize_data=False)
         X2, y2, costs2 = load_hepatitis(as_frame=True, n_bins=10)
